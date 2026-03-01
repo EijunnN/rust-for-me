@@ -1,0 +1,184 @@
+[meta]
+id = "m01_l03"
+order = 3
+
+[title]
+es = "¡Hola, Mundo!"
+en = "Hello, World!"
+
+[[blocks]]
+type = "text"
+es = """## Tu primer programa en Rust
+
+El programa "Hello, World!" es una tradición en programación: es el primer programa que escribes al aprender un nuevo lenguaje. En Rust, es muy sencillo:"""
+en = """## Your first program in Rust
+
+The "Hello, World!" program is a tradition in programming: it's the first program you write when learning a new language. In Rust, it's very simple:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    println!("Hello, World!");
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Desglose del código
+
+Analicemos cada parte de este pequeño programa:
+
+### `fn main()`
+- `fn` es la palabra clave para declarar una **función** (function).
+- `main` es el nombre de una función especial: es el **punto de entrada** de todo programa Rust. Cuando ejecutas un programa, Rust busca la función `main` y empieza a ejecutar desde ahí.
+- `()` indica que la función no recibe **parámetros** (argumentos).
+- `{` y `}` delimitan el **cuerpo** de la función, es decir, el código que se ejecuta.
+
+### `println!("Hello, World!");`
+- `println!` es una **macro** de Rust (no una función). El signo `!` al final indica que es una macro.
+- `"Hello, World!"` es un **string literal** (cadena de texto) que se pasa como argumento.
+- El `;` al final indica el **fin de la sentencia**. En Rust, casi todas las líneas terminan con punto y coma."""
+en = """## Code breakdown
+
+Let's analyze each part of this small program:
+
+### `fn main()`
+- `fn` is the keyword to declare a **function**.
+- `main` is the name of a special function: it's the **entry point** of every Rust program. When you run a program, Rust looks for the `main` function and starts executing from there.
+- `()` indicates that the function takes no **parameters** (arguments).
+- `{` and `}` delimit the **body** of the function, that is, the code that runs.
+
+### `println!("Hello, World!");`
+- `println!` is a Rust **macro** (not a function). The `!` sign at the end indicates it's a macro.
+- `"Hello, World!"` is a **string literal** passed as an argument.
+- The `;` at the end indicates the **end of the statement**. In Rust, almost every line ends with a semicolon."""
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """💡 **Macros vs Funciones**: En Rust, las macros se distinguen de las funciones por el `!` al final del nombre. Las macros son más poderosas que las funciones porque pueden recibir un número variable de argumentos y generan código en tiempo de compilación. `println!` es una macro porque necesita analizar el string de formato en tiempo de compilación para verificar que los tipos coinciden."""
+en = """💡 **Macros vs Functions**: In Rust, macros are distinguished from functions by the `!` at the end of the name. Macros are more powerful than functions because they can accept a variable number of arguments and generate code at compile time. `println!` is a macro because it needs to analyze the format string at compile time to verify that types match."""
+
+[[blocks]]
+type = "text"
+es = """## Formateo de strings con `println!`
+
+Una de las características más útiles de `println!` es su capacidad de **formateo**. Puedes insertar valores dentro del texto usando llaves `{}` como marcadores de posición:"""
+en = """## String formatting with `println!`
+
+One of the most useful features of `println!` is its **formatting** capability. You can insert values into the text using curly braces `{}` as placeholders:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // Formato básico con {}
+    let nombre = "Ana";
+    let edad = 25;
+    println!("Me llamo {} y tengo {} años", nombre, edad);
+
+    // Formato con posición
+    println!("{0} tiene {1} años. {0} programa en Rust.", nombre, edad);
+
+    // Formato con nombres
+    println!("{nombre} es programadora", nombre = "María");
+
+    // Formato de depuración con {:?}
+    let numeros = [1, 2, 3, 4, 5];
+    println!("Array: {:?}", numeros);
+
+    // Formato con padding y alineación
+    println!("{:<10} | {:>10}", "Izquierda", "Derecha");
+    println!("{:*^20}", "Centro");
+
+    // Formato numérico
+    let pi = 3.14159;
+    println!("Pi con 2 decimales: {:.2}", pi);
+    println!("En hexadecimal: {:x}", 255);
+    println!("En binario: {:b}", 10);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Las macros de impresión
+
+Rust ofrece varias macros para imprimir texto. Cada una tiene un uso específico:
+
+| Macro | Descripción | Salida |
+|-------|-------------|--------|
+| `print!` | Imprime sin salto de línea | stdout |
+| `println!` | Imprime con salto de línea | stdout |
+| `eprint!` | Imprime error sin salto de línea | stderr |
+| `eprintln!` | Imprime error con salto de línea | stderr |
+
+La diferencia entre `stdout` y `stderr` es importante: `stdout` es la salida estándar para datos normales, mientras que `stderr` es la salida de error para mensajes de diagnóstico. Esto permite redirigir cada flujo de forma independiente en la terminal."""
+en = """## Print macros
+
+Rust offers several macros for printing text. Each one has a specific use:
+
+| Macro | Description | Output |
+|-------|-------------|--------|
+| `print!` | Prints without newline | stdout |
+| `println!` | Prints with newline | stdout |
+| `eprint!` | Prints error without newline | stderr |
+| `eprintln!` | Prints error with newline | stderr |
+
+The difference between `stdout` and `stderr` is important: `stdout` is the standard output for normal data, while `stderr` is the error output for diagnostic messages. This allows redirecting each stream independently in the terminal."""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // print! no añade salto de línea
+    print!("Hola ");
+    print!("Mundo ");
+    println!("(ahora sí hay salto de línea)");
+
+    // println! añade un salto de línea al final
+    println!("Primera línea");
+    println!("Segunda línea");
+
+    // eprintln! escribe en stderr (salida de error)
+    eprintln!("⚠️ Esto es un mensaje de error");
+
+    // Ejemplo práctico: mostrar un recibo
+    println!("╔══════════════════════════╗");
+    println!("║     RECIBO DE COMPRA     ║");
+    println!("╠══════════════════════════╣");
+    println!("║ Manzanas x3    $  {:>5.2} ║", 2.50);
+    println!("║ Pan             $  {:>5.2} ║", 1.75);
+    println!("║ Leche           $  {:>5.2} ║", 3.20);
+    println!("╠══════════════════════════╣");
+    println!("║ TOTAL           $  {:>5.2} ║", 2.50 + 1.75 + 3.20);
+    println!("╚══════════════════════════╝");
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "tip"
+es = "🔑 Recuerda: cuando veas `!` después del nombre, es una **macro**, no una función. Las funciones normales en Rust nunca llevan `!`. Esto es una pregunta común en entrevistas y exámenes sobre Rust."
+en = "🔑 Remember: when you see `!` after the name, it's a **macro**, not a function. Normal functions in Rust never have `!`. This is a common question in Rust interviews and exams."
+
+[[blocks]]
+type = "quiz"
+es = "¿Por qué `println!` tiene un signo de exclamación `!` al final?"
+en = "Why does `println!` have an exclamation mark `!` at the end?"
+[[blocks.options]]
+es = "Porque es una macro, no una función"
+en = "Because it's a macro, not a function"
+correct = true
+[[blocks.options]]
+es = "Porque indica que puede fallar"
+en = "Because it indicates it can fail"
+correct = false
+[[blocks.options]]
+es = "Es solo una convención de estilo"
+en = "It's just a style convention"
+correct = false
+[[blocks.options]]
+es = "Porque imprime con énfasis"
+en = "Because it prints with emphasis"
+correct = false

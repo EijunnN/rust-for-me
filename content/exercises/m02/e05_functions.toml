@@ -1,0 +1,110 @@
+[meta]
+id = "m02_e05"
+module = "m02"
+difficulty = "beginner"
+order = 5
+exercise_type = "write_code"
+
+[title]
+es = "Escribe funciones"
+en = "Write functions"
+
+[description]
+es = """Escribe las siguientes funciones:
+1. `rectangulo_area(ancho: f64, alto: f64) -> f64` - calcula el area de un rectangulo
+2. `rectangulo_perimetro(ancho: f64, alto: f64) -> f64` - calcula el perimetro
+3. `es_cuadrado(ancho: f64, alto: f64) -> bool` - devuelve true si ancho == alto
+
+Recuerda: la ultima expresion sin punto y coma es el valor de retorno."""
+en = """Write the following functions:
+1. `rectangulo_area(ancho: f64, alto: f64) -> f64` - calculates the area of a rectangle
+2. `rectangulo_perimetro(ancho: f64, alto: f64) -> f64` - calculates the perimeter
+3. `es_cuadrado(ancho: f64, alto: f64) -> bool` - returns true if ancho == alto
+
+Remember: the last expression without semicolon is the return value."""
+
+[starter_code]
+code = '''// Escribe tus funciones aqui / Write your functions here
+
+fn rectangulo_area(ancho: f64, alto: f64) -> f64 {
+    // Tu codigo / Your code
+    0.0
+}
+
+fn rectangulo_perimetro(ancho: f64, alto: f64) -> f64 {
+    // Tu codigo / Your code
+    0.0
+}
+
+fn es_cuadrado(ancho: f64, alto: f64) -> bool {
+    // Tu codigo / Your code
+    false
+}
+
+fn main() {
+    let ancho = 5.0;
+    let alto = 3.0;
+    println!("Rectangulo {}x{}", ancho, alto);
+    println!("Area: {}", rectangulo_area(ancho, alto));
+    println!("Perimetro: {}", rectangulo_perimetro(ancho, alto));
+    println!("Es cuadrado: {}", es_cuadrado(ancho, alto));
+
+    let lado = 4.0;
+    println!("\nCuadrado {}x{}", lado, lado);
+    println!("Area: {}", rectangulo_area(lado, lado));
+    println!("Perimetro: {}", rectangulo_perimetro(lado, lado));
+    println!("Es cuadrado: {}", es_cuadrado(lado, lado));
+}'''
+
+[validation]
+expected_output = """Rectangulo 5x3
+Area: 15
+Perimetro: 16
+Es cuadrado: false
+
+Cuadrado 4x4
+Area: 16
+Perimetro: 16
+Es cuadrado: true"""
+
+[hints]
+es = [
+    "Area = ancho * alto",
+    "Perimetro = 2.0 * (ancho + alto)",
+    "Es cuadrado cuando ancho == alto",
+    "No pongas punto y coma en la ultima linea de cada funcion",
+]
+en = [
+    "Area = ancho * alto",
+    "Perimeter = 2.0 * (ancho + alto)",
+    "It's a square when ancho == alto",
+    "Don't put a semicolon on the last line of each function",
+]
+
+[solution]
+code = '''fn rectangulo_area(ancho: f64, alto: f64) -> f64 {
+    ancho * alto
+}
+
+fn rectangulo_perimetro(ancho: f64, alto: f64) -> f64 {
+    2.0 * (ancho + alto)
+}
+
+fn es_cuadrado(ancho: f64, alto: f64) -> bool {
+    ancho == alto
+}
+
+fn main() {
+    let ancho = 5.0;
+    let alto = 3.0;
+    println!("Rectangulo {}x{}", ancho, alto);
+    println!("Area: {}", rectangulo_area(ancho, alto));
+    println!("Perimetro: {}", rectangulo_perimetro(ancho, alto));
+    println!("Es cuadrado: {}", es_cuadrado(ancho, alto));
+
+    let lado = 4.0;
+    println!("\nCuadrado {}x{}", lado, lado);
+    println!("Area: {}", rectangulo_area(lado, lado));
+    println!("Perimetro: {}", rectangulo_perimetro(lado, lado));
+    println!("Es cuadrado: {}", es_cuadrado(lado, lado));
+}'''

@@ -1,0 +1,298 @@
+[meta]
+id = "m02_l03"
+order = 3
+
+[title]
+es = "Funciones"
+en = "Functions"
+
+[[blocks]]
+type = "text"
+es = """## El Problema: Funciones que mienten sobre sus tipos
+
+En muchos lenguajes, las funciones no declaran que tipo de datos reciben ni que devuelven. Esto crea una bomba de tiempo:"""
+en = """## The Problem: Functions that lie about their types
+
+In many languages, functions don't declare what type of data they receive or return. This creates a time bomb:"""
+
+[[blocks]]
+type = "code"
+language = "python"
+runnable = false
+code = '''# Python - la funcion no dice que tipos espera
+# Python - the function doesn't say what types it expects
+def calculate_area(width, height):
+    return width * height
+
+# Esto funciona... pero no deberia
+area = calculate_area("hello", 3)  # "hellohellohello"
+# No hay error hasta que intentas usar el resultado como numero'''
+
+[[blocks]]
+type = "text"
+es = """En Rust, **toda funcion debe declarar los tipos de sus parametros y su valor de retorno**. Si los tipos no coinciden, el codigo no compila. Esto significa que es *imposible* llamar a una funcion con argumentos del tipo equivocado:"""
+en = """In Rust, **every function must declare the types of its parameters and its return value**. If the types don't match, the code doesn't compile. This means it's *impossible* to call a function with arguments of the wrong type:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''fn calculate_area(width: f64, height: f64) -> f64 {
+    width * height
+}
+
+fn main() {
+    // Esto no compila: "hello" no es f64
+    let area = calculate_area("hello", 3);
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "danger"
+es = """**Error del compilador:**
+```
+error[E0308]: mismatched types
+ --> src/main.rs:7:33
+  |
+7 |     let area = calculate_area("hello", 3);
+  |                               ^^^^^^^ expected `f64`, found `&str`
+```
+Rust detecta el error **antes** de ejecutar el programa. En Python, este bug podria esconderse durante meses."""
+en = """**Compiler error:**
+```
+error[E0308]: mismatched types
+ --> src/main.rs:7:33
+  |
+7 |     let area = calculate_area("hello", 3);
+  |                               ^^^^^^^ expected `f64`, found `&str`
+```
+Rust catches the error **before** running the program. In Python, this bug could hide for months."""
+
+[[blocks]]
+type = "text"
+es = """## Anatomia de una funcion en Rust
+
+Una funcion en Rust se compone de:
+- `fn`: palabra clave para declarar la funcion
+- **Nombre**: en `snake_case` por convencion
+- **Parametros**: con tipos explicitos
+- **Tipo de retorno**: despues de `->`
+- **Cuerpo**: entre llaves `{}`"""
+en = """## Anatomy of a Rust function
+
+A Rust function is composed of:
+- `fn`: keyword to declare the function
+- **Name**: in `snake_case` by convention
+- **Parameters**: with explicit types
+- **Return type**: after `->`
+- **Body**: between curly braces `{}`"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''// Funcion sin parametros ni retorno
+fn saludar() {
+    println!("Hola desde una funcion!");
+}
+
+// Funcion con parametros
+fn saludar_a(nombre: &str) {
+    println!("Hola, {}!", nombre);
+}
+
+// Funcion con retorno
+fn sumar(a: i32, b: i32) -> i32 {
+    a + b  // Sin punto y coma = valor de retorno
+}
+
+// Funcion con multiples parametros y retorno
+fn calcular_imc(peso_kg: f64, altura_m: f64) -> f64 {
+    peso_kg / (altura_m * altura_m)
+}
+
+fn main() {
+    saludar();
+    saludar_a("Ferris");
+
+    let resultado = sumar(3, 7);
+    println!("3 + 7 = {}", resultado);
+
+    let imc = calcular_imc(70.0, 1.75);
+    println!("IMC: {:.1}", imc);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## El concepto clave: Expresiones vs Sentencias
+
+Esta es una de las ideas mas importantes (y confusas al principio) de Rust:
+
+- **Sentencia** (statement): ejecuta una accion pero **no devuelve un valor**. Termina con `;`.
+- **Expresion** (expression): se evalua y **produce un valor**. NO termina con `;`.
+
+En Rust, **la ultima expresion de una funcion es su valor de retorno** (sin `return`, sin `;`):"""
+en = """## The key concept: Expressions vs Statements
+
+This is one of the most important (and initially confusing) ideas in Rust:
+
+- **Statement**: performs an action but **doesn't return a value**. Ends with `;`.
+- **Expression**: evaluates and **produces a value**. Does NOT end with `;`.
+
+In Rust, **the last expression in a function is its return value** (no `return`, no `;`):"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn cinco() -> i32 {
+    5  // Expresion: devuelve 5 (sin punto y coma!)
+}
+
+fn seis() -> i32 {
+    let x = 5;  // Sentencia (con ;)
+    x + 1        // Expresion: devuelve x + 1 (sin ;)
+}
+
+// Tambien puedes usar `return` explicitamente (util para retornos tempranos)
+fn valor_absoluto(x: i32) -> i32 {
+    if x < 0 {
+        return -x;  // Retorno temprano con return
+    }
+    x  // Ultima expresion = valor de retorno
+}
+
+fn main() {
+    println!("cinco() = {}", cinco());
+    println!("seis() = {}", seis());
+    println!("|(-3)| = {}", valor_absoluto(-3));
+    println!("|(7)| = {}", valor_absoluto(7));
+}'''
+
+[[blocks]]
+type = "text"
+es = """## El error clasico: el punto y coma asesino
+
+Este es probablemente el error mas comun para principiantes en Rust. Agregar un `;` al final de la ultima linea la convierte de expresion a sentencia, y la funcion ya no devuelve nada:"""
+en = """## The classic mistake: the killer semicolon
+
+This is probably the most common mistake for Rust beginners. Adding a `;` at the end of the last line turns it from an expression into a statement, and the function no longer returns anything:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''fn sumar(a: i32, b: i32) -> i32 {
+    a + b;  // ERROR! El ; convierte esto en una sentencia
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "danger"
+es = """**Error del compilador:**
+```
+error[E0308]: mismatched types
+ --> src/main.rs:2:5
+  |
+1 | fn sumar(a: i32, b: i32) -> i32 {
+  |                              --- expected `i32` because of return type
+2 |     a + b;
+  |          - help: remove this semicolon to return this value
+  |     expected `i32`, found `()`
+```
+El compilador incluso te dice la solucion: **"remove this semicolon to return this value"**. Rust tiene mensajes de error excepcionales."""
+en = """**Compiler error:**
+```
+error[E0308]: mismatched types
+ --> src/main.rs:2:5
+  |
+1 | fn sumar(a: i32, b: i32) -> i32 {
+  |                              --- expected `i32` because of return type
+2 |     a + b;
+  |          - help: remove this semicolon to return this value
+  |     expected `i32`, found `()`
+```
+The compiler even tells you the solution: **"remove this semicolon to return this value"**. Rust has exceptional error messages."""
+
+[[blocks]]
+type = "text"
+es = """## Bloques como expresiones
+
+En Rust, los bloques `{}` tambien son expresiones. Esto es muy util para calculos temporales:"""
+en = """## Blocks as expressions
+
+In Rust, blocks `{}` are also expressions. This is very useful for temporary calculations:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // Un bloque como expresion
+    let y = {
+        let x = 3;
+        x + 1  // Este valor se asigna a y
+    };
+    println!("y = {}", y);  // y = 4
+
+    // Ejemplo practico: calculadora de IMC con clasificacion
+    let peso = 70.0_f64;
+    let altura = 1.75_f64;
+
+    let clasificacion = {
+        let imc = peso / (altura * altura);
+        if imc < 18.5 {
+            "bajo peso"
+        } else if imc < 25.0 {
+            "peso normal"
+        } else if imc < 30.0 {
+            "sobrepeso"
+        } else {
+            "obesidad"
+        }
+    };
+
+    println!("Con peso {}kg y altura {}m: {}", peso, altura, clasificacion);
+}'''
+
+[[blocks]]
+type = "quiz"
+es = "Que tiene de malo esta funcion? `fn sumar(a: i32, b: i32) -> i32 { a + b; }`"
+en = "What's wrong with this function? `fn sumar(a: i32, b: i32) -> i32 { a + b; }`"
+[[blocks.options]]
+es = "Falta la palabra clave `return`"
+en = "Missing the `return` keyword"
+correct = false
+[[blocks.options]]
+es = "El punto y coma convierte la expresion en sentencia, asi que no devuelve ningun valor"
+en = "The semicolon turns the expression into a statement, so it doesn't return any value"
+correct = true
+[[blocks.options]]
+es = "Los nombres de los parametros estan mal"
+en = "The parameter names are wrong"
+correct = false
+[[blocks.options]]
+es = "No se puede devolver i32"
+en = "You can't return i32"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Por que Rust exige que declares los tipos de los parametros de una funcion?"
+en = "Why does Rust require you to declare the types of a function's parameters?"
+[[blocks.options]]
+es = "Para que el codigo sea mas largo y dificil de escribir"
+en = "To make the code longer and harder to write"
+correct = false
+[[blocks.options]]
+es = "Para que el compilador pueda verificar que las llamadas usan los tipos correctos"
+en = "So the compiler can verify that calls use the correct types"
+correct = true
+[[blocks.options]]
+es = "Es solo una preferencia estetica del lenguaje"
+en = "It's just an aesthetic preference of the language"
+correct = false
+[[blocks.options]]
+es = "Porque Rust no tiene inferencia de tipos"
+en = "Because Rust has no type inference"
+correct = false

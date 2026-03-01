@@ -1,0 +1,133 @@
+[meta]
+id = "m02_e07"
+module = "m02"
+difficulty = "beginner"
+order = 7
+exercise_type = "write_code"
+
+[title]
+es = "Flujo de control con match"
+en = "Control flow with match"
+
+[description]
+es = """Escribe una funcion `clasificar_temperatura(temp: i32) -> &'static str` que use `match` para clasificar temperaturas:
+- Menor que 0: "congelante"
+- 0 a 15: "frio"
+- 16 a 25: "agradable"
+- 26 a 35: "caluroso"
+- Mayor que 35: "extremo"
+
+Tambien escribe una funcion `describir_dia(dia: u8) -> &'static str`:
+- 1: "Lunes" ... 7: "Domingo"
+- Cualquier otro numero: "invalido"
+
+Recuerda: match debe ser exhaustivo."""
+en = """Write a function `clasificar_temperatura(temp: i32) -> &'static str` that uses `match` to classify temperatures:
+- Less than 0: "congelante"
+- 0 to 15: "frio"
+- 16 to 25: "agradable"
+- 26 to 35: "caluroso"
+- Greater than 35: "extremo"
+
+Also write a function `describir_dia(dia: u8) -> &'static str`:
+- 1: "Lunes" ... 7: "Domingo"
+- Any other number: "invalido"
+
+Remember: match must be exhaustive."""
+
+[starter_code]
+code = '''fn clasificar_temperatura(temp: i32) -> &'static str {
+    // Usa match con rangos
+    // Use match with ranges
+    "pendiente"
+}
+
+fn describir_dia(dia: u8) -> &'static str {
+    // Usa match con valores individuales
+    // Use match with individual values
+    "pendiente"
+}
+
+fn main() {
+    let temperaturas = [-5, 10, 22, 30, 40];
+    for temp in temperaturas {
+        println!("{}C: {}", temp, clasificar_temperatura(temp));
+    }
+
+    println!();
+
+    for dia in 1..=7 {
+        println!("Dia {}: {}", dia, describir_dia(dia));
+    }
+    println!("Dia 9: {}", describir_dia(9));
+}'''
+
+[validation]
+expected_output = """-5C: congelante
+10C: frio
+22C: agradable
+30C: caluroso
+40C: extremo
+
+Dia 1: Lunes
+Dia 2: Martes
+Dia 3: Miercoles
+Dia 4: Jueves
+Dia 5: Viernes
+Dia 6: Sabado
+Dia 7: Domingo
+Dia 9: invalido"""
+
+[hints]
+es = [
+    "Para temperaturas usa rangos: match temp { ..=-1 => ..., 0..=15 => ..., ... }",
+    "Para numeros menores a 0 usa el patron: ..=-1",
+    "Para el rango 0-15 usa: 0..=15",
+    "Para numeros mayores a 35 usa: 36.. o el comodin _",
+    "Para los dias usa: match dia { 1 => \"Lunes\", 2 => \"Martes\", ... _ => \"invalido\" }",
+]
+en = [
+    "For temperatures use ranges: match temp { ..=-1 => ..., 0..=15 => ..., ... }",
+    "For numbers less than 0 use the pattern: ..=-1",
+    "For range 0-15 use: 0..=15",
+    "For numbers greater than 35 use: 36.. or the wildcard _",
+    "For days use: match dia { 1 => \"Lunes\", 2 => \"Martes\", ... _ => \"invalido\" }",
+]
+
+[solution]
+code = '''fn clasificar_temperatura(temp: i32) -> &'static str {
+    match temp {
+        ..=-1 => "congelante",
+        0..=15 => "frio",
+        16..=25 => "agradable",
+        26..=35 => "caluroso",
+        _ => "extremo",
+    }
+}
+
+fn describir_dia(dia: u8) -> &'static str {
+    match dia {
+        1 => "Lunes",
+        2 => "Martes",
+        3 => "Miercoles",
+        4 => "Jueves",
+        5 => "Viernes",
+        6 => "Sabado",
+        7 => "Domingo",
+        _ => "invalido",
+    }
+}
+
+fn main() {
+    let temperaturas = [-5, 10, 22, 30, 40];
+    for temp in temperaturas {
+        println!("{}C: {}", temp, clasificar_temperatura(temp));
+    }
+
+    println!();
+
+    for dia in 1..=7 {
+        println!("Dia {}: {}", dia, describir_dia(dia));
+    }
+    println!("Dia 9: {}", describir_dia(9));
+}'''

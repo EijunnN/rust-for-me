@@ -1,0 +1,53 @@
+[meta]
+id = "m01_e03"
+module = "m01"
+difficulty = "beginner"
+order = 3
+exercise_type = "fix_bug"
+
+[title]
+es = "Corrige el programa roto"
+en = "Fix the broken program"
+
+[description]
+es = """Este programa intenta imprimir un saludo, pero tiene errores de sintaxis.
+Lee el mensaje del compilador cuidadosamente y corrige el codigo."""
+en = """This program tries to print a greeting, but it has syntax errors.
+Read the compiler message carefully and fix the code."""
+
+[broken_code]
+code = '''fn main() {
+    let mensaje = "Hola, Rust!"
+    println!("{}", mensaje)
+}'''
+
+[compiler_error]
+es = "error: expected `;` -- En Rust, cada sentencia debe terminar con punto y coma (;)."
+en = "error: expected `;` -- In Rust, every statement must end with a semicolon (;)."
+
+[starter_code]
+code = '''fn main() {
+    let mensaje = "Hola, Rust!"
+    println!("{}", mensaje)
+}'''
+
+[validation]
+expected_output = "Hola, Rust!"
+
+[hints]
+es = [
+    "Pista: Lee el error del compilador cuidadosamente. Dice que espera algo.",
+    "En Rust, cada sentencia debe terminar con un punto y coma (;).",
+    "Agrega ; al final de la linea del let y del println!."
+]
+en = [
+    "Hint: Read the compiler error carefully. It says it expects something.",
+    "In Rust, every statement must end with a semicolon (;).",
+    "Add ; at the end of the let line and the println! line."
+]
+
+[solution]
+code = '''fn main() {
+    let mensaje = "Hola, Rust!";
+    println!("{}", mensaje);
+}'''

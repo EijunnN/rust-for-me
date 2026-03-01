@@ -1,0 +1,69 @@
+[meta]
+id = "m02_e12"
+module = "m02"
+difficulty = "intermediate"
+order = 12
+exercise_type = "predict_output"
+
+[title]
+es = "Compila este codigo?"
+en = "Does this code compile?"
+
+[description]
+es = """Observa el siguiente codigo que involucra ownership y movimiento de valores.
+Sin ejecutarlo, predice si compila. Si compila, cual es la salida?"""
+en = """Look at the following code involving ownership and value movement.
+Without running it, predict whether it compiles. If it compiles, what is the output?"""
+
+[starter_code]
+code = '''fn main() {
+    let x = 42;
+    let y = x;
+    println!("x = {}, y = {}", x, y);
+}'''
+
+[validation]
+expected_output = "x = 42, y = 42"
+
+[[options]]
+es = "Error de compilacion: use of moved value"
+en = "Compilation error: use of moved value"
+correct = false
+
+[[options]]
+es = "x = 42, y = 42"
+en = "x = 42, y = 42"
+correct = true
+
+[[options]]
+es = "x = 0, y = 42"
+en = "x = 0, y = 42"
+correct = false
+
+[[options]]
+es = "Solo imprime y = 42"
+en = "Only prints y = 42"
+correct = false
+
+[hints]
+es = [
+    "Piensa en que tipo de dato es x. Es i32, un tipo primitivo.",
+    "Los tipos primitivos (i32, f64, bool, char) implementan el trait Copy.",
+    "Los tipos que implementan Copy se copian automaticamente en lugar de moverse. Por eso x sigue siendo valido."
+]
+en = [
+    "Think about what type x is. It is i32, a primitive type.",
+    "Primitive types (i32, f64, bool, char) implement the Copy trait.",
+    "Types that implement Copy are automatically copied instead of moved. That is why x is still valid."
+]
+
+[solution]
+code = '''fn main() {
+    // This compiles because i32 implements Copy.
+    // When you do let y = x, x is COPIED (not moved).
+    // Both x and y are valid and equal 42.
+    let x = 42;
+    let y = x;
+    println!("x = {}, y = {}", x, y);
+    // Output: x = 42, y = 42
+}'''

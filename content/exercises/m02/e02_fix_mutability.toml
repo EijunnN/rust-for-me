@@ -1,0 +1,87 @@
+[meta]
+id = "m02_e02"
+module = "m02"
+difficulty = "beginner"
+order = 2
+exercise_type = "fix_bug"
+
+[title]
+es = "Corrige el error de mutabilidad"
+en = "Fix the mutability error"
+
+[description]
+es = """El siguiente codigo tiene un error: intenta modificar una variable inmutable.
+Corrige el codigo para que compile y produzca la salida esperada.
+IMPORTANTE: Solo agrega `mut` donde sea necesario. No cambies la logica del programa."""
+en = """The following code has an error: it tries to modify an immutable variable.
+Fix the code so it compiles and produces the expected output.
+IMPORTANT: Only add `mut` where necessary. Don't change the program's logic."""
+
+[broken_code]
+code = '''fn main() {
+    let contador = 0;
+    let mensaje = "Contando";
+
+    println!("{}: {}", mensaje, contador);
+    contador += 1;
+    println!("{}: {}", mensaje, contador);
+    contador += 1;
+    println!("{}: {}", mensaje, contador);
+
+    let mensaje = "Final";
+    println!("{}: {}", mensaje, contador);
+}'''
+
+[compiler_error]
+es = "error[E0384]: cannot assign twice to immutable variable `contador` -- En Rust, las variables son inmutables por defecto. Necesitas `mut` para poder modificarlas."
+en = "error[E0384]: cannot assign twice to immutable variable `contador` -- In Rust, variables are immutable by default. You need `mut` to be able to modify them."
+
+[starter_code]
+code = '''fn main() {
+    let contador = 0;
+    let mensaje = "Contando";
+
+    println!("{}: {}", mensaje, contador);
+    contador += 1;
+    println!("{}: {}", mensaje, contador);
+    contador += 1;
+    println!("{}: {}", mensaje, contador);
+
+    let mensaje = "Final";
+    println!("{}: {}", mensaje, contador);
+}'''
+
+[validation]
+expected_output = """Contando: 0
+Contando: 1
+Contando: 2
+Final: 2"""
+
+[hints]
+es = [
+    "El error dice: 'cannot assign twice to immutable variable'",
+    "Identifica CUAL variable se esta modificando con +=",
+    "Solo `contador` necesita ser mutable. `mensaje` usa shadowing, no mutacion",
+    "Agrega `mut` solo a la declaracion de `contador`",
+]
+en = [
+    "The error says: 'cannot assign twice to immutable variable'",
+    "Identify WHICH variable is being modified with +=",
+    "Only `contador` needs to be mutable. `mensaje` uses shadowing, not mutation",
+    "Add `mut` only to the declaration of `contador`",
+]
+
+[solution]
+code = '''fn main() {
+    let mut contador = 0;
+    let mensaje = "Contando";
+
+    println!("{}: {}", mensaje, contador);
+    contador += 1;
+    println!("{}: {}", mensaje, contador);
+    contador += 1;
+    println!("{}: {}", mensaje, contador);
+
+    let mensaje = "Final";
+    println!("{}: {}", mensaje, contador);
+}'''

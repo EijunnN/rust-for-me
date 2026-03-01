@@ -1,0 +1,68 @@
+[meta]
+id = "m01_e04"
+module = "m01"
+difficulty = "beginner"
+order = 4
+exercise_type = "predict_output"
+
+[title]
+es = "Que imprime este programa?"
+en = "What does this program print?"
+
+[description]
+es = """Observa el siguiente codigo. Sin ejecutarlo, predice que se mostrara en la consola.
+Presta atencion al orden de las instrucciones println!."""
+en = """Look at the following code. Without running it, predict what will be shown in the console.
+Pay attention to the order of the println! instructions."""
+
+[starter_code]
+code = '''fn main() {
+    let x = 5;
+    let y = x + 3;
+    println!("{}", y);
+    println!("{}", x + y);
+}'''
+
+[validation]
+expected_output = """8
+13"""
+
+[[options]]
+es = "5 y 8"
+en = "5 and 8"
+correct = false
+
+[[options]]
+es = "8 y 13"
+en = "8 and 13"
+correct = true
+
+[[options]]
+es = "8 y 8"
+en = "8 and 8"
+correct = false
+
+[[options]]
+es = "Error de compilacion"
+en = "Compilation error"
+correct = false
+
+[hints]
+es = [
+    "x vale 5. Que vale x + 3?",
+    "y = 8. Ahora, que vale x + y?",
+    "x + y = 5 + 8 = 13"
+]
+en = [
+    "x is 5. What is x + 3?",
+    "y = 8. Now, what is x + y?",
+    "x + y = 5 + 8 = 13"
+]
+
+[solution]
+code = '''fn main() {
+    let x = 5;
+    let y = x + 3;
+    println!("{}", y);     // prints 8
+    println!("{}", x + y); // prints 13
+}'''

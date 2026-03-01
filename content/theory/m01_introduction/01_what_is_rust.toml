@@ -1,0 +1,80 @@
+[meta]
+id = "m01_l01"
+order = 1
+
+[title]
+es = "¿Qué es Rust?"
+en = "What is Rust?"
+
+[[blocks]]
+type = "text"
+es = """Rust es un lenguaje de programación de sistemas creado por Mozilla Research. Su primera versión estable (1.0) fue lanzada en mayo de 2015. Rust se ha convertido en uno de los lenguajes más queridos por los desarrolladores, ocupando el primer lugar en la encuesta de Stack Overflow como "lenguaje más amado" durante varios años consecutivos.
+
+Rust combina el rendimiento de lenguajes como C y C++ con garantías de seguridad de memoria sin necesitar un recolector de basura (garbage collector). Esto lo hace ideal para sistemas operativos, motores de juegos, navegadores web y cualquier software donde el rendimiento y la seguridad son críticos."""
+en = """Rust is a systems programming language created by Mozilla Research. Its first stable version (1.0) was released in May 2015. Rust has become one of the most beloved languages among developers, ranking first in the Stack Overflow survey as the "most loved language" for several consecutive years.
+
+Rust combines the performance of languages like C and C++ with memory safety guarantees without needing a garbage collector. This makes it ideal for operating systems, game engines, web browsers, and any software where performance and safety are critical."""
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = "💡 ¿Sabías que? Firefox, el navegador de Mozilla, tiene componentes escritos en Rust. También Discord, Dropbox, Cloudflare y Amazon usan Rust en producción."
+en = "💡 Did you know? Firefox, Mozilla's browser, has components written in Rust. Discord, Dropbox, Cloudflare, and Amazon also use Rust in production."
+
+[[blocks]]
+type = "text"
+es = """## Las tres promesas de Rust
+
+1. **Seguridad de memoria**: El compilador de Rust previene errores como null pointers, buffer overflows y data races en tiempo de compilación.
+
+2. **Rendimiento**: Rust no tiene garbage collector ni runtime pesado. Se compila directamente a código máquina, igual que C/C++.
+
+3. **Concurrencia sin miedo**: El sistema de tipos de Rust previene condiciones de carrera (data races) en tiempo de compilación, haciendo la programación concurrente más segura."""
+en = """## The three promises of Rust
+
+1. **Memory safety**: Rust's compiler prevents errors like null pointers, buffer overflows, and data races at compile time.
+
+2. **Performance**: Rust has no garbage collector or heavy runtime. It compiles directly to machine code, just like C/C++.
+
+3. **Fearless concurrency**: Rust's type system prevents data races at compile time, making concurrent programming safer."""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    println!("¡Bienvenido a Rust! 🦀");
+    println!("Welcome to Rust! 🦀");
+
+    // Rust es fuertemente tipado
+    let nombre = "Rustacean";
+    let año = 2015;
+
+    println!("{} existe desde {}", nombre, año);
+}'''
+
+[[blocks]]
+type = "text"
+es = "En el ejemplo anterior puedes ver la sintaxis básica de Rust. La función `main()` es el punto de entrada del programa. `println!` es una macro (nota el `!`) que imprime texto en la consola. Las variables se declaran con `let` y Rust infiere el tipo automáticamente."
+en = "In the example above you can see Rust's basic syntax. The `main()` function is the program's entry point. `println!` is a macro (note the `!`) that prints text to the console. Variables are declared with `let` and Rust infers the type automatically."
+
+[[blocks]]
+type = "quiz"
+es = "¿Cuál es la principal ventaja de Rust sobre otros lenguajes de sistemas?"
+en = "What is the main advantage of Rust over other systems languages?"
+[[blocks.options]]
+es = "Seguridad de memoria sin garbage collector"
+en = "Memory safety without garbage collector"
+correct = true
+[[blocks.options]]
+es = "Es el lenguaje más rápido del mundo"
+en = "It's the fastest language in the world"
+correct = false
+[[blocks.options]]
+es = "Tiene la sintaxis más simple"
+en = "It has the simplest syntax"
+correct = false
+[[blocks.options]]
+es = "No necesita compilación"
+en = "It doesn't need compilation"
+correct = false

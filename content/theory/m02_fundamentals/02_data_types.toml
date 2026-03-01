@@ -1,0 +1,311 @@
+[meta]
+id = "m02_l02"
+order = 2
+
+[title]
+es = "Tipos de Datos"
+en = "Data Types"
+
+[[blocks]]
+type = "text"
+es = """## El Problema: Cuando los tipos mienten
+
+En lenguajes con tipado dinamico, los tipos pueden cambiar sin aviso. Esto crea bugs que solo aparecen en produccion:"""
+en = """## The Problem: When types lie
+
+In dynamically typed languages, types can change without notice. This creates bugs that only appear in production:"""
+
+[[blocks]]
+type = "code"
+language = "python"
+runnable = false
+code = '''# Python - tipos que cambian silenciosamente
+# Python - types that change silently
+x = 3
+y = "3"
+print(x + y)    # TypeError at RUNTIME! Not caught until executed.
+
+# JavaScript es aun peor:
+# console.log(3 + "3")   // "33" (string concatenation!)
+# console.log(3 - "3")   // 0 (numeric subtraction!)
+# Welcome to type coercion chaos.'''
+
+[[blocks]]
+type = "text"
+es = """En Rust, mezclar tipos **no compila**. El compilador te obliga a ser explicito sobre las conversiones de tipos. Esto significa que *toda* una categoria de bugs simplemente no puede existir:"""
+en = """In Rust, mixing types **doesn't compile**. The compiler forces you to be explicit about type conversions. This means *entire* categories of bugs simply cannot exist:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''fn main() {
+    let x: i32 = 3;
+    let y: f64 = 3.0;
+    let sum = x + y;  // ERROR! Can't add i32 and f64
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "danger"
+es = """**Error del compilador:**
+```
+error[E0277]: cannot add `f64` to `i32`
+ --> src/main.rs:4:19
+  |
+4 |     let sum = x + y;
+  |                   ^ no implementation for `i32 + f64`
+```
+Rust te obliga a convertir explicitamente: `let sum = x as f64 + y;` o `let sum = x + y as i32;`"""
+en = """**Compiler error:**
+```
+error[E0277]: cannot add `f64` to `i32`
+ --> src/main.rs:4:19
+  |
+4 |     let sum = x + y;
+  |                   ^ no implementation for `i32 + f64`
+```
+Rust forces you to convert explicitly: `let sum = x as f64 + y;` or `let sum = x + y as i32;`"""
+
+[[blocks]]
+type = "text"
+es = """## Por que Rust hace esto?
+
+La conversion implicita de tipos es una fuente enorme de bugs. Cuando escribes `x as f64`, le dices al compilador y a futuros lectores: "**Si, se que estoy convirtiendo tipos, y lo hago a proposito.**" Esto hace el codigo mas predecible y mas facil de depurar."""
+en = """## Why does Rust do this?
+
+Implicit type conversion is a huge source of bugs. When you write `x as f64`, you're telling the compiler and future readers: "**Yes, I know I'm converting types, and I'm doing it on purpose.**" This makes code more predictable and easier to debug."""
+
+[[blocks]]
+type = "text"
+es = """## Tipos escalares
+
+Rust tiene cuatro tipos escalares principales. Cada uno tiene un tamano fijo en memoria:
+
+### Enteros (Integer types)
+| Tamano | Con signo | Sin signo |
+|--------|-----------|-----------|
+| 8 bits  | `i8`  (-128 a 127) | `u8` (0 a 255) |
+| 16 bits | `i16` | `u16` |
+| 32 bits | `i32` (por defecto) | `u32` |
+| 64 bits | `i64` | `u64` |
+| 128 bits | `i128` | `u128` |
+| arch | `isize` | `usize` |
+
+`isize` y `usize` dependen de la arquitectura: 64 bits en una maquina de 64 bits, 32 bits en una de 32."""
+en = """## Scalar types
+
+Rust has four main scalar types. Each one has a fixed size in memory:
+
+### Integer types
+| Size | Signed | Unsigned |
+|------|--------|----------|
+| 8-bit  | `i8`  (-128 to 127) | `u8` (0 to 255) |
+| 16-bit | `i16` | `u16` |
+| 32-bit | `i32` (default) | `u32` |
+| 64-bit | `i64` | `u64` |
+| 128-bit | `i128` | `u128` |
+| arch | `isize` | `usize` |
+
+`isize` and `usize` depend on the architecture: 64 bits on a 64-bit machine, 32 bits on a 32-bit one."""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // Inferencia de tipos: Rust elige i32 por defecto para enteros
+    let entero = 42;         // i32
+    let decimal = 3.14;      // f64
+
+    // Tipos explicitos
+    let edad: u8 = 25;       // Solo 0-255, perfecto para edades
+    let temperatura: i16 = -10;
+    let poblacion: u64 = 8_000_000_000;  // Guiones bajos para legibilidad!
+    let pi: f32 = 3.14159;   // Menos precision pero menos memoria
+
+    println!("Entero: {} (i32 por defecto)", entero);
+    println!("Decimal: {} (f64 por defecto)", decimal);
+    println!("Edad: {} (u8: 0-255)", edad);
+    println!("Temperatura: {} (i16: numeros negativos)", temperatura);
+    println!("Poblacion: {} (u64: numeros grandes)", poblacion);
+    println!("Pi: {} (f32: menos precision)", pi);
+}'''
+
+[[blocks]]
+type = "text"
+es = """### Booleanos y caracteres
+
+- `bool`: solo puede ser `true` o `false`. Ocupa 1 byte en memoria.
+- `char`: representa un caracter Unicode. Ocupa 4 bytes (puede almacenar emojis y caracteres de cualquier idioma)."""
+en = """### Booleans and characters
+
+- `bool`: can only be `true` or `false`. Takes 1 byte in memory.
+- `char`: represents a Unicode character. Takes 4 bytes (can store emojis and characters from any language)."""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let activo: bool = true;
+    let letra: char = 'A';
+    let emoji: char = '\u{1F980}';  // Cangrejo! El simbolo de Rust
+    let kanji: char = '\u{5B89}';   // Caracter japones
+
+    println!("Activo: {}", activo);
+    println!("Letra: {}", letra);
+    println!("Emoji: {}", emoji);
+    println!("Kanji: {}", kanji);
+
+    // Los char usan comillas simples, los strings comillas dobles
+    // char = 'a'    string = "a"
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Tipos compuestos
+
+Rust tiene dos tipos compuestos primitivos: **tuplas** y **arrays**.
+
+### Tuplas
+Las tuplas agrupan valores de **diferentes tipos** con una longitud fija:"""
+en = """## Compound types
+
+Rust has two primitive compound types: **tuples** and **arrays**.
+
+### Tuples
+Tuples group values of **different types** with a fixed length:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // Tupla con tipos mixtos
+    let persona: (&str, i32, f64) = ("Ana", 28, 1.65);
+
+    // Acceso por indice (empieza en 0)
+    println!("Nombre: {}", persona.0);
+    println!("Edad: {}", persona.1);
+    println!("Altura: {}", persona.2);
+
+    // Destructuracion: extraer valores en variables
+    let (nombre, edad, altura) = persona;
+    println!("{} tiene {} anos y mide {}m", nombre, edad, altura);
+
+    // Tupla unitaria (unit type) - representa "sin valor"
+    let vacio: () = ();
+    println!("Tipo unitario: {:?}", vacio);
+}'''
+
+[[blocks]]
+type = "text"
+es = """### Arrays
+Los arrays contienen valores del **mismo tipo** con una longitud fija (conocida en tiempo de compilacion):"""
+en = """### Arrays
+Arrays contain values of the **same type** with a fixed length (known at compile time):"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // Array de 5 enteros
+    let numeros: [i32; 5] = [1, 2, 3, 4, 5];
+    println!("Primer numero: {}", numeros[0]);
+    println!("Ultimo numero: {}", numeros[4]);
+
+    // Array inicializado con el mismo valor
+    let ceros = [0; 10];  // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    println!("Array de ceros: {:?}", ceros);
+
+    // Los arrays tienen longitud fija
+    let dias = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
+    println!("Dias laborales: {:?}", &dias[0..5]);
+    println!("Fin de semana: {:?}", &dias[5..7]);
+    println!("Total de dias: {}", dias.len());
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Arrays vs Vectores**: Los arrays en Rust tienen tamano fijo. Si necesitas una coleccion que pueda crecer o encogerse, usa `Vec<T>` (vector). Lo veremos en un modulo posterior. Por ahora, piensa en los arrays como listas de tamano conocido en tiempo de compilacion."""
+en = """**Arrays vs Vectors**: Arrays in Rust have a fixed size. If you need a collection that can grow or shrink, use `Vec<T>` (vector). We'll cover that in a later module. For now, think of arrays as lists with a size known at compile time."""
+
+[[blocks]]
+type = "text"
+es = """## Inferencia de tipos vs anotacion explicita
+
+Rust es inteligente: puede **inferir** el tipo de la mayoria de las variables por el contexto. Pero a veces necesitas ser explicito:"""
+en = """## Type inference vs explicit annotation
+
+Rust is smart: it can **infer** the type of most variables from context. But sometimes you need to be explicit:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // Rust infiere estos tipos automaticamente
+    let x = 5;           // i32 (entero por defecto)
+    let y = 3.14;        // f64 (decimal por defecto)
+    let activo = true;   // bool
+    let letra = 'A';     // char
+
+    // A veces DEBES especificar el tipo
+    let resultado: u32 = "42".parse().expect("No es un numero");
+    println!("Resultado parseado: {}", resultado);
+
+    // Sin la anotacion, Rust no sabe a que tipo parsear:
+    // let resultado = "42".parse().expect("error");
+    // ERROR: type annotations needed
+
+    // Conversion explicita entre tipos numericos
+    let entero: i32 = 10;
+    let decimal: f64 = entero as f64;
+    let pequeno: u8 = entero as u8;
+    println!("{} -> {} (f64) -> {} (u8)", entero, decimal, pequeno);
+}'''
+
+[[blocks]]
+type = "quiz"
+es = "Que tipo infiere Rust para `let x = 5;`?"
+en = "What type does Rust infer for `let x = 5;`?"
+[[blocks.options]]
+es = "u32"
+en = "u32"
+correct = false
+[[blocks.options]]
+es = "i32"
+en = "i32"
+correct = true
+[[blocks.options]]
+es = "i64"
+en = "i64"
+correct = false
+[[blocks.options]]
+es = "El tipo depende del valor"
+en = "The type depends on the value"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Por que Rust no permite sumar un `i32` con un `f64` directamente?"
+en = "Why doesn't Rust allow adding an `i32` and an `f64` directly?"
+[[blocks.options]]
+es = "Es un bug del compilador"
+en = "It's a compiler bug"
+correct = false
+[[blocks.options]]
+es = "Para evitar conversiones implicitas que pueden causar bugs"
+en = "To prevent implicit conversions that can cause bugs"
+correct = true
+[[blocks.options]]
+es = "Porque los numeros decimales no existen en Rust"
+en = "Because decimal numbers don't exist in Rust"
+correct = false
+[[blocks.options]]
+es = "Por razones de rendimiento"
+en = "For performance reasons"
+correct = false

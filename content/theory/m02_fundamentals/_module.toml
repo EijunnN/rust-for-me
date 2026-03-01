@@ -1,0 +1,36 @@
+[meta]
+id = "m02"
+order = 2
+icon = "📦"
+
+[title]
+es = "Fundamentos de Rust"
+en = "Rust Fundamentals"
+
+[description]
+es = "Aprende las bases: variables, tipos de datos, funciones y flujo de control."
+en = "Learn the basics: variables, data types, functions, and control flow."
+
+[[lessons]]
+id = "m02_l01"
+order = 1
+title_es = "Variables y Mutabilidad"
+title_en = "Variables and Mutability"
+
+[[lessons]]
+id = "m02_l02"
+order = 2
+title_es = "Tipos de Datos"
+title_en = "Data Types"
+
+[[lessons]]
+id = "m02_l03"
+order = 3
+title_es = "Funciones"
+title_en = "Functions"
+
+[[lessons]]
+id = "m02_l04"
+order = 4
+title_es = "Flujo de Control"
+title_en = "Control Flow"

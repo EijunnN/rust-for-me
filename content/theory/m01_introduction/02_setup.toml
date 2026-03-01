@@ -1,0 +1,238 @@
+[meta]
+id = "m01_l02"
+order = 2
+
+[title]
+es = "Instalación y configuración"
+en = "Setup and Installation"
+
+[[blocks]]
+type = "text"
+es = """## Instalando Rust con rustup
+
+La forma recomendada de instalar Rust es a través de **rustup**, el instalador oficial y gestor de versiones de Rust. rustup se encarga de instalar el compilador (`rustc`), el gestor de paquetes (`cargo`) y la documentación estándar.
+
+### En Linux y macOS
+
+Abre una terminal y ejecuta:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+### En Windows
+
+Descarga y ejecuta el instalador desde [rustup.rs](https://rustup.rs). También necesitarás instalar las herramientas de compilación de C++ de Visual Studio (Visual Studio Build Tools)."""
+en = """## Installing Rust with rustup
+
+The recommended way to install Rust is through **rustup**, the official Rust installer and version manager. rustup takes care of installing the compiler (`rustc`), the package manager (`cargo`), and the standard documentation.
+
+### On Linux and macOS
+
+Open a terminal and run:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+### On Windows
+
+Download and run the installer from [rustup.rs](https://rustup.rs). You will also need to install the C++ build tools from Visual Studio (Visual Studio Build Tools)."""
+
+[[blocks]]
+type = "callout"
+variant = "warning"
+es = "⚠️ En Windows, asegúrate de instalar Visual Studio Build Tools con el componente 'Desarrollo de escritorio con C++'. Sin esto, Rust no podrá compilar programas."
+en = "⚠️ On Windows, make sure to install Visual Studio Build Tools with the 'Desktop development with C++' component. Without this, Rust won't be able to compile programs."
+
+[[blocks]]
+type = "text"
+es = """## Verificando la instalación
+
+Una vez completada la instalación, abre una nueva terminal y ejecuta estos comandos para verificar que todo funciona correctamente:
+
+```bash
+rustc --version
+cargo --version
+rustup --version
+```
+
+Deberías ver las versiones instaladas de cada herramienta. Si ves algo como `rustc 1.XX.X`, la instalación fue exitosa."""
+en = """## Verifying the installation
+
+Once the installation is complete, open a new terminal and run these commands to verify everything works correctly:
+
+```bash
+rustc --version
+cargo --version
+rustup --version
+```
+
+You should see the installed versions of each tool. If you see something like `rustc 1.XX.X`, the installation was successful."""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // Si puedes ejecutar esto, tu entorno está listo
+    // If you can run this, your environment is ready
+    println!("✅ Rust está instalado correctamente");
+    println!("✅ Rust is installed correctly");
+
+    // Veamos información sobre la versión
+    println!("Compilado con Rust edition 2021");
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Configurando tu editor: VS Code + rust-analyzer
+
+El editor más popular para desarrollar en Rust es **Visual Studio Code** (VS Code) con la extensión **rust-analyzer**. Esta combinación te ofrece:
+
+- **Autocompletado** inteligente de código
+- **Diagnósticos en tiempo real** (errores y advertencias sin compilar)
+- **Información de tipos** al pasar el cursor
+- **Formateo automático** del código
+- **Refactoring** y navegación de código
+
+### Pasos para configurar VS Code:
+
+1. Descarga e instala [VS Code](https://code.visualstudio.com)
+2. Abre VS Code y ve a la pestaña de extensiones (Ctrl+Shift+X)
+3. Busca **rust-analyzer** e instálala
+4. Opcional: instala la extensión **Even Better TOML** para editar archivos de configuración
+5. Opcional: instala la extensión **CodeLLDB** para depuración (debugging)"""
+en = """## Setting up your editor: VS Code + rust-analyzer
+
+The most popular editor for Rust development is **Visual Studio Code** (VS Code) with the **rust-analyzer** extension. This combination offers you:
+
+- **Intelligent code completion**
+- **Real-time diagnostics** (errors and warnings without compiling)
+- **Type information** on hover
+- **Automatic code formatting**
+- **Refactoring** and code navigation
+
+### Steps to set up VS Code:
+
+1. Download and install [VS Code](https://code.visualstudio.com)
+2. Open VS Code and go to the extensions tab (Ctrl+Shift+X)
+3. Search for **rust-analyzer** and install it
+4. Optional: install the **Even Better TOML** extension for editing configuration files
+5. Optional: install the **CodeLLDB** extension for debugging"""
+
+[[blocks]]
+type = "text"
+es = """## Creando tu primer proyecto con Cargo
+
+**Cargo** es el gestor de paquetes y sistema de compilación de Rust. Es como npm para JavaScript o pip para Python, pero también compila tu código. Para crear un nuevo proyecto:
+
+```bash
+cargo new mi_proyecto
+cd mi_proyecto
+```
+
+Esto crea la siguiente estructura:
+
+```
+mi_proyecto/
+├── Cargo.toml
+└── src/
+    └── main.rs
+```
+
+El archivo `Cargo.toml` es el manifiesto del proyecto. Contiene metadatos y dependencias:
+
+```toml
+[package]
+name = "mi_proyecto"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+```
+
+- **name**: el nombre de tu proyecto
+- **version**: la versión actual siguiendo semántica de versiones (semver)
+- **edition**: la edición de Rust que usas (2015, 2018, 2021, o 2024)
+- **[dependencies]**: aquí se listan las bibliotecas (crates) que usa tu proyecto"""
+en = """## Creating your first project with Cargo
+
+**Cargo** is Rust's package manager and build system. It's like npm for JavaScript or pip for Python, but it also compiles your code. To create a new project:
+
+```bash
+cargo new my_project
+cd my_project
+```
+
+This creates the following structure:
+
+```
+my_project/
+├── Cargo.toml
+└── src/
+    └── main.rs
+```
+
+The `Cargo.toml` file is the project manifest. It contains metadata and dependencies:
+
+```toml
+[package]
+name = "my_project"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+```
+
+- **name**: your project's name
+- **version**: the current version following semantic versioning (semver)
+- **edition**: the Rust edition you're using (2015, 2018, 2021, or 2024)
+- **[dependencies]**: this is where you list the libraries (crates) your project uses"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''// Este es el archivo main.rs que Cargo genera automáticamente
+// This is the main.rs file that Cargo generates automatically
+fn main() {
+    println!("Hello, world!");
+
+    // Comandos útiles de Cargo:
+    // cargo build    -> Compila el proyecto
+    // cargo run      -> Compila y ejecuta
+    // cargo check    -> Verifica errores sin compilar (más rápido)
+    // cargo test     -> Ejecuta las pruebas
+    // cargo doc      -> Genera documentación
+
+    println!("Usa 'cargo run' para ejecutar tu proyecto");
+    println!("Use 'cargo run' to execute your project");
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "tip"
+es = "🚀 Consejo: Usa `cargo check` en lugar de `cargo build` durante el desarrollo. Es mucho más rápido porque solo verifica errores sin generar el ejecutable final."
+en = "🚀 Tip: Use `cargo check` instead of `cargo build` during development. It's much faster because it only checks for errors without generating the final executable."
+
+[[blocks]]
+type = "quiz"
+es = "¿Cuál es la herramienta oficial para instalar y gestionar versiones de Rust?"
+en = "What is the official tool for installing and managing Rust versions?"
+[[blocks.options]]
+es = "rustup"
+en = "rustup"
+correct = true
+[[blocks.options]]
+es = "cargo"
+en = "cargo"
+correct = false
+[[blocks.options]]
+es = "rustc"
+en = "rustc"
+correct = false
+[[blocks.options]]
+es = "npm"
+en = "npm"
+correct = false

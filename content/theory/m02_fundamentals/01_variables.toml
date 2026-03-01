@@ -1,0 +1,237 @@
+[meta]
+id = "m02_l01"
+order = 1
+
+[title]
+es = "Variables y Mutabilidad"
+en = "Variables and Mutability"
+
+[[blocks]]
+type = "text"
+es = """## El Problema: Mutacion accidental
+
+En la mayoria de lenguajes, las variables son mutables por defecto. Esto parece conveniente hasta que tu programa crece y alguien (o tu mismo, tres meses despues) cambia una variable sin querer:"""
+en = """## The Problem: Accidental mutation
+
+In most languages, variables are mutable by default. This seems convenient until your program grows and someone (or yourself, three months later) accidentally changes a variable:"""
+
+[[blocks]]
+type = "code"
+language = "python"
+runnable = false
+code = '''# Python - esto es perfectamente valido pero peligroso
+# Python - this is perfectly valid but dangerous
+total_price = 100.0
+# ... 200 lines of code later ...
+total_price = "free"  # Oops! Changed type AND value
+print(total_price + 50)  # RuntimeError! Crashes at runtime'''
+
+[[blocks]]
+type = "text"
+es = """En Rust, esto **no compila**. Las variables son **inmutables por defecto**. Si intentas reasignar una variable sin declararla como mutable, el compilador te detiene *antes* de que el programa se ejecute:"""
+en = """In Rust, this **doesn't compile**. Variables are **immutable by default**. If you try to reassign a variable without declaring it as mutable, the compiler stops you *before* the program runs:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''fn main() {
+    let x = 5;
+    println!("El valor de x es: {}", x);
+    x = 6;  // ERROR!
+    println!("El valor de x es: {}", x);
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "danger"
+es = """**Error del compilador:**
+```
+error[E0384]: cannot assign twice to immutable variable `x`
+ --> src/main.rs:4:5
+  |
+2 |     let x = 5;
+  |         - first assignment to `x`
+3 |     println!("El valor de x es: {}", x);
+4 |     x = 6;
+  |     ^^^^^ cannot assign twice to immutable variable
+```"""
+en = """**Compiler error:**
+```
+error[E0384]: cannot assign twice to immutable variable `x`
+ --> src/main.rs:4:5
+  |
+2 |     let x = 5;
+  |         - first assignment to `x`
+3 |     println!("El valor de x es: {}", x);
+4 |     x = 6;
+  |     ^^^^^ cannot assign twice to immutable variable
+```"""
+
+[[blocks]]
+type = "text"
+es = """## Por que Rust hace esto?
+
+Rust te obliga a ser **explicito** sobre la mutabilidad. Si una variable puede cambiar, debes declararlo con `let mut`. Esto tiene ventajas enormes:
+
+1. **Legibilidad**: Al leer el codigo, sabes inmediatamente que variables pueden cambiar y cuales no.
+2. **Seguridad**: Evitas bugs causados por mutaciones accidentales.
+3. **Concurrencia**: El compilador puede razonar sobre que datos son compartidos de forma segura entre hilos.
+
+La inmutabilidad por defecto es una de las decisiones de diseno mas inteligentes de Rust. Te hace pensar *antes* de mutar."""
+en = """## Why does Rust do this?
+
+Rust forces you to be **explicit** about mutability. If a variable can change, you must declare it with `let mut`. This has huge advantages:
+
+1. **Readability**: When reading code, you immediately know which variables can change and which cannot.
+2. **Safety**: You avoid bugs caused by accidental mutations.
+3. **Concurrency**: The compiler can reason about which data is safely shared between threads.
+
+Immutability by default is one of Rust's smartest design decisions. It makes you think *before* mutating."""
+
+[[blocks]]
+type = "text"
+es = """## La solucion: `let mut`
+
+Cuando realmente necesitas una variable mutable, Rust te pide que lo declares explicitamente:"""
+en = """## The solution: `let mut`
+
+When you truly need a mutable variable, Rust asks you to declare it explicitly:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let mut x = 5;
+    println!("El valor de x es: {}", x);
+    x = 6;  // Ahora si funciona!
+    println!("El valor de x es: {}", x);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Shadowing: otra forma de "cambiar" una variable
+
+Rust tiene un concepto llamado **shadowing** (sombreado): puedes declarar una nueva variable con el mismo nombre usando `let` otra vez. Esto *no* es lo mismo que mutar; estas creando una variable completamente nueva que **oculta** la anterior:"""
+en = """## Shadowing: another way to "change" a variable
+
+Rust has a concept called **shadowing**: you can declare a new variable with the same name using `let` again. This is *not* the same as mutating; you're creating a completely new variable that **hides** the previous one:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let x = 5;
+    println!("x original: {}", x);
+
+    // Shadowing: creamos una NUEVA variable x
+    let x = x + 1;
+    println!("x despues del shadowing: {}", x);
+
+    // Shadowing incluso puede cambiar el tipo!
+    let x = "ahora soy un string";
+    println!("x como string: {}", x);
+
+    // Esto NO es posible con mut:
+    // let mut y = 5;
+    // y = "string";  // ERROR: no puedes cambiar el tipo con mut
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Shadowing vs mut - La diferencia clave:**
+- `let mut` te permite cambiar el **valor** pero NO el **tipo**.
+- Shadowing (`let x = ...` de nuevo) crea una **nueva variable** que puede tener un tipo diferente.
+- Con shadowing, la variable anterior deja de existir en ese scope."""
+en = """**Shadowing vs mut - The key difference:**
+- `let mut` lets you change the **value** but NOT the **type**.
+- Shadowing (`let x = ...` again) creates a **new variable** that can have a different type.
+- With shadowing, the previous variable ceases to exist in that scope."""
+
+[[blocks]]
+type = "text"
+es = """## Constantes: valores que NUNCA cambian
+
+Para valores que son verdaderamente constantes (como PI, la velocidad de la luz, o configuraciones fijas), Rust tiene `const`. Las constantes son diferentes de variables inmutables:
+
+- Se declaran con `const` en lugar de `let`.
+- **Siempre** debes especificar el tipo.
+- Se evaluan en tiempo de compilacion.
+- Por convencion, se escriben en `SCREAMING_SNAKE_CASE`."""
+en = """## Constants: values that NEVER change
+
+For values that are truly constant (like PI, the speed of light, or fixed configurations), Rust has `const`. Constants are different from immutable variables:
+
+- They are declared with `const` instead of `let`.
+- You **must always** specify the type.
+- They are evaluated at compile time.
+- By convention, they are written in `SCREAMING_SNAKE_CASE`."""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''const MAX_PLAYERS: u32 = 100;
+const PI: f64 = 3.14159265358979;
+const APP_NAME: &str = "Mi Aplicacion";
+
+fn main() {
+    println!("Juego: {}", APP_NAME);
+    println!("Maximo de jugadores: {}", MAX_PLAYERS);
+    println!("Pi es aproximadamente: {:.4}", PI);
+
+    // Ejemplo practico: convertir temperatura
+    let celsius = 100.0;
+    let fahrenheit = celsius * 9.0 / 5.0 + 32.0;
+    println!("{}C = {}F", celsius, fahrenheit);
+
+    // Usando shadowing para la conversion inversa
+    let fahrenheit = 72.0;
+    let celsius = (fahrenheit - 32.0) * 5.0 / 9.0;
+    println!("{}F = {:.1}C", fahrenheit, celsius);
+}'''
+
+[[blocks]]
+type = "quiz"
+es = "Que sucede cuando intentas asignar un nuevo valor a una variable inmutable en Rust?"
+en = "What happens when you try to assign a new value to an immutable variable in Rust?"
+[[blocks.options]]
+es = "El programa se ejecuta pero con un warning"
+en = "The program runs but with a warning"
+correct = false
+[[blocks.options]]
+es = "Error de compilacion: no puedes asignar dos veces a una variable inmutable"
+en = "Compile error: cannot assign twice to immutable variable"
+correct = true
+[[blocks.options]]
+es = "El programa compila pero falla en tiempo de ejecucion"
+en = "The program compiles but fails at runtime"
+correct = false
+[[blocks.options]]
+es = "Rust automaticamente hace la variable mutable"
+en = "Rust automatically makes the variable mutable"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Cual es la diferencia entre `let mut x = 5; x = 6;` y `let x = 5; let x = 6;`?"
+en = "What is the difference between `let mut x = 5; x = 6;` and `let x = 5; let x = 6;`?"
+[[blocks.options]]
+es = "No hay diferencia, hacen exactamente lo mismo"
+en = "There's no difference, they do exactly the same thing"
+correct = false
+[[blocks.options]]
+es = "mut cambia el valor; shadowing crea una nueva variable (puede cambiar el tipo)"
+en = "mut changes the value; shadowing creates a new variable (can change the type)"
+correct = true
+[[blocks.options]]
+es = "Shadowing es mas rapido que mut"
+en = "Shadowing is faster than mut"
+correct = false
+[[blocks.options]]
+es = "Solo se puede usar mut dentro de funciones"
+en = "You can only use mut inside functions"
+correct = false

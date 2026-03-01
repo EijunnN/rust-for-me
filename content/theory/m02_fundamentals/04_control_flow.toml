@@ -1,0 +1,411 @@
+[meta]
+id = "m02_l04"
+order = 4
+
+[title]
+es = "Flujo de Control"
+en = "Control Flow"
+
+[[blocks]]
+type = "text"
+es = """## El Problema: condicionales que devuelven tipos inconsistentes
+
+En muchos lenguajes, un `if/else` puede devolver cualquier cosa sin consistencia. Esto crea bugs silenciosos:"""
+en = """## The Problem: conditionals that return inconsistent types
+
+In many languages, an `if/else` can return anything without consistency. This creates silent bugs:"""
+
+[[blocks]]
+type = "code"
+language = "javascript"
+runnable = false
+code = '''// JavaScript - tipos inconsistentes, bugs silenciosos
+// JavaScript - inconsistent types, silent bugs
+function get_status(score) {
+    if (score >= 90) return "Excellent";
+    if (score >= 70) return "Good";
+    if (score >= 50) return true;   // Oops! Returned a boolean
+    // Forgot the else! Returns undefined
+}
+
+let status = get_status(30);
+console.log(status.toUpperCase()); // TypeError: Cannot read property of undefined'''
+
+[[blocks]]
+type = "text"
+es = """En Rust, `if/else` es una **expresion**, y el compilador exige que todas las ramas devuelvan el **mismo tipo**. Ademas, te obliga a manejar todos los casos posibles:"""
+en = """In Rust, `if/else` is an **expression**, and the compiler demands that all branches return the **same type**. Additionally, it forces you to handle all possible cases:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''fn main() {
+    let score = 85;
+    let status = if score >= 90 {
+        "Excelente"
+    } else if score >= 70 {
+        "Bien"
+    } else if score >= 50 {
+        true  // ERROR! No puedes mezclar &str y bool
+    } else {
+        "Insuficiente"
+    };
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "danger"
+es = """**Error del compilador:**
+```
+error[E0308]: `if` and `else` have incompatible types
+ --> src/main.rs:7:9
+  |
+3 |     let status = if score >= 90 {
+  |                  -------------- `if` and `else` have incompatible types
+...
+7 |         true
+  |         ^^^^ expected `&str`, found `bool`
+```
+Rust garantiza que no importa que rama se ejecute, siempre obtendras el mismo tipo de dato."""
+en = """**Compiler error:**
+```
+error[E0308]: `if` and `else` have incompatible types
+ --> src/main.rs:7:9
+  |
+3 |     let status = if score >= 90 {
+  |                  -------------- `if` and `else` have incompatible types
+...
+7 |         true
+  |         ^^^^ expected `&str`, found `bool`
+```
+Rust guarantees that no matter which branch runs, you'll always get the same data type."""
+
+[[blocks]]
+type = "text"
+es = """## Por que Rust hace esto?
+
+Porque `if/else` es una **expresion** que produce un valor. Si las ramas devolvieran tipos diferentes, el compilador no sabria que tipo tiene la variable `status`. Esto elimina toda una clase de errores de tipo en tiempo de ejecucion."""
+en = """## Why does Rust do this?
+
+Because `if/else` is an **expression** that produces a value. If branches returned different types, the compiler wouldn't know what type the variable `status` has. This eliminates an entire class of runtime type errors."""
+
+[[blocks]]
+type = "text"
+es = """## if/else como expresion
+
+A diferencia de la mayoria de lenguajes, `if/else` en Rust **devuelve un valor**. Esto hace el codigo mas conciso y elegante:"""
+en = """## if/else as an expression
+
+Unlike most languages, `if/else` in Rust **returns a value**. This makes code more concise and elegant:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let temperatura = 22;
+
+    // if/else como expresion: asigna directamente a una variable
+    let estado = if temperatura > 30 {
+        "hace calor"
+    } else if temperatura > 15 {
+        "esta agradable"
+    } else {
+        "hace frio"
+    };  // Nota el punto y coma: termina el let
+
+    println!("Con {}C grados, {}", temperatura, estado);
+
+    // Comparacion con otros lenguajes:
+    // En C/Java/JS necesitarias un operador ternario o un switch
+    // En Rust, if/else ES el operador ternario
+
+    let edad = 20;
+    let categoria = if edad < 13 {
+        "nino"
+    } else if edad < 18 {
+        "adolescente"
+    } else {
+        "adulto"
+    };
+    println!("Con {} anos eres {}", edad, categoria);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Bucles: loop, while, for
+
+Rust tiene tres formas de crear bucles:
+
+### `loop`: bucle infinito (hasta que uses `break`)"""
+en = """## Loops: loop, while, for
+
+Rust has three ways to create loops:
+
+### `loop`: infinite loop (until you use `break`)"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // loop tambien es una expresion!
+    let mut contador = 0;
+    let resultado = loop {
+        contador += 1;
+        if contador == 10 {
+            break contador * 2;  // break puede devolver un valor!
+        }
+    };
+    println!("Resultado del loop: {}", resultado);  // 20
+}'''
+
+[[blocks]]
+type = "text"
+es = """### `while`: bucle con condicion"""
+en = """### `while`: loop with condition"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let mut numero = 3;
+    while numero != 0 {
+        println!("{}!", numero);
+        numero -= 1;
+    }
+    println!("Despegue!");
+}'''
+
+[[blocks]]
+type = "text"
+es = """### `for`: iteracion (la forma preferida en Rust)
+
+El bucle `for` es la forma mas idomiatica y segura de iterar en Rust. Evita errores de indice fuera de rango:"""
+en = """### `for`: iteration (the preferred way in Rust)
+
+The `for` loop is the most idiomatic and safe way to iterate in Rust. It avoids out-of-bounds index errors:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // Iterar sobre un array
+    let frutas = ["manzana", "banana", "naranja"];
+    for fruta in frutas {
+        println!("Me gusta la {}", fruta);
+    }
+
+    // Iterar sobre un rango
+    for i in 1..=5 {
+        println!("Numero: {}", i);
+    }
+
+    // Rango exclusivo (no incluye el final)
+    print!("Exclusivo (1..5): ");
+    for i in 1..5 {
+        print!("{} ", i);
+    }
+    println!();
+
+    // Rango inclusivo (incluye el final)
+    print!("Inclusivo (1..=5): ");
+    for i in 1..=5 {
+        print!("{} ", i);
+    }
+    println!();
+
+    // Iterar con indice usando enumerate
+    let colores = ["rojo", "verde", "azul"];
+    for (indice, color) in colores.iter().enumerate() {
+        println!("Color {}: {}", indice, color);
+    }
+}'''
+
+[[blocks]]
+type = "text"
+es = """## match: el arma secreta de Rust
+
+`match` es como un `switch` de otros lenguajes, pero mucho mas poderoso. La diferencia clave es que `match` **debe ser exhaustivo**: debes manejar *todos* los casos posibles. Si olvidas uno, el compilador te lo dice:"""
+en = """## match: Rust's secret weapon
+
+`match` is like a `switch` from other languages, but much more powerful. The key difference is that `match` **must be exhaustive**: you must handle *all* possible cases. If you forget one, the compiler tells you:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''fn main() {
+    let nota = 8;
+    let resultado = match nota {
+        9 | 10 => "Sobresaliente",
+        7 | 8 => "Notable",
+        5 | 6 => "Aprobado",
+        // ERROR! No hemos cubierto todos los valores posibles de i32
+    };
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "danger"
+es = """**Error del compilador:**
+```
+error[E0004]: non-exhaustive patterns: `i32::MIN..=4_i32` and `11_i32..=i32::MAX` not covered
+ --> src/main.rs:3:27
+  |
+3 |     let resultado = match nota {
+  |                           ^^^^ patterns not covered
+  = help: ensure that all possible cases are being handled
+```
+Rust te obliga a cubrir todos los casos. Usa `_` como comodin para "todo lo demas"."""
+en = """**Compiler error:**
+```
+error[E0004]: non-exhaustive patterns: `i32::MIN..=4_i32` and `11_i32..=i32::MAX` not covered
+ --> src/main.rs:3:27
+  |
+3 |     let resultado = match nota {
+  |                           ^^^^ patterns not covered
+  = help: ensure that all possible cases are being handled
+```
+Rust forces you to cover all cases. Use `_` as a wildcard for "everything else"."""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let nota = 8;
+    let resultado = match nota {
+        9 | 10 => "Sobresaliente",
+        7 | 8 => "Notable",
+        5 | 6 => "Aprobado",
+        0..=4 => "Suspenso",
+        _ => "Nota invalida",  // _ captura todo lo demas
+    };
+    println!("Nota {}: {}", nota, resultado);
+
+    // match con rangos y guardas
+    let temperatura: i32 = 25;
+    let descripcion = match temperatura {
+        t if t < 0 => "helando",
+        0..=10 => "muy frio",
+        11..=20 => "fresco",
+        21..=30 => "agradable",
+        31..=40 => "calor",
+        _ => "extremo",
+    };
+    println!("{}C: {}", temperatura, descripcion);
+
+    // match con tuplas
+    let punto = (0, -2);
+    let ubicacion = match punto {
+        (0, 0) => "en el origen",
+        (x, 0) if x > 0 => "en el eje X positivo",
+        (0, y) if y > 0 => "en el eje Y positivo",
+        (x, 0) if x < 0 => "en el eje X negativo",
+        (0, y) if y < 0 => "en el eje Y negativo",
+        _ => "en algun otro lugar",
+    };
+    println!("El punto {:?} esta {}", punto, ubicacion);
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Por que match debe ser exhaustivo?** Porque `match` es una expresion que produce un valor. Si no cubres todos los casos, habria situaciones donde la variable no tendria valor asignado. Rust elimina ese riesgo obligandote a pensar en cada posibilidad. Esto es especialmente poderoso con enums (que veremos mas adelante)."""
+en = """**Why must match be exhaustive?** Because `match` is an expression that produces a value. If you don't cover all cases, there would be situations where the variable would have no assigned value. Rust eliminates that risk by forcing you to think about every possibility. This is especially powerful with enums (which we'll see later)."""
+
+[[blocks]]
+type = "text"
+es = """## Ejemplo completo: sistema de calificaciones"""
+en = """## Complete example: grading system"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn calificar(puntaje: u32) -> &'static str {
+    match puntaje {
+        90..=100 => "A - Excelente",
+        80..=89 => "B - Muy bien",
+        70..=79 => "C - Bien",
+        60..=69 => "D - Suficiente",
+        0..=59 => "F - Reprobado",
+        _ => "Puntaje invalido",
+    }
+}
+
+fn main() {
+    let estudiantes = [
+        ("Ana", 95),
+        ("Carlos", 82),
+        ("Lucia", 73),
+        ("Pedro", 61),
+        ("Maria", 45),
+    ];
+
+    println!("{:<10} | {:>8} | {}", "Nombre", "Puntaje", "Calificacion");
+    println!("{}", "-".repeat(45));
+
+    for (nombre, puntaje) in estudiantes {
+        let calificacion = calificar(puntaje);
+        println!("{:<10} | {:>8} | {}", nombre, puntaje, calificacion);
+    }
+
+    // Contar aprobados vs reprobados
+    let mut aprobados = 0;
+    let mut reprobados = 0;
+    for (_, puntaje) in estudiantes {
+        if puntaje >= 60 {
+            aprobados += 1;
+        } else {
+            reprobados += 1;
+        }
+    }
+    println!("\nAprobados: {} | Reprobados: {}", aprobados, reprobados);
+}'''
+
+[[blocks]]
+type = "quiz"
+es = "Por que Rust exige que todas las ramas de un `match` devuelvan el mismo tipo?"
+en = "Why does Rust require all match arms to return the same type?"
+[[blocks.options]]
+es = "Es solo una regla arbitraria del lenguaje"
+en = "It's just an arbitrary rule of the language"
+correct = false
+[[blocks.options]]
+es = "Porque match es una expresion que produce un valor, y ese valor debe tener un unico tipo definido"
+en = "Because match is an expression that produces a value, and that value must have a single defined type"
+correct = true
+[[blocks.options]]
+es = "Para hacer el codigo mas dificil de escribir"
+en = "To make the code harder to write"
+correct = false
+[[blocks.options]]
+es = "Porque Rust no soporta tipos genericos"
+en = "Because Rust doesn't support generic types"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Que pasa si olvidas cubrir un caso en un `match`?"
+en = "What happens if you forget to cover a case in a `match`?"
+[[blocks.options]]
+es = "El programa compila pero falla en tiempo de ejecucion"
+en = "The program compiles but fails at runtime"
+correct = false
+[[blocks.options]]
+es = "Rust usa un valor por defecto automaticamente"
+en = "Rust uses a default value automatically"
+correct = false
+[[blocks.options]]
+es = "Error de compilacion: non-exhaustive patterns"
+en = "Compile error: non-exhaustive patterns"
+correct = true
+[[blocks.options]]
+es = "El compilador emite un warning pero deja compilar"
+en = "The compiler emits a warning but lets it compile"
+correct = false

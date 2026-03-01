@@ -1,0 +1,300 @@
+[meta]
+id = "p01_s02"
+project = "p01"
+order = 2
+
+[title]
+es = "Operaciones matemáticas con pattern matching"
+en = "Math operations with pattern matching"
+
+[description]
+es = "En este segundo paso, implementarás las cuatro operaciones básicas usando pattern matching (match), una de las características más poderosas de Rust. También aprenderás a manejar errores como la división por cero."
+en = "In this second step, you'll implement the four basic operations using pattern matching (match), one of Rust's most powerful features. You'll also learn to handle errors like division by zero."
+
+[[blocks]]
+type = "text"
+es = """## Pattern Matching con `match`
+
+En Rust, `match` es una expresión extremadamente poderosa que permite comparar un valor contra una serie de patrones y ejecutar código según el patrón que coincida. Es similar a `switch` en otros lenguajes, pero mucho más potente.
+
+La gran ventaja de `match` es que el compilador te obliga a manejar **todos los casos posibles**, lo que previene errores."""
+en = """## Pattern Matching with `match`
+
+In Rust, `match` is an extremely powerful expression that allows you to compare a value against a series of patterns and execute code based on which pattern matches. It's similar to `switch` in other languages, but much more powerful.
+
+The great advantage of `match` is that the compiler forces you to handle **all possible cases**, which prevents errors."""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn calcular(num1: f64, operador: &str, num2: f64) -> Result<f64, String> {
+    match operador {
+        "+" => Ok(num1 + num2),
+        "-" => Ok(num1 - num2),
+        "*" => Ok(num1 * num2),
+        "/" => {
+            if num2 == 0.0 {
+                Err(String::from("Error: División por cero"))
+            } else {
+                Ok(num1 / num2)
+            }
+        }
+        _ => Err(format!("Error: Operador '{}' no reconocido", operador)),
+    }
+}
+
+fn main() {
+    // Probemos la función con diferentes operaciones
+    let operaciones = vec![
+        (10.0, "+", 5.0),
+        (10.0, "-", 3.0),
+        (4.0, "*", 7.0),
+        (20.0, "/", 4.0),
+        (10.0, "/", 0.0),
+        (5.0, "%", 2.0),
+    ];
+
+    for (a, op, b) in operaciones {
+        match calcular(a, op, b) {
+            Ok(resultado) => println!("{} {} {} = {}", a, op, b, resultado),
+            Err(error) => println!("{}", error),
+        }
+    }
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Conceptos clave de este paso
+
+### `Result<T, E>`
+`Result` es un tipo enumerado (enum) que puede ser:
+- `Ok(valor)` cuando la operación fue exitosa
+- `Err(error)` cuando ocurrió un error
+
+Es la forma idiomática de manejar errores en Rust, en lugar de usar excepciones como en otros lenguajes.
+
+### El patrón `_` (underscore)
+En `match`, el guion bajo `_` actúa como un **comodín** que coincide con cualquier valor. Es equivalente al `default` en un `switch` de otros lenguajes. Rust requiere que todos los casos estén cubiertos, así que `_` captura todo lo que no coincida con los patrones anteriores.
+
+### `&str` vs `String`
+- `&str` es una **referencia** a un string (string slice). Es inmutable y ligero.
+- `String` es un string que **posee** sus datos. Es mutable y está en el heap.
+
+En la función `calcular`, usamos `&str` para el operador porque solo necesitamos leerlo, no modificarlo."""
+en = """## Key concepts in this step
+
+### `Result<T, E>`
+`Result` is an enumerated type (enum) that can be:
+- `Ok(value)` when the operation was successful
+- `Err(error)` when an error occurred
+
+It's the idiomatic way to handle errors in Rust, instead of using exceptions like in other languages.
+
+### The `_` (underscore) pattern
+In `match`, the underscore `_` acts as a **wildcard** that matches any value. It's equivalent to `default` in a `switch` statement in other languages. Rust requires all cases to be covered, so `_` catches everything that doesn't match the previous patterns.
+
+### `&str` vs `String`
+- `&str` is a **reference** to a string (string slice). It's immutable and lightweight.
+- `String` is a string that **owns** its data. It's mutable and lives on the heap.
+
+In the `calcular` function, we use `&str` for the operator because we only need to read it, not modify it."""
+
+[[blocks]]
+type = "callout"
+variant = "warning"
+es = "⚠️ **División por cero**: En matemáticas, la división por cero es indefinida. En Rust, dividir un `f64` por `0.0` da `inf` (infinito) o `NaN`, pero no causa un error en tiempo de ejecución. Sin embargo, es buena práctica manejar este caso explícitamente para dar un mensaje claro al usuario."
+en = "⚠️ **Division by zero**: In mathematics, division by zero is undefined. In Rust, dividing an `f64` by `0.0` gives `inf` (infinity) or `NaN`, but doesn't cause a runtime error. However, it's good practice to handle this case explicitly to give the user a clear message."
+
+[[blocks]]
+type = "text"
+es = """## El programa completo
+
+Ahora juntemos todo: la lectura de entrada del paso 1 con las operaciones del paso 2 para crear la calculadora completa."""
+en = """## The complete program
+
+Now let's put everything together: the input reading from step 1 with the operations from step 2 to create the complete calculator."""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''use std::io;
+
+fn calcular(num1: f64, operador: &str, num2: f64) -> Result<f64, String> {
+    match operador {
+        "+" => Ok(num1 + num2),
+        "-" => Ok(num1 - num2),
+        "*" => Ok(num1 * num2),
+        "/" => {
+            if num2 == 0.0 {
+                Err(String::from("Error: No se puede dividir por cero"))
+            } else {
+                Ok(num1 / num2)
+            }
+        }
+        _ => Err(format!("Error: Operador '{}' no válido. Usa +, -, * o /", operador)),
+    }
+}
+
+fn leer_numero(mensaje: &str) -> f64 {
+    println!("{}", mensaje);
+    let mut input = String::new();
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Error al leer la entrada");
+    input
+        .trim()
+        .parse()
+        .expect("Por favor ingresa un número válido")
+}
+
+fn leer_operador() -> String {
+    println!("Ingresa el operador (+, -, *, /):");
+    let mut input = String::new();
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Error al leer la entrada");
+    input.trim().to_string()
+}
+
+fn main() {
+    println!("╔═══════════════════════════╗");
+    println!("║   🦀 Calculadora Rust 🦀  ║");
+    println!("╚═══════════════════════════╝");
+    println!();
+
+    let num1 = leer_numero("Ingresa el primer número:");
+    let operador = leer_operador();
+    let num2 = leer_numero("Ingresa el segundo número:");
+
+    match calcular(num1, &operador, num2) {
+        Ok(resultado) => {
+            println!();
+            println!("✅ {} {} {} = {}", num1, operador, num2, resultado);
+        }
+        Err(error) => {
+            println!();
+            println!("❌ {}", error);
+        }
+    }
+}'''
+
+[starter_code]
+code = '''use std::io;
+
+// TODO: Implementa la función calcular que reciba dos números y un operador
+// TODO: Implement the calcular function that takes two numbers and an operator
+// Firma / Signature: fn calcular(num1: f64, operador: &str, num2: f64) -> Result<f64, String>
+
+fn leer_numero(mensaje: &str) -> f64 {
+    println!("{}", mensaje);
+    let mut input = String::new();
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Error al leer la entrada");
+    input
+        .trim()
+        .parse()
+        .expect("Por favor ingresa un número válido")
+}
+
+fn leer_operador() -> String {
+    println!("Ingresa el operador (+, -, *, /):");
+    let mut input = String::new();
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Error al leer la entrada");
+    input.trim().to_string()
+}
+
+fn main() {
+    println!("=== Calculadora Rust ===");
+
+    let num1 = leer_numero("Ingresa el primer número:");
+    let operador = leer_operador();
+    let num2 = leer_numero("Ingresa el segundo número:");
+
+    // TODO: Usa la función calcular y muestra el resultado
+    // TODO: Use the calcular function and display the result
+    // Pista: usa match para manejar Ok y Err
+    // Hint: use match to handle Ok and Err
+}'''
+
+[validation]
+expected_output = """=== Calculadora Rust ===
+Ingresa el primer número:
+Ingresa el operador (+, -, *, /):
+Ingresa el segundo número:
+10 + 5 = 15"""
+
+[hints]
+es = [
+    "La función calcular debe devolver Result<f64, String>",
+    "Usa 'match operador' para comparar con \"+\", \"-\", \"*\", \"/\"",
+    "Para la división, verifica si num2 == 0.0 antes de dividir",
+    "Usa el patrón _ para manejar operadores desconocidos",
+    "Ok(valor) para éxito, Err(String::from(\"mensaje\")) para error",
+    "En main, usa 'match calcular(...)' para manejar el resultado"
+]
+en = [
+    "The calcular function should return Result<f64, String>",
+    "Use 'match operador' to compare with \"+\", \"-\", \"*\", \"/\"",
+    "For division, check if num2 == 0.0 before dividing",
+    "Use the _ pattern to handle unknown operators",
+    "Ok(value) for success, Err(String::from(\"message\")) for error",
+    "In main, use 'match calcular(...)' to handle the result"
+]
+
+[solution]
+code = '''use std::io;
+
+fn calcular(num1: f64, operador: &str, num2: f64) -> Result<f64, String> {
+    match operador {
+        "+" => Ok(num1 + num2),
+        "-" => Ok(num1 - num2),
+        "*" => Ok(num1 * num2),
+        "/" => {
+            if num2 == 0.0 {
+                Err(String::from("Error: No se puede dividir por cero"))
+            } else {
+                Ok(num1 / num2)
+            }
+        }
+        _ => Err(format!("Error: Operador '{}' no válido. Usa +, -, * o /", operador)),
+    }
+}
+
+fn leer_numero(mensaje: &str) -> f64 {
+    println!("{}", mensaje);
+    let mut input = String::new();
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Error al leer la entrada");
+    input
+        .trim()
+        .parse()
+        .expect("Por favor ingresa un número válido")
+}
+
+fn leer_operador() -> String {
+    println!("Ingresa el operador (+, -, *, /):");
+    let mut input = String::new();
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Error al leer la entrada");
+    input.trim().to_string()
+}
+
+fn main() {
+    println!("=== Calculadora Rust ===");
+
+    let num1 = leer_numero("Ingresa el primer número:");
+    let operador = leer_operador();
+    let num2 = leer_numero("Ingresa el segundo número:");
+
+    match calcular(num1, &operador, num2) {
+        Ok(resultado) => println!("{} {} {} = {}", num1, operador, num2, resultado),
+        Err(error) => println!("{}", error),
+    }
+}'''

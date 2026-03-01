@@ -1,0 +1,60 @@
+[meta]
+id = "m02_e10"
+module = "m02"
+difficulty = "intermediate"
+order = 10
+exercise_type = "fix_bug"
+
+[title]
+es = "Corrige el error de borrowing"
+en = "Fix the borrowing error"
+
+[description]
+es = """Este codigo intenta crear una referencia mutable mientras existe una referencia inmutable.
+El compilador produce el error E0502: 'cannot borrow as mutable because it is also borrowed as immutable'.
+Corrige el codigo para que compile y produzca la salida esperada."""
+en = """This code tries to create a mutable reference while an immutable reference exists.
+The compiler produces error E0502: 'cannot borrow as mutable because it is also borrowed as immutable'.
+Fix the code so it compiles and produces the expected output."""
+
+[broken_code]
+code = '''fn main() {
+    let mut s = String::from("hello");
+    let r1 = &s;
+    s.push_str(", world");
+    println!("{}", r1);
+}'''
+
+[compiler_error]
+es = "error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable -- No puedes modificar `s` mientras `r1` tiene una referencia inmutable."
+en = "error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable -- You cannot modify `s` while `r1` has an immutable reference."
+
+[starter_code]
+code = '''fn main() {
+    let mut s = String::from("hello");
+    let r1 = &s;
+    s.push_str(", world");
+    println!("{}", r1);
+}'''
+
+[validation]
+expected_output = "hello, world"
+
+[hints]
+es = [
+    "Pista: No puedes tener una referencia inmutable (&s) y modificar s al mismo tiempo.",
+    "Necesitas terminar de usar la referencia inmutable ANTES de modificar s.",
+    "Reordena el codigo: usa println! con r1 antes de push_str, o elimina r1 e imprime s directamente despues de modificarla."
+]
+en = [
+    "Hint: You cannot have an immutable reference (&s) and modify s at the same time.",
+    "You need to finish using the immutable reference BEFORE modifying s.",
+    "Reorder the code: use println! with r1 before push_str, or remove r1 and print s directly after modifying it."
+]
+
+[solution]
+code = '''fn main() {
+    let mut s = String::from("hello");
+    s.push_str(", world");
+    println!("{}", s);
+}'''

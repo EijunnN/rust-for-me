@@ -1,0 +1,24 @@
+[meta]
+id = "p01"
+difficulty = "beginner"
+prerequisites = ["m01", "m02"]
+
+[title]
+es = "Calculadora CLI"
+en = "CLI Calculator"
+
+[description]
+es = "Construye una calculadora de línea de comandos que soporte las operaciones básicas: suma, resta, multiplicación y división."
+en = "Build a command-line calculator that supports basic operations: addition, subtraction, multiplication, and division."
+
+[[steps]]
+id = "p01_s01"
+order = 1
+title_es = "Estructura básica"
+title_en = "Basic structure"
+
+[[steps]]
+id = "p01_s02"
+order = 2
+title_es = "Operaciones matemáticas"
+title_en = "Math operations"

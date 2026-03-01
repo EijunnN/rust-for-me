@@ -1,0 +1,81 @@
+[meta]
+id = "m01_e02"
+module = "m01"
+difficulty = "beginner"
+order = 2
+
+[title]
+es = "Variables y tipos"
+en = "Variables and types"
+
+[description]
+es = """Declara las siguientes variables e imprime sus valores:
+1. Una variable `nombre` con tu nombre (tipo &str)
+2. Una variable `edad` con un número entero (tipo i32)
+3. Una variable `altura` con un número decimal (tipo f64)
+4. Una variable `es_rustacean` con valor verdadero (tipo bool)
+
+La salida debe seguir exactamente el formato mostrado."""
+en = """Declare the following variables and print their values:
+1. A variable `nombre` with your name (type &str)
+2. A variable `edad` with an integer number (type i32)
+3. A variable `altura` with a decimal number (type f64)
+4. A variable `es_rustacean` with a true value (type bool)
+
+The output must follow exactly the format shown."""
+
+[starter_code]
+code = '''fn main() {
+    // 1. Declara una variable 'nombre' con un string
+    // 1. Declare a variable 'nombre' with a string
+
+    // 2. Declara una variable 'edad' con un entero
+    // 2. Declare a variable 'edad' with an integer
+
+    // 3. Declara una variable 'altura' con un decimal
+    // 3. Declare a variable 'altura' with a decimal
+
+    // 4. Declara una variable 'es_rustacean' con un booleano
+    // 4. Declare a variable 'es_rustacean' with a boolean
+
+    // Imprime los valores / Print the values
+    println!("Nombre: {}", nombre);
+    println!("Edad: {}", edad);
+    println!("Altura: {}", altura);
+    println!("Rustacean: {}", es_rustacean);
+}'''
+
+[validation]
+expected_output = """Nombre: Ferris
+Edad: 9
+Altura: 1.75
+Rustacean: true"""
+
+[hints]
+es = [
+    "Las variables se declaran con 'let'. Ejemplo: let x = 5;",
+    "Los strings se escriben entre comillas dobles: let nombre = \"Ferris\";",
+    "Los números decimales usan punto: let altura = 1.75;",
+    "Los booleanos son 'true' o 'false': let activo = true;",
+    "Puedes especificar el tipo con ':'. Ejemplo: let edad: i32 = 9;"
+]
+en = [
+    "Variables are declared with 'let'. Example: let x = 5;",
+    "Strings are written in double quotes: let nombre = \"Ferris\";",
+    "Decimal numbers use a dot: let altura = 1.75;",
+    "Booleans are 'true' or 'false': let activo = true;",
+    "You can specify the type with ':'. Example: let edad: i32 = 9;"
+]
+
+[solution]
+code = '''fn main() {
+    let nombre = "Ferris";
+    let edad: i32 = 9;
+    let altura: f64 = 1.75;
+    let es_rustacean: bool = true;
+
+    println!("Nombre: {}", nombre);
+    println!("Edad: {}", edad);
+    println!("Altura: {}", altura);
+    println!("Rustacean: {}", es_rustacean);
+}'''

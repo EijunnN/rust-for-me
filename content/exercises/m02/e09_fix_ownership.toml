@@ -1,0 +1,58 @@
+[meta]
+id = "m02_e09"
+module = "m02"
+difficulty = "intermediate"
+order = 9
+exercise_type = "fix_bug"
+
+[title]
+es = "Corrige el error de ownership"
+en = "Fix the ownership error"
+
+[description]
+es = """Este codigo intenta usar una variable despues de que su valor fue movido.
+El compilador produce el error E0382: 'use of moved value'.
+Corrige el codigo para que compile y produzca la salida esperada."""
+en = """This code tries to use a variable after its value was moved.
+The compiler produces error E0382: 'use of moved value'.
+Fix the code so it compiles and produces the expected output."""
+
+[broken_code]
+code = '''fn main() {
+    let s1 = String::from("hello");
+    let s2 = s1;
+    println!("s1 = {}, s2 = {}", s1, s2);
+}'''
+
+[compiler_error]
+es = "error[E0382]: borrow of moved value: `s1` -- El valor de s1 fue movido a s2 y ya no se puede usar."
+en = "error[E0382]: borrow of moved value: `s1` -- The value of s1 was moved to s2 and can no longer be used."
+
+[starter_code]
+code = '''fn main() {
+    let s1 = String::from("hello");
+    let s2 = s1;
+    println!("s1 = {}, s2 = {}", s1, s2);
+}'''
+
+[validation]
+expected_output = "s1 = hello, s2 = hello"
+
+[hints]
+es = [
+    "Pista: Lee el error del compilador. Dice 'borrow of moved value'. Que significa 'moved'?",
+    "Cuando asignas un String a otra variable, el valor se MUEVE. La variable original ya no es valida.",
+    "Usa .clone() para crear una copia: let s2 = s1.clone();"
+]
+en = [
+    "Hint: Read the compiler error. It says 'borrow of moved value'. What does 'moved' mean?",
+    "When you assign a String to another variable, the value MOVES. The original variable is no longer valid.",
+    "Use .clone() to create a copy: let s2 = s1.clone();"
+]
+
+[solution]
+code = '''fn main() {
+    let s1 = String::from("hello");
+    let s2 = s1.clone();
+    println!("s1 = {}, s2 = {}", s1, s2);
+}'''

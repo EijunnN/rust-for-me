@@ -1,0 +1,30 @@
+[meta]
+id = "m01"
+order = 1
+icon = "🚀"
+
+[title]
+es = "Introducción a Rust"
+en = "Introduction to Rust"
+
+[description]
+es = "Descubre qué es Rust, por qué es especial y prepara tu entorno de desarrollo."
+en = "Discover what Rust is, why it's special, and set up your development environment."
+
+[[lessons]]
+id = "m01_l01"
+order = 1
+title_es = "¿Qué es Rust?"
+title_en = "What is Rust?"
+
+[[lessons]]
+id = "m01_l02"
+order = 2
+title_es = "Instalación y configuración"
+title_en = "Setup and Installation"
+
+[[lessons]]
+id = "m01_l03"
+order = 3
+title_es = "¡Hola, Mundo!"
+title_en = "Hello, World!"

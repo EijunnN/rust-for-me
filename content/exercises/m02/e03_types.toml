@@ -1,0 +1,81 @@
+[meta]
+id = "m02_e03"
+module = "m02"
+difficulty = "beginner"
+order = 3
+exercise_type = "write_code"
+
+[title]
+es = "Trabaja con tipos de datos"
+en = "Work with data types"
+
+[description]
+es = """Practica el uso de diferentes tipos de datos en Rust:
+1. Declara una tupla `persona` con nombre (&str), edad (u8) y altura (f64)
+2. Usa destructuracion para extraer los valores en variables individuales
+3. Declara un array `notas` con los valores [85, 92, 78, 95, 88]
+4. Calcula el promedio de las notas (como f64)
+
+La salida debe coincidir exactamente con el formato esperado."""
+en = """Practice using different data types in Rust:
+1. Declare a tuple `persona` with name (&str), age (u8) and height (f64)
+2. Use destructuring to extract the values into individual variables
+3. Declare an array `notas` with the values [85, 92, 78, 95, 88]
+4. Calculate the average of the grades (as f64)
+
+The output must match the expected format exactly."""
+
+[starter_code]
+code = '''fn main() {
+    // 1. Declara una tupla con ("Ana", 25, 1.68)
+    // 1. Declare a tuple with ("Ana", 25, 1.68)
+
+    // 2. Destructura la tupla
+    // 2. Destructure the tuple
+
+    println!("Nombre: {}, Edad: {}, Altura: {}", nombre, edad, altura);
+
+    // 3. Declara un array de notas
+    // 3. Declare an array of grades
+
+    // 4. Calcula el promedio
+    // 4. Calculate the average
+
+    println!("Notas: {:?}", notas);
+    println!("Promedio: {:.1}", promedio);
+}'''
+
+[validation]
+expected_output = """Nombre: Ana, Edad: 25, Altura: 1.68
+Notas: [85, 92, 78, 95, 88]
+Promedio: 87.6"""
+
+[hints]
+es = [
+    "Una tupla se declara asi: let persona: (&str, u8, f64) = (\"Ana\", 25, 1.68);",
+    "Destructuracion: let (nombre, edad, altura) = persona;",
+    "Array: let notas: [i32; 5] = [85, 92, 78, 95, 88];",
+    "Para el promedio, suma todos los valores y divide por la cantidad. Usa `as f64` para convertir",
+    "Promedio: let promedio = (notas[0] + notas[1] + notas[2] + notas[3] + notas[4]) as f64 / 5.0;",
+]
+en = [
+    "A tuple is declared like this: let persona: (&str, u8, f64) = (\"Ana\", 25, 1.68);",
+    "Destructuring: let (nombre, edad, altura) = persona;",
+    "Array: let notas: [i32; 5] = [85, 92, 78, 95, 88];",
+    "For the average, sum all values and divide by the count. Use `as f64` to convert",
+    "Average: let promedio = (notas[0] + notas[1] + notas[2] + notas[3] + notas[4]) as f64 / 5.0;",
+]
+
+[solution]
+code = '''fn main() {
+    let persona: (&str, u8, f64) = ("Ana", 25, 1.68);
+    let (nombre, edad, altura) = persona;
+
+    println!("Nombre: {}, Edad: {}, Altura: {}", nombre, edad, altura);
+
+    let notas: [i32; 5] = [85, 92, 78, 95, 88];
+    let promedio = (notas[0] + notas[1] + notas[2] + notas[3] + notas[4]) as f64 / 5.0;
+
+    println!("Notas: {:?}", notas);
+    println!("Promedio: {:.1}", promedio);
+}'''

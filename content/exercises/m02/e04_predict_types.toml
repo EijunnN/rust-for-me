@@ -1,0 +1,90 @@
+[meta]
+id = "m02_e04"
+module = "m02"
+difficulty = "beginner"
+order = 4
+exercise_type = "predict_output"
+
+[title]
+es = "Predice la salida: tipos de datos"
+en = "Predict the output: data types"
+
+[description]
+es = """Sin ejecutar el codigo, predice cual sera la salida de este programa.
+Presta atencion a los tipos, las conversiones con `as`, y el formateo con `{:.N}`."""
+en = """Without running the code, predict what the output of this program will be.
+Pay attention to types, conversions with `as`, and formatting with `{:.N}`."""
+
+[starter_code]
+code = '''fn main() {
+    let x: i32 = 10;
+    let y: f64 = 3.0;
+    let resultado = x as f64 / y;
+    println!("{:.2}", resultado);
+
+    let grande: i32 = 300;
+    let pequeno: u8 = grande as u8;
+    println!("{}", pequeno);
+
+    let tupla = (1, 2.0, 'a');
+    println!("{} {} {}", tupla.0, tupla.1, tupla.2);
+}'''
+
+[validation]
+expected_output = """3.33
+44
+1 2 a"""
+
+[hints]
+es = [
+    "10.0 / 3.0 = 3.333... formateado con {:.2} muestra 2 decimales: 3.33",
+    "300 como u8: u8 solo almacena 0-255. 300 - 256 = 44 (overflow con truncamiento)",
+    "Los elementos de una tupla se acceden con .0, .1, .2",
+    "2.0 se imprime como '2' con {} (sin formato especial)",
+]
+en = [
+    "10.0 / 3.0 = 3.333... formatted with {:.2} shows 2 decimals: 3.33",
+    "300 as u8: u8 only stores 0-255. 300 - 256 = 44 (overflow with truncation)",
+    "Tuple elements are accessed with .0, .1, .2",
+    "2.0 prints as '2' with {} (no special formatting)",
+]
+
+[[options]]
+es = "3.33, 44, 1 2 a"
+en = "3.33, 44, 1 2 a"
+correct = true
+
+[[options]]
+es = "3.3, 44, 1 2.0 a"
+en = "3.3, 44, 1 2.0 a"
+correct = false
+
+[[options]]
+es = "3.33, 300, 1 2 a"
+en = "3.33, 300, 1 2 a"
+correct = false
+
+[[options]]
+es = "Error de compilacion"
+en = "Compilation error"
+correct = false
+
+[solution]
+code = '''// La salida es:
+// 3.33      -> 10.0 / 3.0 = 3.333..., formateado a 2 decimales
+// 44        -> 300 no cabe en u8 (0-255), se trunca: 300 % 256 = 44
+// 1 2 a     -> elementos de la tupla accedidos por indice
+
+fn main() {
+    let x: i32 = 10;
+    let y: f64 = 3.0;
+    let resultado = x as f64 / y;
+    println!("{:.2}", resultado);
+
+    let grande: i32 = 300;
+    let pequeno: u8 = grande as u8;
+    println!("{}", pequeno);
+
+    let tupla = (1, 2.0, 'a');
+    println!("{} {} {}", tupla.0, tupla.1, tupla.2);
+}'''

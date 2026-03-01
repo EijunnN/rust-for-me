@@ -1,0 +1,30 @@
+[meta]
+id = "m01_e01"
+module = "m01"
+difficulty = "beginner"
+order = 1
+
+[title]
+es = "Tu primer programa"
+en = "Your first program"
+
+[description]
+es = "Escribe un programa que imprima exactamente 'Hello, World!' en la consola."
+en = "Write a program that prints exactly 'Hello, World!' to the console."
+
+[starter_code]
+code = '''fn main() {
+    // Tu código aquí / Your code here
+}'''
+
+[validation]
+expected_output = "Hello, World!"
+
+[hints]
+es = ["Usa la macro println!()", "El formato es: println!(\"texto aquí\")", "Asegúrate de escribir exactamente 'Hello, World!' con la coma y el signo de exclamación"]
+en = ["Use the println!() macro", "The format is: println!(\"text here\")", "Make sure to write exactly 'Hello, World!' with the comma and exclamation mark"]
+
+[solution]
+code = '''fn main() {
+    println!("Hello, World!");
+}'''

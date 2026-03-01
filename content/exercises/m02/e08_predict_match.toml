@@ -1,0 +1,132 @@
+[meta]
+id = "m02_e08"
+module = "m02"
+difficulty = "beginner"
+order = 8
+exercise_type = "predict_output"
+
+[title]
+es = "Predice la salida: match y control de flujo"
+en = "Predict the output: match and control flow"
+
+[description]
+es = """Sin ejecutar el codigo, predice cual sera la salida de este programa.
+Presta atencion a:
+- match como expresion (devuelve un valor)
+- if/else como expresion
+- El operador | en match (OR de patrones)
+- El comodin _ en match"""
+en = """Without running the code, predict what the output of this program will be.
+Pay attention to:
+- match as an expression (returns a value)
+- if/else as an expression
+- The | operator in match (pattern OR)
+- The _ wildcard in match"""
+
+[starter_code]
+code = '''fn main() {
+    let x = 3;
+    let texto = match x {
+        1 => "uno",
+        2 | 3 => "dos o tres",
+        4..=10 => "cuatro a diez",
+        _ => "otro",
+    };
+    println!("{}", texto);
+
+    let valor = if x > 5 { "grande" } else { "pequeno" };
+    println!("{}", valor);
+
+    let mut suma = 0;
+    for i in 1..=4 {
+        suma += i;
+    }
+    println!("{}", suma);
+
+    let punto = (1, -1);
+    let cuadrante = match punto {
+        (x, y) if x > 0 && y > 0 => "I",
+        (x, y) if x < 0 && y > 0 => "II",
+        (x, y) if x < 0 && y < 0 => "III",
+        (x, y) if x > 0 && y < 0 => "IV",
+        _ => "eje",
+    };
+    println!("{}", cuadrante);
+}'''
+
+[validation]
+expected_output = """dos o tres
+pequeno
+10
+IV"""
+
+[hints]
+es = [
+    "x = 3 coincide con el patron 2 | 3 (el | significa OR)",
+    "3 > 5 es false, asi que if/else devuelve 'pequeno'",
+    "El bucle for 1..=4 suma: 1 + 2 + 3 + 4 = 10",
+    "El punto (1, -1): x=1 > 0 y y=-1 < 0, eso es el cuadrante IV",
+]
+en = [
+    "x = 3 matches the pattern 2 | 3 (| means OR)",
+    "3 > 5 is false, so if/else returns 'pequeno'",
+    "The for loop 1..=4 sums: 1 + 2 + 3 + 4 = 10",
+    "The point (1, -1): x=1 > 0 and y=-1 < 0, that's quadrant IV",
+]
+
+[[options]]
+es = "dos o tres, pequeno, 10, IV"
+en = "dos o tres, pequeno, 10, IV"
+correct = true
+
+[[options]]
+es = "dos o tres, grande, 10, I"
+en = "dos o tres, grande, 10, I"
+correct = false
+
+[[options]]
+es = "cuatro a diez, pequeno, 6, IV"
+en = "cuatro a diez, pequeno, 6, IV"
+correct = false
+
+[[options]]
+es = "Error de compilacion"
+en = "Compilation error"
+correct = false
+
+[solution]
+code = '''// La salida es:
+// dos o tres  -> x=3 coincide con el patron 2 | 3
+// pequeno     -> 3 > 5 es false, se ejecuta el else
+// 10          -> 1 + 2 + 3 + 4 = 10
+// IV          -> punto (1,-1): x>0 y y<0 = cuadrante IV
+
+fn main() {
+    let x = 3;
+    let texto = match x {
+        1 => "uno",
+        2 | 3 => "dos o tres",
+        4..=10 => "cuatro a diez",
+        _ => "otro",
+    };
+    println!("{}", texto);
+
+    let valor = if x > 5 { "grande" } else { "pequeno" };
+    println!("{}", valor);
+
+    let mut suma = 0;
+    for i in 1..=4 {
+        suma += i;
+    }
+    println!("{}", suma);
+
+    let punto = (1, -1);
+    let cuadrante = match punto {
+        (x, y) if x > 0 && y > 0 => "I",
+        (x, y) if x < 0 && y > 0 => "II",
+        (x, y) if x < 0 && y < 0 => "III",
+        (x, y) if x > 0 && y < 0 => "IV",
+        _ => "eje",
+    };
+    println!("{}", cuadrante);
+}'''

@@ -1,0 +1,58 @@
+[meta]
+id = "m02_e11"
+module = "m02"
+difficulty = "intermediate"
+order = 11
+exercise_type = "fix_bug"
+
+[title]
+es = "Corrige el error de mutabilidad"
+en = "Fix the mutability error"
+
+[description]
+es = """Este codigo intenta modificar una variable inmutable.
+El compilador produce el error E0384: 'cannot assign twice to immutable variable'.
+Corrige el codigo para que compile y produzca la salida esperada."""
+en = """This code tries to modify an immutable variable.
+The compiler produces error E0384: 'cannot assign twice to immutable variable'.
+Fix the code so it compiles and produces the expected output."""
+
+[broken_code]
+code = '''fn main() {
+    let x = 5;
+    x = x + 1;
+    println!("x = {}", x);
+}'''
+
+[compiler_error]
+es = "error[E0384]: cannot assign twice to immutable variable `x` -- En Rust, las variables son inmutables por defecto."
+en = "error[E0384]: cannot assign twice to immutable variable `x` -- In Rust, variables are immutable by default."
+
+[starter_code]
+code = '''fn main() {
+    let x = 5;
+    x = x + 1;
+    println!("x = {}", x);
+}'''
+
+[validation]
+expected_output = "x = 6"
+
+[hints]
+es = [
+    "Pista: En Rust, las variables son inmutables por defecto. No puedes cambiar su valor.",
+    "Para hacer una variable mutable, usa la palabra clave 'mut' en la declaracion.",
+    "Cambia 'let x = 5;' por 'let mut x = 5;'"
+]
+en = [
+    "Hint: In Rust, variables are immutable by default. You cannot change their value.",
+    "To make a variable mutable, use the 'mut' keyword in the declaration.",
+    "Change 'let x = 5;' to 'let mut x = 5;'"
+]
+
+[solution]
+code = '''fn main() {
+    let mut x = 5;
+    x = x + 1;
+    println!("x = {}", x);
+}'''

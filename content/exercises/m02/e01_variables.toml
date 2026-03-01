@@ -1,0 +1,76 @@
+[meta]
+id = "m02_e01"
+module = "m02"
+difficulty = "beginner"
+order = 1
+exercise_type = "write_code"
+
+[title]
+es = "Declarar variables"
+en = "Declare variables"
+
+[description]
+es = """Declara las variables necesarias para representar una persona:
+1. Una variable inmutable `nombre` con el valor "Ferris" (tipo &str)
+2. Una variable mutable `edad` con el valor 5 (tipo i32)
+3. Incrementa `edad` en 1
+4. Usa shadowing para crear una nueva variable `nombre` con el valor "Ferris el cangrejo"
+
+La salida debe coincidir exactamente con el formato esperado."""
+en = """Declare the variables needed to represent a person:
+1. An immutable variable `nombre` with the value "Ferris" (type &str)
+2. A mutable variable `edad` with the value 5 (type i32)
+3. Increment `edad` by 1
+4. Use shadowing to create a new variable `nombre` with the value "Ferris el cangrejo"
+
+The output must match the expected format exactly."""
+
+[starter_code]
+code = '''fn main() {
+    // 1. Declara una variable inmutable 'nombre'
+    // 1. Declare an immutable variable 'nombre'
+
+    // 2. Declara una variable mutable 'edad'
+    // 2. Declare a mutable variable 'edad'
+
+    println!("Nombre: {}, Edad: {}", nombre, edad);
+
+    // 3. Incrementa 'edad' en 1
+    // 3. Increment 'edad' by 1
+
+    // 4. Usa shadowing para cambiar 'nombre'
+    // 4. Use shadowing to change 'nombre'
+
+    println!("Nombre: {}, Edad: {}", nombre, edad);
+}'''
+
+[validation]
+expected_output = """Nombre: Ferris, Edad: 5
+Nombre: Ferris el cangrejo, Edad: 6"""
+
+[hints]
+es = [
+    "Las variables inmutables se declaran con `let`",
+    "Las variables mutables se declaran con `let mut`",
+    "Para incrementar: edad += 1;",
+    "Shadowing es redeclarar con `let`: let nombre = \"nuevo valor\";",
+]
+en = [
+    "Immutable variables are declared with `let`",
+    "Mutable variables are declared with `let mut`",
+    "To increment: edad += 1;",
+    "Shadowing is redeclaring with `let`: let nombre = \"new value\";",
+]
+
+[solution]
+code = '''fn main() {
+    let nombre = "Ferris";
+    let mut edad = 5;
+
+    println!("Nombre: {}, Edad: {}", nombre, edad);
+
+    edad += 1;
+    let nombre = "Ferris el cangrejo";
+
+    println!("Nombre: {}, Edad: {}", nombre, edad);
+}'''

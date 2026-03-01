@@ -1,0 +1,102 @@
+[meta]
+id = "m02_e06"
+module = "m02"
+difficulty = "beginner"
+order = 6
+exercise_type = "fix_bug"
+
+[title]
+es = "Corrige el retorno de la funcion"
+en = "Fix the function return"
+
+[description]
+es = """El siguiente codigo tiene errores en los valores de retorno de las funciones.
+Hay puntos y comas que no deberian estar, y falta alguna expresion de retorno.
+Corrige SOLO los errores de retorno (no cambies la logica ni los nombres).
+
+Pista: busca puntos y comas despues de la ultima expresion."""
+en = """The following code has errors in the function return values.
+There are semicolons that shouldn't be there, and some return expressions are missing.
+Fix ONLY the return errors (don't change the logic or names).
+
+Hint: look for semicolons after the last expression."""
+
+[broken_code]
+code = '''fn doble(x: i32) -> i32 {
+    x * 2;
+}
+
+fn es_par(x: i32) -> bool {
+    x % 2 == 0;
+}
+
+fn celsius_a_fahrenheit(celsius: f64) -> f64 {
+    celsius * 9.0 / 5.0 + 32.0;
+}
+
+fn main() {
+    println!("Doble de 5: {}", doble(5));
+    println!("7 es par: {}", es_par(7));
+    println!("100C = {}F", celsius_a_fahrenheit(100.0));
+}'''
+
+[compiler_error]
+es = "error[E0308]: mismatched types. expected `i32`, found `()` -- Las funciones devuelven () cuando la ultima expresion tiene punto y coma."
+en = "error[E0308]: mismatched types. expected `i32`, found `()` -- Functions return () when the last expression has a semicolon."
+
+[starter_code]
+code = '''fn doble(x: i32) -> i32 {
+    x * 2;
+}
+
+fn es_par(x: i32) -> bool {
+    x % 2 == 0;
+}
+
+fn celsius_a_fahrenheit(celsius: f64) -> f64 {
+    celsius * 9.0 / 5.0 + 32.0;
+}
+
+fn main() {
+    println!("Doble de 5: {}", doble(5));
+    println!("7 es par: {}", es_par(7));
+    println!("100C = {}F", celsius_a_fahrenheit(100.0));
+}'''
+
+[validation]
+expected_output = """Doble de 5: 10
+7 es par: false
+100C = 212F"""
+
+[hints]
+es = [
+    "El error dice: 'mismatched types' y 'expected i32, found ()'",
+    "El compilador sugiere: 'remove this semicolon to return this value'",
+    "Cada funcion tiene un punto y coma extra en la ultima linea",
+    "Quita el ; del final de x * 2, x % 2 == 0, y la formula de conversion",
+]
+en = [
+    "The error says: 'mismatched types' and 'expected i32, found ()'",
+    "The compiler suggests: 'remove this semicolon to return this value'",
+    "Each function has an extra semicolon on the last line",
+    "Remove the ; from the end of x * 2, x % 2 == 0, and the conversion formula",
+]
+
+[solution]
+code = '''fn doble(x: i32) -> i32 {
+    x * 2
+}
+
+fn es_par(x: i32) -> bool {
+    x % 2 == 0
+}
+
+fn celsius_a_fahrenheit(celsius: f64) -> f64 {
+    celsius * 9.0 / 5.0 + 32.0
+}
+
+fn main() {
+    println!("Doble de 5: {}", doble(5));
+    println!("7 es par: {}", es_par(7));
+    println!("100C = {}F", celsius_a_fahrenheit(100.0));
+}'''

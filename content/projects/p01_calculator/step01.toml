@@ -1,0 +1,176 @@
+[meta]
+id = "p01_s01"
+project = "p01"
+order = 1
+
+[title]
+es = "Estructura básica: leyendo entrada del usuario"
+en = "Basic structure: reading user input"
+
+[description]
+es = "En este primer paso, crearás la estructura básica de la calculadora. Aprenderás a leer entrada del usuario desde la terminal y a convertir texto en números."
+en = "In this first step, you'll create the basic structure of the calculator. You'll learn to read user input from the terminal and convert text to numbers."
+
+[[blocks]]
+type = "text"
+es = """## Leyendo entrada del usuario
+
+En Rust, para leer texto desde la terminal necesitamos usar el módulo `std::io`. El proceso es:
+
+1. Crear un `String` mutable para almacenar la entrada
+2. Usar `std::io::stdin().read_line()` para leer
+3. Usar `.trim()` para eliminar el salto de línea
+4. Convertir el texto a número con `.parse()`
+
+Este patrón es fundamental en Rust y lo usarás frecuentemente en programas de consola."""
+en = """## Reading user input
+
+In Rust, to read text from the terminal we need to use the `std::io` module. The process is:
+
+1. Create a mutable `String` to store the input
+2. Use `std::io::stdin().read_line()` to read
+3. Use `.trim()` to remove the newline character
+4. Convert the text to a number with `.parse()`
+
+This pattern is fundamental in Rust and you'll use it frequently in console programs."""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''use std::io;
+
+fn main() {
+    println!("=== Calculadora Rust ===");
+    println!("=== Rust Calculator ===");
+
+    // Leer el primer número
+    println!("Ingresa el primer número:");
+    let mut input = String::new();
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Error al leer la entrada");
+
+    let num1: f64 = input
+        .trim()
+        .parse()
+        .expect("Por favor ingresa un número válido");
+
+    // Leer el operador
+    println!("Ingresa el operador (+, -, *, /):");
+    let mut operador = String::new();
+    io::stdin()
+        .read_line(&mut operador)
+        .expect("Error al leer la entrada");
+    let operador = operador.trim().to_string();
+
+    // Leer el segundo número
+    println!("Ingresa el segundo número:");
+    let mut input2 = String::new();
+    io::stdin()
+        .read_line(&mut input2)
+        .expect("Error al leer la entrada");
+
+    let num2: f64 = input2
+        .trim()
+        .parse()
+        .expect("Por favor ingresa un número válido");
+
+    println!("Has ingresado: {} {} {}", num1, operador, num2);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Conceptos clave de este paso
+
+- **`use std::io;`**: Importa el módulo de entrada/salida de la biblioteca estándar.
+- **`String::new()`**: Crea un nuevo string vacío en el heap.
+- **`let mut`**: Declara una variable **mutable**. En Rust, las variables son inmutables por defecto.
+- **`&mut input`**: Pasa una **referencia mutable** al string. El `&` crea una referencia y `mut` permite modificarla.
+- **`.expect("mensaje")`**: Maneja errores de forma simple. Si ocurre un error, el programa se detiene y muestra el mensaje.
+- **`.trim()`**: Elimina espacios en blanco y el carácter de nueva línea (`\\n`) del input.
+- **`.parse()`**: Convierte un string a otro tipo (en este caso, `f64`)."""
+en = """## Key concepts in this step
+
+- **`use std::io;`**: Imports the input/output module from the standard library.
+- **`String::new()`**: Creates a new empty string on the heap.
+- **`let mut`**: Declares a **mutable** variable. In Rust, variables are immutable by default.
+- **`&mut input`**: Passes a **mutable reference** to the string. The `&` creates a reference and `mut` allows modifying it.
+- **`.expect("message")`**: Handles errors simply. If an error occurs, the program stops and shows the message.
+- **`.trim()`**: Removes whitespace and the newline character (`\\n`) from the input.
+- **`.parse()`**: Converts a string to another type (in this case, `f64`)."""
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = "💡 La función `read_line` agrega un carácter de nueva línea (`\\n`) al final del input. Por eso siempre usamos `.trim()` para limpiarlo antes de procesarlo."
+en = "💡 The `read_line` function adds a newline character (`\\n`) at the end of the input. That's why we always use `.trim()` to clean it before processing."
+
+[starter_code]
+code = '''use std::io;
+
+fn main() {
+    println!("=== Calculadora Rust ===");
+
+    // TODO: Lee el primer número del usuario
+    // TODO: Lee el operador (+, -, *, /)
+    // TODO: Lee el segundo número del usuario
+    // TODO: Imprime lo que el usuario ingresó
+}'''
+
+[validation]
+expected_output = """=== Calculadora Rust ===
+Ingresa el primer número:
+Ingresa el operador (+, -, *, /):
+Ingresa el segundo número:
+Has ingresado: 10 + 5"""
+
+[hints]
+es = [
+    "Necesitas crear un String mutable con: let mut input = String::new();",
+    "Lee con: io::stdin().read_line(&mut input).expect(\"Error\");",
+    "Convierte a número con: let num: f64 = input.trim().parse().expect(\"No es un número\");",
+    "Para leer el operador no necesitas convertirlo a número, solo usa .trim().to_string()"
+]
+en = [
+    "You need to create a mutable String with: let mut input = String::new();",
+    "Read with: io::stdin().read_line(&mut input).expect(\"Error\");",
+    "Convert to number with: let num: f64 = input.trim().parse().expect(\"Not a number\");",
+    "For reading the operator you don't need to convert to number, just use .trim().to_string()"
+]
+
+[solution]
+code = '''use std::io;
+
+fn main() {
+    println!("=== Calculadora Rust ===");
+
+    println!("Ingresa el primer número:");
+    let mut input = String::new();
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Error al leer la entrada");
+    let num1: f64 = input
+        .trim()
+        .parse()
+        .expect("Por favor ingresa un número válido");
+
+    println!("Ingresa el operador (+, -, *, /):");
+    let mut operador = String::new();
+    io::stdin()
+        .read_line(&mut operador)
+        .expect("Error al leer la entrada");
+    let operador = operador.trim().to_string();
+
+    println!("Ingresa el segundo número:");
+    let mut input2 = String::new();
+    io::stdin()
+        .read_line(&mut input2)
+        .expect("Error al leer la entrada");
+    let num2: f64 = input2
+        .trim()
+        .parse()
+        .expect("Por favor ingresa un número válido");
+
+    println!("Has ingresado: {} {} {}", num1, operador, num2);
+}'''
