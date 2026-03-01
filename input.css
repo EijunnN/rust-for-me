@@ -1,0 +1,63 @@
+/* Tailwind CSS will be loaded via CDN for development */
+/* For production, configure trunk with tailwind-css integration */
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #a0aec0;
+    border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #4a5568;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #718096;
+}
+
+/* Code editor styles */
+.cm-editor {
+    height: 100%;
+    font-size: 14px;
+}
+
+.cm-editor .cm-scroller {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Transitions */
+.fade-enter {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms ease, transform 300ms ease;
+}
+
+/* Progress ring animation */
+@keyframes progress-ring {
+    from {
+        stroke-dashoffset: 283;
+    }
+}
+
+.progress-ring-circle {
+    animation: progress-ring 1s ease-out forwards;
+}
+
+/* Sidebar transition */
+.sidebar-transition {
+    transition: width 200ms ease-in-out;
+}
