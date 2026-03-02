@@ -3,327 +3,203 @@ id = "m03_l01"
 order = 1
 
 [title]
-es = "Ownership: El concepto central"
-en = "Ownership: The core concept"
+es = "Ownership: que es y por que importa"
+en = "Ownership: what it is and why it matters"
 
 [[blocks]]
 type = "text"
-es = """## El Problema: Quien es responsable de la memoria?
+es = """## El Problema: quien libera la memoria?
 
-En C y C++, el programador es responsable de liberar la memoria manualmente. Olvidar hacerlo causa **memory leaks** (fugas de memoria). Liberar memoria dos veces causa **crashes**. Usar memoria ya liberada causa **bugs de seguridad criticos**:"""
-en = """## The Problem: Who is responsible for memory?
+Cuando tu programa crea datos (un texto, una lista, una imagen), esos datos ocupan **memoria** del computador. La pregunta clave es: **quien es responsable de liberar esa memoria cuando ya no se necesita?**
 
-In C and C++, the programmer is responsible for freeing memory manually. Forgetting to do so causes **memory leaks**. Freeing memory twice causes **crashes**. Using already-freed memory causes **critical security bugs**:"""
+En lenguajes como Python o JavaScript, un programa interno llamado **garbage collector** (recolector de basura) se encarga automaticamente. Funciona, pero tiene un costo: tu programa hace pausas impredecibles mientras el garbage collector busca memoria sin usar, y usa mas memoria de la necesaria.
+
+En C y C++, el programador libera la memoria manualmente. Esto es rapido, pero extremadamente peligroso:"""
+en = """## The Problem: who frees the memory?
+
+When your program creates data (a text, a list, an image), that data occupies computer **memory**. The key question is: **who is responsible for freeing that memory when it's no longer needed?**
+
+In languages like Python or JavaScript, an internal program called a **garbage collector** handles this automatically. It works, but has a cost: your program makes unpredictable pauses while the garbage collector searches for unused memory, and uses more memory than necessary.
+
+In C and C++, the programmer frees memory manually. This is fast, but extremely dangerous:"""
 
 [[blocks]]
 type = "code"
 language = "c"
 runnable = false
 code = '''// C - manual memory management (simplified)
-char* name = malloc(100);   // Allocate memory
+char* name = malloc(100);   // Reserve 100 bytes of memory
 strcpy(name, "Ferris");
-free(name);                 // Free memory
-printf("%s", name);         // BUG! Use-after-free - security vulnerability!
-free(name);                 // BUG! Double-free - crash!'''
+free(name);                 // Free the memory
+printf("%s", name);         // BUG! Using memory after freeing it
+free(name);                 // BUG! Freeing the same memory twice - crash!'''
 
 [[blocks]]
 type = "text"
-es = """Lenguajes como Python, Java y JavaScript resuelven esto con un **garbage collector** (GC): un programa que se ejecuta periodicamente para encontrar y liberar memoria no utilizada. Funciona, pero tiene un costo: pausas impredecibles, mayor uso de memoria, y menor rendimiento.
+es = """Olvidar liberar memoria causa **memory leaks** (fugas de memoria: tu programa consume cada vez mas RAM). Liberar memoria dos veces causa **crashes**. Usar memoria ya liberada causa **vulnerabilidades de seguridad criticas**.
 
-Rust tiene una solucion unica: el **sistema de ownership**. No necesita garbage collector ni gestion manual. El compilador sabe *exactamente* cuando liberar la memoria, en tiempo de compilacion. Cero costo en tiempo de ejecucion."""
-en = """Languages like Python, Java, and JavaScript solve this with a **garbage collector** (GC): a program that runs periodically to find and free unused memory. It works, but has costs: unpredictable pauses, higher memory usage, and lower performance.
+## La solucion de Rust: Ownership
 
-Rust has a unique solution: the **ownership system**. It needs no garbage collector or manual management. The compiler knows *exactly* when to free memory, at compile time. Zero runtime cost."""
+Rust resuelve este problema de una forma unica: el **sistema de ownership** (propiedad). No necesita garbage collector ni gestion manual. El compilador sabe *exactamente* cuando liberar la memoria, y lo hace automaticamente. Sin pausas, sin errores, sin costo extra en tiempo de ejecucion."""
+en = """Forgetting to free memory causes **memory leaks** (your program consumes more and more RAM). Freeing memory twice causes **crashes**. Using already-freed memory causes **critical security vulnerabilities**.
+
+## Rust's solution: Ownership
+
+Rust solves this problem in a unique way: the **ownership system**. It needs no garbage collector or manual management. The compiler knows *exactly* when to free memory, and does it automatically. No pauses, no errors, no extra runtime cost."""
 
 [[blocks]]
 type = "callout"
 variant = "info"
 es = """**Las tres reglas del ownership:**
-1. Cada valor en Rust tiene una variable que es su **owner** (propietario).
-2. Solo puede haber **un owner** a la vez.
-3. Cuando el owner sale del scope, el valor se **libera automaticamente** (se llama `drop`)."""
+1. Cada valor en Rust tiene una variable que es su **owner** (propietario). Piensa en ello como: cada objeto tiene exactamente un dueno.
+2. Solo puede haber **un owner** a la vez. No pueden existir dos duenos del mismo valor.
+3. Cuando el owner sale del **scope** (alcance), el valor se **libera automaticamente**."""
 en = """**The three rules of ownership:**
-1. Each value in Rust has a variable that is its **owner**.
-2. There can only be **one owner** at a time.
-3. When the owner goes out of scope, the value is **automatically freed** (called `drop`)."""
+1. Each value in Rust has a variable that is its **owner**. Think of it as: each object has exactly one owner.
+2. There can only be **one owner** at a time. Two owners of the same value cannot exist.
+3. When the owner goes out of **scope**, the value is **automatically freed**."""
 
 [[blocks]]
 type = "text"
-es = """## Scope y Drop
+es = """## Que es el Scope?
 
-El concepto de **scope** (alcance) es fundamental. Una variable vive desde que se crea hasta que termina el bloque `{}` donde fue declarada. Cuando sale del scope, Rust automaticamente llama a `drop` para liberar sus recursos:"""
-en = """## Scope and Drop
+El **scope** (alcance) es la zona del codigo donde una variable es valida y puede usarse. En Rust, el scope esta definido por las llaves `{}`. Una variable nace cuando se crea y muere cuando termina el bloque donde fue declarada.
 
-The concept of **scope** is fundamental. A variable lives from when it's created until the block `{}` where it was declared ends. When it goes out of scope, Rust automatically calls `drop` to free its resources:"""
+Cuando una variable sale del scope, Rust automaticamente llama a una funcion interna llamada `drop` que libera los recursos que esa variable usaba. Tu no tienes que hacer nada: es completamente automatico."""
+en = """## What is Scope?
+
+The **scope** is the zone of code where a variable is valid and can be used. In Rust, scope is defined by curly braces `{}`. A variable is born when it's created and dies when the block where it was declared ends.
+
+When a variable goes out of scope, Rust automatically calls an internal function called `drop` that frees the resources that variable was using. You don't have to do anything: it's completely automatic."""
 
 [[blocks]]
 type = "code"
 language = "rust"
 runnable = true
 code = '''fn main() {
+    // Ejemplo 1: scope basico
     {
-        let s = String::from("hola");  // s es valida desde aqui
-        println!("Dentro del scope: {}", s);
-    }  // <- s sale del scope, Rust llama a drop(), memoria liberada
+        let mensaje = String::from("hola");  // mensaje nace aqui
+        println!("Dentro del bloque: {}", mensaje);
+    }  // <- mensaje sale del scope aqui. Rust llama drop() y libera la memoria.
 
-    // println!("{}", s);  // ERROR! s ya no existe
+    // println!("{}", mensaje);  // ERROR! mensaje ya no existe
 
-    // Ejemplo mas claro con multiples scopes
+    // Ejemplo 2: scopes anidados
     let exterior = String::from("vivo fuera");
     {
         let interior = String::from("vivo dentro");
         println!("{} y {}", exterior, interior);
+        // interior es valido aqui, exterior tambien
     }  // interior se libera aqui
 
     println!("Solo queda: {}", exterior);
+    // interior ya no existe, pero exterior sigue vivo
 }  // exterior se libera aqui'''
-
-[[blocks]]
-type = "text"
-es = """## String vs &str: heap vs stack
-
-Para entender ownership, necesitas entender la diferencia entre estos dos tipos de texto:
-
-- `&str` (string slice): tamano fijo, almacenado en el **stack** o en el binario del programa. Inmutable. Ejemplo: `"hola"`.
-- `String`: tamano variable, almacenado en el **heap**. Puede crecer y encogerse. Es el tipo que tiene ownership.
-
-Piensa en `&str` como un cartel pegado en la pared (fijo), y `String` como una nota en un post-it (puedes escribir mas, moverla, etc.)."""
-en = """## String vs &str: heap vs stack
-
-To understand ownership, you need to understand the difference between these two text types:
-
-- `&str` (string slice): fixed size, stored on the **stack** or in the program binary. Immutable. Example: `"hola"`.
-- `String`: variable size, stored on the **heap**. Can grow and shrink. This is the type that has ownership.
-
-Think of `&str` as a sign glued to the wall (fixed), and `String` as a sticky note (you can write more, move it, etc.)."""
-
-[[blocks]]
-type = "code"
-language = "rust"
-runnable = true
-code = '''fn main() {
-    // &str - fijo, en el binario del programa
-    let saludo: &str = "hola mundo";
-
-    // String - en el heap, puede crecer
-    let mut mensaje = String::from("hola");
-    mensaje.push_str(" mundo");        // Agregar texto
-    mensaje.push('!');                 // Agregar un caracter
-
-    println!("&str: {}", saludo);
-    println!("String: {}", mensaje);
-    println!("Longitud: {} bytes", mensaje.len());
-    println!("Capacidad: {} bytes", mensaje.capacity());
-}'''
-
-[[blocks]]
-type = "text"
-es = """## Move: transferencia de ownership
-
-Aqui es donde Rust se vuelve unico. Cuando asignas un `String` a otra variable, el **ownership se transfiere** (se mueve). La variable original deja de ser valida:"""
-en = """## Move: ownership transfer
-
-This is where Rust becomes unique. When you assign a `String` to another variable, **ownership is transferred** (moved). The original variable is no longer valid:"""
-
-[[blocks]]
-type = "code"
-language = "rust"
-runnable = false
-code = '''fn main() {
-    let s1 = String::from("hola");
-    let s2 = s1;  // Ownership se MUEVE de s1 a s2
-
-    println!("{}", s1);  // ERROR! s1 ya no es valida
-}'''
-
-[[blocks]]
-type = "callout"
-variant = "danger"
-es = """**Error del compilador:**
-```
-error[E0382]: borrow of moved value: `s1`
- --> src/main.rs:5:20
-  |
-2 |     let s1 = String::from("hola");
-  |         -- move occurs because `s1` has type `String`
-3 |     let s2 = s1;
-  |              -- value moved here
-5 |     println!("{}", s1);
-  |                    ^^ value borrowed here after move
-```
-Rust previene que uses un valor despues de que su ownership ha sido transferido. Esto elimina bugs de uso despues de liberar (use-after-free)."""
-en = """**Compiler error:**
-```
-error[E0382]: borrow of moved value: `s1`
- --> src/main.rs:5:20
-  |
-2 |     let s1 = String::from("hola");
-  |         -- move occurs because `s1` has type `String`
-3 |     let s2 = s1;
-  |              -- value moved here
-5 |     println!("{}", s1);
-  |                    ^^ value borrowed here after move
-```
-Rust prevents you from using a value after its ownership has been transferred. This eliminates use-after-free bugs."""
-
-[[blocks]]
-type = "text"
-es = """## Por que Move y no Copy?
-
-Imagina que `String` simplemente se copiara. Ambas variables (`s1` y `s2`) apuntarian a la misma memoria en el heap. Cuando `s1` sale del scope, Rust libera esa memoria. Cuando `s2` sale del scope, Rust intentaria liberar la misma memoria **otra vez** — un **double free**, que es un bug grave.
-
-Move resuelve esto: al transferir ownership, solo hay un propietario, y la memoria se libera exactamente una vez.
-
-### Pero los numeros SI se copian!
-
-Los tipos simples que viven en el stack (enteros, flotantes, booleanos, char) implementan el trait `Copy`. Son tan baratos de copiar que no tiene sentido moverlos:"""
-en = """## Why Move and not Copy?
-
-Imagine if `String` simply copied itself. Both variables (`s1` and `s2`) would point to the same heap memory. When `s1` goes out of scope, Rust frees that memory. When `s2` goes out of scope, Rust would try to free the same memory **again** — a **double free**, which is a serious bug.
-
-Move solves this: by transferring ownership, there's only one owner, and memory is freed exactly once.
-
-### But numbers DO copy!
-
-Simple types that live on the stack (integers, floats, booleans, char) implement the `Copy` trait. They're so cheap to copy that it makes no sense to move them:"""
-
-[[blocks]]
-type = "code"
-language = "rust"
-runnable = true
-code = '''fn main() {
-    // Los tipos Copy se copian automaticamente (viven en el stack)
-    let x = 5;
-    let y = x;  // x se COPIA, no se mueve
-    println!("x = {}, y = {}", x, y);  // Ambos validos!
-
-    let a = true;
-    let b = a;  // Copy
-    println!("a = {}, b = {}", a, b);
-
-    // String NO es Copy (vive en el heap)
-    let s1 = String::from("hola");
-    let s2 = s1.clone();  // Clone: copia EXPLICITA (crea copia completa)
-    println!("s1 = {}, s2 = {}", s1, s2);  // Ambos validos!
-
-    // Resumen:
-    // i32, f64, bool, char -> Copy automatico (stack)
-    // String, Vec, etc   -> Move por defecto, clone() si necesitas copia (heap)
-}'''
 
 [[blocks]]
 type = "callout"
 variant = "info"
-es = """**Copy vs Clone:**
-- **Copy**: copia automatica, barata, para tipos simples del stack. Es implicita.
-- **Clone**: copia explicita, potencialmente costosa, para tipos del heap. Debes llamar `.clone()` manualmente.
-- Si un tipo implementa Copy, la asignacion `let y = x` copia. Si no, **mueve**."""
-en = """**Copy vs Clone:**
-- **Copy**: automatic copy, cheap, for simple stack types. It's implicit.
-- **Clone**: explicit copy, potentially expensive, for heap types. You must call `.clone()` manually.
-- If a type implements Copy, assignment `let y = x` copies. If not, it **moves**."""
+es = """**Analogia:** Piensa en el scope como una habitacion. Cuando creas una variable, entra a la habitacion. Cuando el bloque `{}` termina, la habitacion se cierra y todo lo que estaba dentro se limpia automaticamente. Las variables de la habitacion exterior siguen vivas porque su habitacion no ha cerrado aun."""
+en = """**Analogy:** Think of scope as a room. When you create a variable, it enters the room. When the `{}` block ends, the room closes and everything inside is automatically cleaned up. Variables from the outer room are still alive because their room hasn't closed yet."""
 
 [[blocks]]
 type = "text"
-es = """## Ownership y funciones
+es = """## Ownership en accion: un ejemplo paso a paso
 
-Pasar un valor a una funcion transfiere el ownership, exactamente como una asignacion. La funcion se convierte en la nueva propietaria del valor:"""
-en = """## Ownership and functions
+Veamos como Rust maneja la memoria automaticamente comparado con lo que tendrias que hacer manualmente en C:"""
+en = """## Ownership in action: a step by step example
 
-Passing a value to a function transfers ownership, exactly like an assignment. The function becomes the new owner of the value:"""
-
-[[blocks]]
-type = "code"
-language = "rust"
-runnable = false
-code = '''fn tomar_ownership(s: String) {
-    println!("Ahora soy dueno de: {}", s);
-}  // s se libera aqui
-
-fn main() {
-    let mi_string = String::from("hola");
-    tomar_ownership(mi_string);  // Ownership se mueve a la funcion
-
-    println!("{}", mi_string);  // ERROR! mi_string ya no es valida
-}'''
-
-[[blocks]]
-type = "text"
-es = """Esto puede ser frustrante al principio. Si cada funcion se lleva el ownership, como puedes usar un valor despues de pasarlo? Hay tres soluciones:
-
-1. **Devolver el valor** desde la funcion (incomodo).
-2. **Clonar** antes de pasar (costoso si el dato es grande).
-3. **Usar referencias** (la solucion elegante — siguiente leccion!)."""
-en = """This can be frustrating at first. If every function takes ownership, how can you use a value after passing it? There are three solutions:
-
-1. **Return the value** from the function (awkward).
-2. **Clone** before passing (expensive if data is large).
-3. **Use references** (the elegant solution — next lesson!)."""
+Let's see how Rust handles memory automatically compared to what you'd have to do manually in C:"""
 
 [[blocks]]
 type = "code"
 language = "rust"
 runnable = true
-code = '''// Solucion 1: devolver el ownership
-fn procesar_y_devolver(s: String) -> String {
-    println!("Procesando: {}", s);
-    s  // Devolvemos el ownership
-}
+code = '''fn main() {
+    // Paso 1: Rust reserva memoria para "Hola Rust"
+    let saludo = String::from("Hola Rust");
+    // En C, esto seria: char* saludo = malloc(...);
 
-// Los tipos Copy no se mueven
-fn duplicar(x: i32) -> i32 {
-    x * 2
-}
+    println!("{}", saludo);
 
-fn main() {
-    let saludo = String::from("hola");
-    let saludo = procesar_y_devolver(saludo);  // Recuperamos ownership
-    println!("Aun tengo: {}", saludo);
+    // Paso 2: Creamos otro valor
+    let despedida = String::from("Adios");
+    // En C: char* despedida = malloc(...);
 
-    // Los enteros se copian, no se mueven
-    let num = 5;
-    let doble = duplicar(num);
-    println!("num = {}, doble = {}", num, doble);  // num sigue valido
+    println!("{}", despedida);
+
+    // Paso 3: Llegamos al final del scope (el cierre de main)
+    // Rust automaticamente hace:
+    //   drop(despedida)  -> libera "Adios"
+    //   drop(saludo)     -> libera "Hola Rust"
+    // En C, OLVIDAR free() aqui causaria un memory leak.
+    // En Rust, es IMPOSIBLE olvidarse. El compilador se encarga.
 }'''
 
 [[blocks]]
+type = "text"
+es = """## Por que es revolucionario?
+
+Compara las tres estrategias:
+
+| Estrategia | Ventaja | Desventaja |
+|-----------|---------|------------|
+| **Manual** (C/C++) | Maximo control y rendimiento | Facil cometer errores fatales |
+| **Garbage Collector** (Python/Java/JS) | Comodo, sin errores de memoria | Pausas impredecibles, mas lento |
+| **Ownership** (Rust) | Sin errores Y sin costo extra | Curva de aprendizaje al principio |
+
+Rust te da lo mejor de ambos mundos: la seguridad del garbage collector con el rendimiento del manejo manual. El "precio" es que debes aprender las reglas de ownership, pero una vez que las entiendes, el compilador hace todo el trabajo pesado por ti."""
+en = """## Why is this revolutionary?
+
+Compare the three strategies:
+
+| Strategy | Advantage | Disadvantage |
+|----------|-----------|--------------|
+| **Manual** (C/C++) | Maximum control and performance | Easy to make fatal errors |
+| **Garbage Collector** (Python/Java/JS) | Convenient, no memory errors | Unpredictable pauses, slower |
+| **Ownership** (Rust) | No errors AND no extra cost | Learning curve at first |
+
+Rust gives you the best of both worlds: the safety of a garbage collector with the performance of manual management. The "price" is that you must learn the ownership rules, but once you understand them, the compiler does all the heavy lifting for you."""
+
+[[blocks]]
 type = "quiz"
-es = "Que sucede cuando haces `let s2 = s1;` donde `s1` es un `String`?"
-en = "What happens when you do `let s2 = s1;` where `s1` is a `String`?"
+es = "Cuando se libera automaticamente la memoria de una variable en Rust?"
+en = "When is a variable's memory automatically freed in Rust?"
 [[blocks.options]]
-es = "s1 se copia a s2, ambas variables son validas"
-en = "s1 is copied to s2, both variables are valid"
+es = "Cuando el garbage collector decide liberarla"
+en = "When the garbage collector decides to free it"
 correct = false
 [[blocks.options]]
-es = "El ownership se mueve de s1 a s2, s1 ya no es valida"
-en = "Ownership moves from s1 to s2, s1 is no longer valid"
+es = "Cuando el programador llama a free() o drop()"
+en = "When the programmer calls free() or drop()"
+correct = false
+[[blocks.options]]
+es = "Cuando su owner sale del scope (el bloque {} donde fue creada)"
+en = "When its owner goes out of scope (the {} block where it was created)"
 correct = true
 [[blocks.options]]
-es = "s1 y s2 comparten la misma memoria"
-en = "s1 and s2 share the same memory"
-correct = false
-[[blocks.options]]
-es = "Error de compilacion porque no puedes asignar un String a otra variable"
-en = "Compile error because you can't assign a String to another variable"
+es = "Al final del programa"
+en = "At the end of the program"
 correct = false
 
 [[blocks]]
 type = "quiz"
-es = "Por que `let y = x;` funciona sin problemas cuando `x` es un `i32`, pero causa un error si `x` es un `String`?"
-en = "Why does `let y = x;` work fine when `x` is an `i32`, but causes an error if `x` is a `String`?"
+es = "Cuantos owners puede tener un valor en Rust al mismo tiempo?"
+en = "How many owners can a value have in Rust at the same time?"
 [[blocks.options]]
-es = "Porque los enteros no usan memoria"
-en = "Because integers don't use memory"
+es = "Tantos como se necesiten"
+en = "As many as needed"
 correct = false
 [[blocks.options]]
-es = "Porque i32 implementa el trait Copy (vive en el stack y es barato copiar), pero String no (vive en el heap)"
-en = "Because i32 implements the Copy trait (lives on stack, cheap to copy), but String doesn't (lives on heap)"
+es = "Exactamente uno"
+en = "Exactly one"
 correct = true
 [[blocks.options]]
-es = "Es un bug del compilador de Rust"
-en = "It's a bug in the Rust compiler"
+es = "Dos como maximo"
+en = "Two at most"
 correct = false
 [[blocks.options]]
-es = "Porque String es mas grande que i32"
-en = "Because String is bigger than i32"
+es = "Depende del tipo de dato"
+en = "It depends on the data type"
 correct = false

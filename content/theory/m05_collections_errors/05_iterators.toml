@@ -1,0 +1,379 @@
+[meta]
+id = "m05_l05"
+order = 5
+
+[title]
+es = "Iteradores: la forma elegante de procesar datos"
+en = "Iterators: the elegant way to process data"
+
+[[blocks]]
+type = "text"
+es = """## El Problema: bucles repetitivos y verbosos
+
+Imagina que tienes una lista de numeros y quieres: filtrar los pares, multiplicar cada uno por 3, y sumar todo. Con bucles `for` tradicionales, necesitarias escribir mucho codigo repetitivo:"""
+en = """## The Problem: repetitive and verbose loops
+
+Imagine you have a list of numbers and want to: filter the even ones, multiply each by 3, and sum everything. With traditional `for` loops, you'd need to write a lot of repetitive code:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let numeros = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    // Forma VERBOSA con bucles for
+    let mut pares = Vec::new();
+    for n in &numeros {
+        if n % 2 == 0 {
+            pares.push(*n);
+        }
+    }
+
+    let mut triplicados = Vec::new();
+    for n in &pares {
+        triplicados.push(n * 3);
+    }
+
+    let mut suma = 0;
+    for n in &triplicados {
+        suma += n;
+    }
+    println!("Resultado (bucles): {}", suma);
+
+    // Forma ELEGANTE con iteradores (una sola linea!)
+    let resultado: i32 = numeros.iter()
+        .filter(|&&n| n % 2 == 0)
+        .map(|&n| n * 3)
+        .sum();
+    println!("Resultado (iteradores): {}", resultado);
+
+    // Ambos dan 90: (2+4+6+8+10) * 3 = 90
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Que es un iterador?
+
+Un **iterador** es un objeto que produce una secuencia de valores, uno a la vez. Piensa en ello como una **cinta transportadora** en una fabrica: los elementos pasan uno por uno, y en cada estacion puedes transformarlos, filtrarlos, o contarlos.
+
+Para crear un iterador a partir de una coleccion, usas `.iter()`:"""
+en = """## What is an iterator?
+
+An **iterator** is an object that produces a sequence of values, one at a time. Think of it as a **conveyor belt** in a factory: elements pass one by one, and at each station you can transform, filter, or count them.
+
+To create an iterator from a collection, use `.iter()`:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let frutas = vec!["manzana", "banana", "cereza", "durazno"];
+
+    // .iter() crea un iterador que produce referencias (&) a cada elemento
+    // Los metodos del iterador usan closures (leccion anterior) para procesar
+    for fruta in frutas.iter() {
+        println!("Fruta: {}", fruta);
+    }
+
+    // De hecho, el for loop usa iteradores internamente!
+    // Esto es exactamente lo mismo:
+    for fruta in &frutas {
+        println!("Tambien: {}", fruta);
+    }
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Los metodos mas importantes
+
+Los iteradores tienen metodos que reciben **closures** (lo que aprendimos en la leccion anterior) para definir que hacer con cada elemento. Estos son los que usaras el 90% del tiempo:
+
+### filter: quedarse solo con algunos elementos"""
+en = """## The most important methods
+
+Iterators have methods that receive **closures** (what we learned in the previous lesson) to define what to do with each element. These are the ones you'll use 90% of the time:
+
+### filter: keep only some elements"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let numeros = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    // filter: solo pasa los elementos donde el closure devuelve true
+    let pares: Vec<&i32> = numeros.iter()
+        .filter(|&&n| n % 2 == 0)
+        .collect();  // collect() convierte el iterador en un Vec
+    println!("Pares: {:?}", pares);  // [2, 4, 6, 8, 10]
+
+    let palabras = vec!["Rust", "es", "un", "lenguaje", "potente"];
+    let largas: Vec<&&str> = palabras.iter()
+        .filter(|p| p.len() > 2)
+        .collect();
+    println!("Palabras largas: {:?}", largas);  // ["Rust", "lenguaje", "potente"]
+}'''
+
+[[blocks]]
+type = "text"
+es = """### map: transformar cada elemento"""
+en = """### map: transform each element"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let numeros = vec![1, 2, 3, 4, 5];
+
+    // map: aplica una transformacion a cada elemento
+    let cuadrados: Vec<i32> = numeros.iter()
+        .map(|&n| n * n)
+        .collect();
+    println!("Cuadrados: {:?}", cuadrados);  // [1, 4, 9, 16, 25]
+
+    let nombres = vec!["ana", "bob", "carlos"];
+    let mayusculas: Vec<String> = nombres.iter()
+        .map(|n| n.to_uppercase())
+        .collect();
+    println!("Mayusculas: {:?}", mayusculas);  // ["ANA", "BOB", "CARLOS"]
+}'''
+
+[[blocks]]
+type = "text"
+es = """### Encadenar filter + map (lo mas comun)"""
+en = """### Chaining filter + map (most common)"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let numeros = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    // Encadenar: filtrar pares, luego multiplicar por 10
+    let pares_x10: Vec<i32> = numeros.iter()
+        .filter(|&&n| n % 2 == 0)   // Solo pares: 2, 4, 6, 8, 10
+        .map(|&n| n * 10)            // Multiplicar: 20, 40, 60, 80, 100
+        .collect();
+    println!("Pares x10: {:?}", pares_x10);
+
+    // Puedes encadenar tantos como necesites
+    let resultado: Vec<String> = numeros.iter()
+        .filter(|&&n| n > 3)            // Solo > 3: 4, 5, 6, 7, 8, 9, 10
+        .filter(|&&n| n < 8)            // Solo < 8: 4, 5, 6, 7
+        .map(|&n| format!("[{}]", n))   // Formatear: "[4]", "[5]", "[6]", "[7]"
+        .collect();
+    println!("Resultado: {:?}", resultado);
+}'''
+
+[[blocks]]
+type = "text"
+es = """### fold y sum: reducir a un solo valor
+
+`fold` toma todos los elementos y los combina en un solo resultado usando un **acumulador**. Piensa en ello como: empiezas con un valor inicial, y para cada elemento, lo combinas con el acumulador:"""
+en = """### fold and sum: reduce to a single value
+
+`fold` takes all elements and combines them into a single result using an **accumulator**. Think of it as: you start with an initial value, and for each element, you combine it with the accumulator:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let numeros = vec![1, 2, 3, 4, 5];
+
+    // sum: sumar todos los elementos (el caso mas comun)
+    let suma: i32 = numeros.iter().sum();
+    println!("Suma: {}", suma);  // 15
+
+    // fold: version general de sum (tu defines la operacion)
+    // fold(valor_inicial, |acumulador, elemento| nueva_valor_acumulador)
+    let suma_fold = numeros.iter().fold(0, |acc, &x| acc + x);
+    println!("Suma con fold: {}", suma_fold);  // 15
+
+    // Producto de todos los numeros
+    let producto = numeros.iter().fold(1, |acc, &x| acc * x);
+    println!("Producto: {}", producto);  // 1*2*3*4*5 = 120
+
+    // Construir un string con fold
+    let palabras = vec!["Rust", "es", "increible"];
+    let frase = palabras.iter()
+        .fold(String::new(), |acc, &palabra| {
+            if acc.is_empty() { String::from(palabra) }
+            else { format!("{} {}", acc, palabra) }
+        });
+    println!("Frase: {}", frase);
+}'''
+
+[[blocks]]
+type = "text"
+es = """### Otros metodos utiles"""
+en = """### Other useful methods"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let numeros = vec![1, 2, 3, 4, 5, 6];
+
+    // find: buscar el primero que cumpla la condicion
+    let primer_par = numeros.iter().find(|&&n| n % 2 == 0);
+    println!("Primer par: {:?}", primer_par);  // Some(2)
+
+    // any: hay al menos uno que cumple?
+    let hay_mayor_5 = numeros.iter().any(|&n| n > 5);
+    println!("Hay mayor a 5? {}", hay_mayor_5);  // true
+
+    // all: todos cumplen?
+    let todos_positivos = numeros.iter().all(|&n| n > 0);
+    println!("Todos positivos? {}", todos_positivos);  // true
+
+    // count: contar elementos (despues de filtrar es muy util)
+    let cuantos_pares = numeros.iter().filter(|&&n| n % 2 == 0).count();
+    println!("Cuantos pares: {}", cuantos_pares);  // 3
+
+    // enumerate: agregar indice a cada elemento
+    let frutas = vec!["manzana", "banana", "cereza"];
+    for (i, fruta) in frutas.iter().enumerate() {
+        println!("  {}: {}", i, fruta);
+    }
+
+    // max y min
+    println!("Maximo: {:?}", numeros.iter().max());  // Some(6)
+    println!("Minimo: {:?}", numeros.iter().min());  // Some(1)
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Los iteradores son perezosos (lazy)
+
+Un detalle importante: los iteradores **no hacen nada** hasta que los "consumes" con un metodo como `.collect()`, `.sum()`, `.count()`, `.for_each()`, etc. Simplemente crear una cadena de `.filter().map()` no procesa ningun elemento.
+
+Esto es una ventaja: significa que `.filter().map().filter()` **no crea colecciones intermedias**. Cada elemento pasa por toda la cadena uno a la vez, como en una cinta transportadora. Es muy eficiente."""
+en = """## Iterators are lazy
+
+An important detail: iterators **don't do anything** until you "consume" them with a method like `.collect()`, `.sum()`, `.count()`, `.for_each()`, etc. Simply creating a chain of `.filter().map()` doesn't process any elements.
+
+This is an advantage: it means `.filter().map().filter()` **doesn't create intermediate collections**. Each element passes through the entire chain one at a time, like on a conveyor belt. Very efficient."""
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Adaptadores vs Consumidores:**
+- **Adaptadores** (perezosos, crean nuevo iterador): `filter()`, `map()`, `enumerate()`, `take()`, `skip()`, `zip()`
+- **Consumidores** (procesan y devuelven un resultado): `collect()`, `sum()`, `count()`, `for_each()`, `find()`, `any()`, `all()`, `fold()`, `max()`, `min()`
+
+Siempre necesitas terminar con un consumidor para que la cadena se ejecute."""
+en = """**Adapters vs Consumers:**
+- **Adapters** (lazy, create a new iterator): `filter()`, `map()`, `enumerate()`, `take()`, `skip()`, `zip()`
+- **Consumers** (process and return a result): `collect()`, `sum()`, `count()`, `for_each()`, `find()`, `any()`, `all()`, `fold()`, `max()`, `min()`
+
+You always need to end with a consumer for the chain to execute."""
+
+[[blocks]]
+type = "text"
+es = """## Ejemplo completo: procesamiento de ventas"""
+en = """## Complete example: sales processing"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let ventas = vec![
+        ("Laptop", 999.99, 3),
+        ("Mouse", 29.99, 15),
+        ("Teclado", 79.99, 8),
+        ("Monitor", 449.99, 5),
+        ("Cable USB", 9.99, 50),
+    ];
+
+    // Total de ingresos
+    let total: f64 = ventas.iter()
+        .map(|(_, precio, cantidad)| precio * *cantidad as f64)
+        .sum();
+    println!("Ingresos totales: ${:.2}", total);
+
+    // Producto mas vendido (por cantidad)
+    let mas_vendido = ventas.iter()
+        .max_by_key(|(_, _, cant)| *cant);
+    if let Some((nombre, _, cant)) = mas_vendido {
+        println!("Mas vendido: {} ({} unidades)", nombre, cant);
+    }
+
+    // Productos con ingreso > $500
+    let grandes: Vec<_> = ventas.iter()
+        .filter(|(_, precio, cant)| precio * *cant as f64 > 500.0)
+        .map(|(nombre, precio, cant)| {
+            format!("{}: ${:.2}", nombre, precio * *cant as f64)
+        })
+        .collect();
+    println!("Ventas > $500: {:?}", grandes);
+
+    // Unidades totales
+    let unidades: i32 = ventas.iter().map(|(_, _, c)| *c).sum();
+    println!("Total unidades: {}", unidades);
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Resumen de esta leccion:**
+- Los iteradores procesan colecciones de forma **declarativa** (dices QUE quieres, no COMO hacerlo)
+- `.filter()` selecciona, `.map()` transforma, `.fold()`/`.sum()` acumula
+- Se pueden encadenar multiples operaciones en una sola expresion
+- Son **perezosos**: no procesan nada hasta que llamas a un consumidor
+- Son tan rapidos (o mas) que los bucles `for` manuales, porque no crean colecciones intermedias"""
+en = """**Summary of this lesson:**
+- Iterators process collections **declaratively** (you say WHAT you want, not HOW to do it)
+- `.filter()` selects, `.map()` transforms, `.fold()`/`.sum()` accumulates
+- Multiple operations can be chained in a single expression
+- They're **lazy**: they don't process anything until you call a consumer
+- They're as fast (or faster) than manual `for` loops, because they don't create intermediate collections"""
+
+[[blocks]]
+type = "quiz"
+es = "Que hace `.filter(|x| condicion)` en un iterador?"
+en = "What does `.filter(|x| condition)` do on an iterator?"
+[[blocks.options]]
+es = "Elimina los elementos del vector original"
+en = "Removes elements from the original vector"
+correct = false
+[[blocks.options]]
+es = "Crea un nuevo iterador que solo produce los elementos que cumplen la condicion"
+en = "Creates a new iterator that only yields elements matching the condition"
+correct = true
+[[blocks.options]]
+es = "Ordena los elementos"
+en = "Sorts the elements"
+correct = false
+[[blocks.options]]
+es = "Cuenta los elementos"
+en = "Counts the elements"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Por que los iteradores de Rust son eficientes a pesar de encadenar multiples operaciones?"
+en = "Why are Rust iterators efficient despite chaining multiple operations?"
+[[blocks.options]]
+es = "Porque Rust es un lenguaje compilado"
+en = "Because Rust is a compiled language"
+correct = false
+[[blocks.options]]
+es = "Porque son perezosos: procesan elemento por elemento sin crear colecciones intermedias"
+en = "Because they're lazy: they process element by element without creating intermediate collections"
+correct = true
+[[blocks.options]]
+es = "Porque usan multiples hilos internamente"
+en = "Because they use multiple threads internally"
+correct = false
+[[blocks.options]]
+es = "No son eficientes, los bucles for son mas rapidos"
+en = "They're not efficient, for loops are faster"
+correct = false

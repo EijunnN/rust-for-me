@@ -45,14 +45,14 @@ Saludo: Ferris"""
 
 [hints]
 es = [
-    "El error dice 'borrow of moved value' — el ownership de nombre se movio a saludo",
-    "Necesitas crear una copia independiente del String",
-    "Usa `.clone()` en la asignacion: `let saludo = nombre.clone();`",
+    "El error dice 'borrow of moved value'. Que significa que un valor se 'movio'?",
+    "Cuando asignas un String a otra variable, el ownership se transfiere. La variable original queda invalida",
+    "Necesitas que ambas variables tengan su propia copia independiente del String. Hay un metodo para eso",
 ]
 en = [
-    "The error says 'borrow of moved value' — ownership of nombre was moved to saludo",
-    "You need to create an independent copy of the String",
-    "Use `.clone()` in the assignment: `let saludo = nombre.clone();`",
+    "The error says 'borrow of moved value'. What does it mean for a value to be 'moved'?",
+    "When you assign a String to another variable, ownership transfers. The original variable becomes invalid",
+    "You need both variables to have their own independent copy. There's a method for that",
 ]
 
 [solution]

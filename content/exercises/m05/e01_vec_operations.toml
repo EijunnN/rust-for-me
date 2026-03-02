@@ -44,14 +44,14 @@ Longitud: 5"""
 
 [hints]
 es = [
-    "Crea el vector con: `let mut numeros = vec![1, 2, 3, 4, 5];`",
-    "Agregar al final: `numeros.push(6);`",
-    "Eliminar en posicion 0: `numeros.remove(0);`",
+    "Usa la macro `vec!` para crear un vector con valores iniciales. Necesita ser mutable",
+    "Busca un metodo de Vec que agrega un elemento al final",
+    "Busca un metodo de Vec que elimina un elemento en una posicion especifica",
 ]
 en = [
-    "Create the vector with: `let mut numeros = vec![1, 2, 3, 4, 5];`",
-    "Add to end: `numeros.push(6);`",
-    "Remove at position 0: `numeros.remove(0);`",
+    "Use the `vec!` macro to create a vector with initial values. It needs to be mutable",
+    "Look for a Vec method that adds an element to the end",
+    "Look for a Vec method that removes an element at a specific position",
 ]
 
 [solution]

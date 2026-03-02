@@ -58,16 +58,16 @@ expected_output = "Elegido: Rust"
 
 [hints]
 es = [
-    "Necesitas declarar un lifetime generico: `<'a>` despues del nombre de la funcion",
-    "Ambas referencias de entrada comparten el mismo lifetime: `a: &'a str, b: &'a str`",
-    "El retorno tambien usa el mismo lifetime: `-> &'a str`",
-    "La firma completa: `fn elegir<'a>(a: &'a str, b: &'a str, primero: bool) -> &'a str`",
+    "El compilador no sabe de cual parametro viene el resultado. Necesitas indicarselo con lifetimes",
+    "Los lifetimes se declaran con angulos despues del nombre de la funcion: `<'a>`",
+    "Anota cada referencia de entrada y la de salida con el mismo lifetime",
+    "El parametro bool no necesita lifetime porque no es una referencia",
 ]
 en = [
-    "You need to declare a generic lifetime: `<'a>` after the function name",
-    "Both input references share the same lifetime: `a: &'a str, b: &'a str`",
-    "The return also uses the same lifetime: `-> &'a str`",
-    "The complete signature: `fn elegir<'a>(a: &'a str, b: &'a str, primero: bool) -> &'a str`",
+    "The compiler doesn't know from which parameter the result comes. You need to tell it with lifetimes",
+    "Lifetimes are declared with angle brackets after the function name: `<'a>`",
+    "Annotate each input reference and the output with the same lifetime",
+    "The bool parameter doesn't need a lifetime because it's not a reference",
 ]
 
 [solution]

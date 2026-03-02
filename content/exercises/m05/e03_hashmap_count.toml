@@ -46,18 +46,16 @@ expected_output = """'r': 2
 
 [hints]
 es = [
-    "Crea un `HashMap::new()` mutable",
-    "Itera sobre `texto.chars()`",
-    "Usa `c.to_lowercase()` para obtener la version minuscula (devuelve un iterador)",
-    "Ignora espacios con `if c == ' ' { continue; }`",
-    "Usa el patron `entry().or_insert(0)` y luego `*count += 1`",
+    "Necesitas un HashMap mutable para acumular los conteos",
+    "Recorre cada caracter del texto. Recuerda que los caracteres se obtienen con un metodo de &str",
+    "Necesitas ignorar ciertos caracteres y convertir a minuscula antes de contar",
+    "HashMap tiene un metodo para manejar 'insertar si no existe' de forma elegante: busca 'entry' en la documentacion",
 ]
 en = [
-    "Create a mutable `HashMap::new()`",
-    "Iterate over `texto.chars()`",
-    "Use `c.to_lowercase()` to get the lowercase version (returns an iterator)",
-    "Ignore spaces with `if c == ' ' { continue; }`",
-    "Use the `entry().or_insert(0)` pattern then `*count += 1`",
+    "You need a mutable HashMap to accumulate counts",
+    "Iterate through each character. Remember characters are obtained with a &str method",
+    "You need to ignore certain characters and convert to lowercase before counting",
+    "HashMap has a method for handling 'insert if not exists' elegantly: look up 'entry' in the docs",
 ]
 
 [solution]

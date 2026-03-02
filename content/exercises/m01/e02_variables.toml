@@ -53,18 +53,18 @@ Rustacean: true"""
 
 [hints]
 es = [
-    "Las variables se declaran con 'let'. Ejemplo: let x = 5;",
-    "Los strings se escriben entre comillas dobles: let nombre = \"Ferris\";",
-    "Los números decimales usan punto: let altura = 1.75;",
-    "Los booleanos son 'true' o 'false': let activo = true;",
-    "Puedes especificar el tipo con ':'. Ejemplo: let edad: i32 = 9;"
+    "Las variables se declaran con la palabra clave 'let'",
+    "Los textos (&str) van entre comillas dobles",
+    "Los numeros decimales usan punto, no coma",
+    "Los booleanos solo tienen dos valores posibles",
+    "Puedes especificar el tipo despues de dos puntos: let variable: tipo = valor",
 ]
 en = [
-    "Variables are declared with 'let'. Example: let x = 5;",
-    "Strings are written in double quotes: let nombre = \"Ferris\";",
-    "Decimal numbers use a dot: let altura = 1.75;",
-    "Booleans are 'true' or 'false': let activo = true;",
-    "You can specify the type with ':'. Example: let edad: i32 = 9;"
+    "Variables are declared with the 'let' keyword",
+    "Text values (&str) go in double quotes",
+    "Decimal numbers use a dot, not a comma",
+    "Booleans only have two possible values",
+    "You can specify the type after a colon: let variable: type = value",
 ]
 
 [solution]

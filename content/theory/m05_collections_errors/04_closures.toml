@@ -1,0 +1,277 @@
+[meta]
+id = "m05_l04"
+order = 4
+
+[title]
+es = "Closures: funciones anonimas"
+en = "Closures: anonymous functions"
+
+[[blocks]]
+type = "text"
+es = """## Que es un Closure?
+
+Un **closure** (clausura) es una funcion sin nombre que puedes guardar en una variable, pasar como argumento a otra funcion, o crear en el momento que la necesites. Si vienes de Python, son como las funciones `lambda`. Si vienes de JavaScript, son como las arrow functions `() => {}`.
+
+La diferencia clave con las funciones normales es que un closure puede **capturar** (acceder a) variables del codigo que lo rodea.
+
+La sintaxis usa barras verticales `|parametros|` en lugar de parentesis:"""
+en = """## What is a Closure?
+
+A **closure** is a nameless function that you can store in a variable, pass as an argument to another function, or create at the moment you need it. If you come from Python, they're like `lambda` functions. If you come from JavaScript, they're like arrow functions `() => {}`.
+
+The key difference from normal functions is that a closure can **capture** (access) variables from the surrounding code.
+
+The syntax uses vertical bars `|parameters|` instead of parentheses:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // Funcion normal vs Closure - hacen lo mismo
+    fn sumar_fn(a: i32, b: i32) -> i32 { a + b }
+
+    let sumar_closure = |a: i32, b: i32| -> i32 { a + b };
+
+    println!("Funcion: {}", sumar_fn(3, 4));
+    println!("Closure: {}", sumar_closure(3, 4));
+
+    // El closure puede inferir los tipos (lo mas comun)
+    let duplicar = |x| x * 2;
+    println!("Duplicar 5: {}", duplicar(5));
+
+    // Si el cuerpo es una sola expresion, no necesita llaves
+    let es_par = |n: i32| n % 2 == 0;
+    println!("4 es par? {}", es_par(4));
+    println!("7 es par? {}", es_par(7));
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Sintaxis de closures:**
+```
+|parametros| expresion                    // Una linea, sin llaves
+|parametros| { varias; lineas; }         // Multiples lineas, con llaves
+|parametros| -> TipoRetorno { cuerpo }   // Con tipo de retorno explicito
+|| println!("sin parametros")             // Sin parametros
+```
+Rust infiere los tipos de los parametros y del retorno en la mayoria de los casos, asi que usualmente no necesitas escribirlos."""
+en = """**Closure syntax:**
+```
+|parameters| expression                    // One line, no braces
+|parameters| { several; lines; }          // Multiple lines, with braces
+|parameters| -> ReturnType { body }       // With explicit return type
+|| println!("no parameters")              // No parameters
+```
+Rust infers parameter and return types in most cases, so you usually don't need to write them."""
+
+[[blocks]]
+type = "text"
+es = """## Captura de variables: la magia de los closures
+
+Lo que hace especiales a los closures es que pueden **capturar** variables del scope donde fueron creados. Una funcion normal no puede hacer esto:"""
+en = """## Variable capture: the magic of closures
+
+What makes closures special is that they can **capture** variables from the scope where they were created. A normal function cannot do this:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let nombre = "Ferris";
+    let umbral = 10;
+
+    // Este closure captura 'nombre' del scope exterior
+    let saludar = || println!("Hola, {}!", nombre);
+    saludar();  // Imprime: Hola, Ferris!
+
+    // Este closure captura 'umbral' y lo usa para comparar
+    let es_grande = |n: i32| n > umbral;
+    println!("15 es grande? {}", es_grande(15));  // true
+    println!("5 es grande? {}", es_grande(5));     // false
+
+    // Las variables capturadas siguen disponibles
+    println!("Umbral era: {}", umbral);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Closures mutables
+
+Si un closure necesita modificar una variable capturada, tanto el closure como la variable deben ser `mut`:"""
+en = """## Mutable closures
+
+If a closure needs to modify a captured variable, both the closure and the variable must be `mut`:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let mut contador = 0;
+
+    // El closure es mut porque modifica 'contador'
+    let mut incrementar = || {
+        contador += 1;
+        println!("Contador: {}", contador);
+    };
+
+    incrementar();  // Contador: 1
+    incrementar();  // Contador: 2
+    incrementar();  // Contador: 3
+
+    // Nota: no podemos usar 'contador' mientras el closure lo tiene prestado
+    // Solo podemos usarlo despues de que el closure ya no se use
+    // (Rust aplica las mismas reglas de borrowing que ya conocemos)
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Closures como parametros de funcion
+
+La verdadera utilidad de los closures es pasarlos como argumentos. Esto permite crear funciones que son **personalizables** por quien las llama:"""
+en = """## Closures as function parameters
+
+The real power of closures is passing them as arguments. This allows creating functions that are **customizable** by the caller:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''// Esta funcion recibe un closure que decide como transformar un numero
+fn aplicar_operacion(valor: i32, operacion: impl Fn(i32) -> i32) -> i32 {
+    operacion(valor)
+}
+
+// Esta funcion aplica un closure a cada elemento y muestra el resultado
+fn mostrar_transformados(numeros: &[i32], transformar: impl Fn(i32) -> String) {
+    for n in numeros {
+        println!("{}", transformar(*n));
+    }
+}
+
+fn main() {
+    // Pasamos diferentes closures a la misma funcion
+    println!("Doble de 5: {}", aplicar_operacion(5, |x| x * 2));
+    println!("Cuadrado de 5: {}", aplicar_operacion(5, |x| x * x));
+    println!("Mas uno de 5: {}", aplicar_operacion(5, |x| x + 1));
+
+    let notas = [85, 92, 78, 95];
+
+    println!("\n--- Formato con estrellas ---");
+    mostrar_transformados(&notas, |n| {
+        let estrellas = if n >= 90 { "***" } else if n >= 80 { "**" } else { "*" };
+        format!("Nota {}: {}", n, estrellas)
+    });
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Nota sobre `impl Fn`:**
+Cuando ves `impl Fn(i32) -> i32` en un parametro, significa "cualquier cosa que se pueda llamar con un i32 y devuelva un i32". Por ahora, piensa en `Fn` como "una funcion o closure". Hay tres variantes que veremos cuando aprendamos traits:
+- `Fn` — solo lee las variables capturadas (la mas comun)
+- `FnMut` — puede modificar las variables capturadas
+- `FnOnce` — consume las variables capturadas (solo se puede llamar una vez)"""
+en = """**Note about `impl Fn`:**
+When you see `impl Fn(i32) -> i32` in a parameter, it means "anything that can be called with an i32 and returns an i32". For now, think of `Fn` as "a function or closure". There are three variants we'll see when we learn traits:
+- `Fn` — only reads captured variables (most common)
+- `FnMut` — can modify captured variables
+- `FnOnce` — consumes captured variables (can only be called once)"""
+
+[[blocks]]
+type = "text"
+es = """## Ejemplo practico: filtro personalizable"""
+en = """## Practical example: customizable filter"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn filtrar_numeros(numeros: &[i32], criterio: impl Fn(i32) -> bool) -> Vec<i32> {
+    let mut resultado = Vec::new();
+    for &n in numeros {
+        if criterio(n) {
+            resultado.push(n);
+        }
+    }
+    resultado
+}
+
+fn main() {
+    let datos = vec![1, 15, 3, 22, 7, 42, 8, 11, 30];
+
+    let pares = filtrar_numeros(&datos, |n| n % 2 == 0);
+    println!("Pares: {:?}", pares);
+
+    let mayores_de_10 = filtrar_numeros(&datos, |n| n > 10);
+    println!("Mayores de 10: {:?}", mayores_de_10);
+
+    let rango = filtrar_numeros(&datos, |n| n >= 5 && n <= 20);
+    println!("Entre 5 y 20: {:?}", rango);
+
+    // Closure que captura una variable externa
+    let limite = 25;
+    let menores_del_limite = filtrar_numeros(&datos, |n| n < limite);
+    println!("Menores de {}: {:?}", limite, menores_del_limite);
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Resumen de esta leccion:**
+- Un **closure** es una funcion anonima: `|params| expresion`
+- Puede **capturar** variables del scope donde fue creado
+- Rust infiere los tipos de parametros y retorno
+- Se usan mucho como argumentos de funciones (veremos esto con iteradores en la siguiente leccion)
+- `mut` es necesario si el closure modifica variables capturadas"""
+en = """**Summary of this lesson:**
+- A **closure** is an anonymous function: `|params| expression`
+- Can **capture** variables from the scope where it was created
+- Rust infers parameter and return types
+- Widely used as function arguments (we'll see this with iterators in the next lesson)
+- `mut` is required if the closure modifies captured variables"""
+
+[[blocks]]
+type = "quiz"
+es = "Que hace especial a un closure comparado con una funcion normal?"
+en = "What makes a closure special compared to a normal function?"
+[[blocks.options]]
+es = "Es mas rapido que una funcion"
+en = "It's faster than a function"
+correct = false
+[[blocks.options]]
+es = "Puede capturar variables del scope donde fue creado"
+en = "It can capture variables from the scope where it was created"
+correct = true
+[[blocks.options]]
+es = "Siempre devuelve un valor"
+en = "It always returns a value"
+correct = false
+[[blocks.options]]
+es = "Solo funciona con numeros"
+en = "It only works with numbers"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Como se escribe un closure que recibe un i32 y devuelve el doble?"
+en = "How do you write a closure that takes an i32 and returns double?"
+[[blocks.options]]
+es = "|x| x * 2"
+en = "|x| x * 2"
+correct = true
+[[blocks.options]]
+es = "fn(x) => x * 2"
+en = "fn(x) => x * 2"
+correct = false
+[[blocks.options]]
+es = "lambda x: x * 2"
+en = "lambda x: x * 2"
+correct = false
+[[blocks.options]]
+es = "{x -> x * 2}"
+en = "{x -> x * 2}"
+correct = false

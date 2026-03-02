@@ -70,16 +70,16 @@ expected_output = """Doble de 5: 10
 
 [hints]
 es = [
-    "El error dice: 'mismatched types' y 'expected i32, found ()'",
-    "El compilador sugiere: 'remove this semicolon to return this value'",
-    "Cada funcion tiene un punto y coma extra en la ultima linea",
-    "Quita el ; del final de x * 2, x % 2 == 0, y la formula de conversion",
+    "Lee el error: dice que espera un tipo pero recibe '()' (unidad, es decir, nada)",
+    "En Rust, la ultima expresion de una funcion es su valor de retorno... a menos que tenga algo extra",
+    "Piensa: que pasa cuando le pones punto y coma a una expresion? Se convierte en una sentencia que no devuelve nada",
+    "El bug es el mismo en las tres funciones, busca el patron comun",
 ]
 en = [
-    "The error says: 'mismatched types' and 'expected i32, found ()'",
-    "The compiler suggests: 'remove this semicolon to return this value'",
-    "Each function has an extra semicolon on the last line",
-    "Remove the ; from the end of x * 2, x % 2 == 0, and the conversion formula",
+    "Read the error: it expects a type but receives '()' (unit, meaning nothing)",
+    "In Rust, the last expression in a function is its return value... unless it has something extra",
+    "Think: what happens when you put a semicolon on an expression? It becomes a statement that returns nothing",
+    "The bug is the same in all three functions, look for the common pattern",
 ]
 
 [solution]

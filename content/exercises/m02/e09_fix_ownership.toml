@@ -40,14 +40,14 @@ expected_output = "s1 = hello, s2 = hello"
 
 [hints]
 es = [
-    "Pista: Lee el error del compilador. Dice 'borrow of moved value'. Que significa 'moved'?",
-    "Cuando asignas un String a otra variable, el valor se MUEVE. La variable original ya no es valida.",
-    "Usa .clone() para crear una copia: let s2 = s1.clone();"
+    "Lee el error: dice 'borrow of moved value'. Cuando un String se asigna, el ownership se transfiere",
+    "Necesitas que s2 tenga su propia copia del dato, no que se lleve la de s1",
+    "Hay un metodo que crea una copia completa e independiente de un String",
 ]
 en = [
-    "Hint: Read the compiler error. It says 'borrow of moved value'. What does 'moved' mean?",
-    "When you assign a String to another variable, the value MOVES. The original variable is no longer valid.",
-    "Use .clone() to create a copy: let s2 = s1.clone();"
+    "Read the error: it says 'borrow of moved value'. When a String is assigned, ownership transfers",
+    "You need s2 to have its own copy of the data, not to take s1's",
+    "There's a method that creates a complete, independent copy of a String",
 ]
 
 [solution]

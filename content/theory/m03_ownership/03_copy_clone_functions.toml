@@ -1,0 +1,285 @@
+[meta]
+id = "m03_l03"
+order = 3
+
+[title]
+es = "Copy, Clone y ownership en funciones"
+en = "Copy, Clone and ownership in functions"
+
+[[blocks]]
+type = "text"
+es = """## Los numeros SI se copian!
+
+En la leccion anterior vimos que `String` se **mueve** al asignar. Pero si intentas lo mismo con numeros, funciona sin problemas:"""
+en = """## Numbers DO copy!
+
+In the previous lesson we saw that `String` **moves** on assignment. But if you try the same with numbers, it works fine:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let x = 42;
+    let y = x;  // x se COPIA, no se mueve!
+
+    // Ambos son validos!
+    println!("x = {}, y = {}", x, y);
+
+    let a = true;
+    let b = a;  // Tambien se copia
+    println!("a = {}, b = {}", a, b);
+
+    let c = 3.14;
+    let d = c;  // Tambien se copia
+    println!("c = {}, d = {}", c, d);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Por que los numeros se copian pero String no?
+
+La respuesta tiene que ver con donde viven los datos:
+
+**Tipos que viven en el stack** (tamano fijo y pequeno):
+- `i32`, `i64`, `u8`, `f64`, etc. (numeros)
+- `bool` (true/false)
+- `char` (un caracter Unicode)
+- Tuplas que solo contienen tipos Copy, como `(i32, bool)`
+
+Estos tipos implementan el **trait Copy** (no te preocupes por la palabra "trait" ahora, lo veremos despues; solo piensa que es una "habilidad" que tiene el tipo). Copiar un numero de 4 bytes es tan rapido que no tiene sentido moverlo: simplemente se duplica.
+
+**Tipos que viven en el heap** (tamano variable):
+- `String` (texto que puede crecer)
+- `Vec<T>` (lista que puede crecer)
+- `HashMap<K, V>` (diccionario)
+
+Estos tipos **NO** implementan Copy. Copiar un String de 1 millon de caracteres seria costoso, asi que Rust te obliga a ser explicito si quieres una copia."""
+en = """## Why do numbers copy but String doesn't?
+
+The answer has to do with where data lives:
+
+**Types that live on the stack** (fixed and small size):
+- `i32`, `i64`, `u8`, `f64`, etc. (numbers)
+- `bool` (true/false)
+- `char` (a Unicode character)
+- Tuples that only contain Copy types, like `(i32, bool)`
+
+These types implement the **Copy trait** (don't worry about the word "trait" now, we'll see it later; just think of it as an "ability" the type has). Copying a 4-byte number is so fast it makes no sense to move it: it simply gets duplicated.
+
+**Types that live on the heap** (variable size):
+- `String` (text that can grow)
+- `Vec<T>` (list that can grow)
+- `HashMap<K, V>` (dictionary)
+
+These types do **NOT** implement Copy. Copying a 1-million character String would be expensive, so Rust forces you to be explicit if you want a copy."""
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Copy vs Clone - la diferencia clave:**
+- **Copy**: copia automatica e implicita. Cuando haces `let y = x;`, si `x` es Copy, se copia sin que tu hagas nada. Es barato (solo tipos del stack).
+- **Clone**: copia explicita que TU decides hacer. Debes llamar `.clone()` manualmente. Puede ser costoso (crea una copia completa en el heap).
+
+Regla simple: si no haces nada especial, los tipos del stack se copian y los del heap se mueven."""
+en = """**Copy vs Clone - the key difference:**
+- **Copy**: automatic, implicit copy. When you do `let y = x;`, if `x` is Copy, it copies without you doing anything. It's cheap (only stack types).
+- **Clone**: explicit copy that YOU decide to make. You must call `.clone()` manually. Can be expensive (creates a complete copy on the heap).
+
+Simple rule: if you do nothing special, stack types copy and heap types move."""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // Copy: automatico para tipos del stack
+    let x = 5;
+    let y = x;  // Copy automatico
+    println!("x = {}, y = {}", x, y);  // Ambos validos
+
+    // Move: por defecto para tipos del heap
+    let s1 = String::from("hola");
+    // let s2 = s1;  // Esto MOVERIA s1, dejandolo invalido
+
+    // Clone: copia EXPLICITA para tipos del heap
+    let s2 = s1.clone();  // Crea una copia completa e independiente
+    println!("s1 = {}, s2 = {}", s1, s2);  // Ambos validos!
+
+    // s1 y s2 son ahora dos Strings completamente independientes
+    // Cada uno tiene su propia memoria en el heap
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Ownership y funciones
+
+Pasar un valor a una funcion es exactamente como asignarlo a otra variable: si el tipo es Copy, se copia; si no, se mueve. Esto es fundamental:"""
+en = """## Ownership and functions
+
+Passing a value to a function is exactly like assigning it to another variable: if the type is Copy, it copies; if not, it moves. This is fundamental:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''fn tomar_ownership(s: String) {
+    println!("Ahora soy dueno de: {}", s);
+}  // s sale del scope y se libera
+
+fn main() {
+    let mi_string = String::from("hola");
+    tomar_ownership(mi_string);  // Ownership se MUEVE a la funcion
+
+    println!("{}", mi_string);  // ERROR! mi_string ya no es valida
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "danger"
+es = """**Error del compilador:**
+```
+error[E0382]: borrow of moved value: `mi_string`
+```
+Al pasar `mi_string` a la funcion, el ownership se movio. La funcion ahora es la duena y cuando termina, el String se libera. `mi_string` queda invalido en `main`."""
+en = """**Compiler error:**
+```
+error[E0382]: borrow of moved value: `mi_string`
+```
+When passing `mi_string` to the function, ownership moved. The function is now the owner and when it finishes, the String is freed. `mi_string` is left invalid in `main`."""
+
+[[blocks]]
+type = "text"
+es = """Pero los tipos Copy se pueden pasar sin problemas, porque se copian automaticamente:"""
+en = """But Copy types can be passed without issues, because they copy automatically:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn duplicar(x: i32) -> i32 {
+    x * 2
+}  // x (una copia del original) se libera, pero al original no le afecta
+
+fn main() {
+    let numero = 5;
+    let doble = duplicar(numero);  // numero se COPIA al parametro x
+
+    // numero sigue valido porque i32 es Copy
+    println!("numero = {}, doble = {}", numero, doble);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Como usar un String despues de pasarlo a una funcion?
+
+Si cada funcion se lleva el ownership, como puedes seguir usando el valor? Hay tres estrategias:
+
+### Estrategia 1: Devolver el valor (incomodo pero funciona)"""
+en = """## How to use a String after passing it to a function?
+
+If every function takes ownership, how can you keep using the value? There are three strategies:
+
+### Strategy 1: Return the value (awkward but works)"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn procesar_y_devolver(s: String) -> String {
+    println!("Procesando: {}", s);
+    s  // Devolvemos el ownership de vuelta
+}
+
+fn main() {
+    let saludo = String::from("hola");
+    let saludo = procesar_y_devolver(saludo);  // Recuperamos ownership
+    println!("Aun tengo: {}", saludo);  // Funciona!
+}'''
+
+[[blocks]]
+type = "text"
+es = """### Estrategia 2: Clonar antes de pasar (costoso si el dato es grande)"""
+en = """### Strategy 2: Clone before passing (expensive if data is large)"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn consumir(s: String) {
+    println!("Consumido: {}", s);
+}
+
+fn main() {
+    let original = String::from("datos importantes");
+    consumir(original.clone());  // Pasamos una copia, no el original
+
+    println!("Original intacto: {}", original);  // Funciona!
+}'''
+
+[[blocks]]
+type = "text"
+es = """### Estrategia 3: Usar referencias (la mejor solucion!)
+
+En la siguiente leccion aprenderemos sobre **referencias** (`&`), que permiten "prestar" un valor a una funcion sin transferir el ownership. Es la solucion mas elegante y eficiente, y la que usaras el 90% del tiempo en Rust."""
+en = """### Strategy 3: Use references (the best solution!)
+
+In the next lesson we'll learn about **references** (`&`), which allow you to "lend" a value to a function without transferring ownership. It's the most elegant and efficient solution, and the one you'll use 90% of the time in Rust."""
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Resumen de esta leccion:**
+- Los tipos del stack (`i32`, `bool`, `char`, `f64`) implementan **Copy** y se copian automaticamente.
+- Los tipos del heap (`String`, `Vec`) se **mueven** por defecto (el ownership se transfiere).
+- Si necesitas una copia de un tipo del heap, usa `.clone()` — pero es una copia completa y puede ser costoso.
+- Pasar un valor a una funcion sigue las mismas reglas: Copy copia, no-Copy mueve.
+- La solucion elegante (referencias) viene en la siguiente leccion!"""
+en = """**Summary of this lesson:**
+- Stack types (`i32`, `bool`, `char`, `f64`) implement **Copy** and are copied automatically.
+- Heap types (`String`, `Vec`) are **moved** by default (ownership is transferred).
+- If you need a copy of a heap type, use `.clone()` — but it's a full copy and can be expensive.
+- Passing a value to a function follows the same rules: Copy copies, non-Copy moves.
+- The elegant solution (references) comes in the next lesson!"""
+
+[[blocks]]
+type = "quiz"
+es = "Cual es la diferencia entre Copy y Clone?"
+en = "What is the difference between Copy and Clone?"
+[[blocks.options]]
+es = "Copy es para tipos del stack (automatico y barato), Clone es para tipos del heap (explicito, puede ser costoso)"
+en = "Copy is for stack types (automatic and cheap), Clone is for heap types (explicit, can be expensive)"
+correct = true
+[[blocks.options]]
+es = "Son lo mismo, solo que Clone es la version moderna"
+en = "They're the same, Clone is just the modern version"
+correct = false
+[[blocks.options]]
+es = "Copy crea una referencia, Clone crea una copia"
+en = "Copy creates a reference, Clone creates a copy"
+correct = false
+[[blocks.options]]
+es = "Clone es mas rapido que Copy"
+en = "Clone is faster than Copy"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Que pasa cuando pasas un String a una funcion sin usar & ni .clone()?"
+en = "What happens when you pass a String to a function without using & or .clone()?"
+[[blocks.options]]
+es = "El String se copia automaticamente"
+en = "The String is copied automatically"
+correct = false
+[[blocks.options]]
+es = "El ownership se mueve a la funcion, y la variable original queda invalida"
+en = "Ownership moves to the function, and the original variable becomes invalid"
+correct = true
+[[blocks.options]]
+es = "Error de compilacion siempre"
+en = "Always a compile error"
+correct = false
+[[blocks.options]]
+es = "La funcion recibe una referencia automaticamente"
+en = "The function receives a reference automatically"
+correct = false

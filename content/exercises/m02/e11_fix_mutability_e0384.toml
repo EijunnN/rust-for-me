@@ -40,14 +40,12 @@ expected_output = "x = 6"
 
 [hints]
 es = [
-    "Pista: En Rust, las variables son inmutables por defecto. No puedes cambiar su valor.",
-    "Para hacer una variable mutable, usa la palabra clave 'mut' en la declaracion.",
-    "Cambia 'let x = 5;' por 'let mut x = 5;'"
+    "En Rust, las variables son inmutables por defecto. Que necesitas agregar para poder cambiar su valor?",
+    "Hay una palabra clave que se agrega en la declaracion para permitir cambios",
 ]
 en = [
-    "Hint: In Rust, variables are immutable by default. You cannot change their value.",
-    "To make a variable mutable, use the 'mut' keyword in the declaration.",
-    "Change 'let x = 5;' to 'let mut x = 5;'"
+    "In Rust, variables are immutable by default. What do you need to add to allow changes?",
+    "There's a keyword you add to the declaration to allow modifications",
 ]
 
 [solution]

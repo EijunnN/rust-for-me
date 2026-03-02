@@ -46,18 +46,18 @@ Lucia"""
 
 [hints]
 es = [
-    "Primero: `let limpio = nombre.trim().to_lowercase();`",
-    "Luego toma el primer char y el resto por separado",
-    "Para capitalizar: `let primera: String = limpio.chars().take(1).flat_map(|c| c.to_uppercase()).collect();`",
-    "Para el resto: `let resto: String = limpio.chars().skip(1).collect();`",
-    "Combina: `format!(\"{}{}\", primera, resto)`",
+    "Primero limpia los espacios y convierte todo a minusculas. Hay metodos de String para ambas cosas",
+    "Luego necesitas separar el primer caracter del resto del texto",
+    "Busca metodos de iterador que te permitan tomar los primeros N elementos o saltar los primeros N",
+    "Para capitalizar solo la primera letra, hay un metodo que convierte a mayuscula",
+    "Combina las dos partes con format!()",
 ]
 en = [
-    "First: `let limpio = nombre.trim().to_lowercase();`",
-    "Then take the first char and the rest separately",
-    "To capitalize: `let primera: String = limpio.chars().take(1).flat_map(|c| c.to_uppercase()).collect();`",
-    "For the rest: `let resto: String = limpio.chars().skip(1).collect();`",
-    "Combine: `format!(\"{}{}\", primera, resto)`",
+    "First clean the spaces and convert everything to lowercase. There are String methods for both",
+    "Then you need to separate the first character from the rest of the text",
+    "Look for iterator methods that let you take the first N elements or skip the first N",
+    "To capitalize just the first letter, there's a method that converts to uppercase",
+    "Combine both parts with format!()",
 ]
 
 [solution]

@@ -80,18 +80,16 @@ Dia 9: invalido"""
 
 [hints]
 es = [
-    "Para temperaturas usa rangos: match temp { ..=-1 => ..., 0..=15 => ..., ... }",
-    "Para numeros menores a 0 usa el patron: ..=-1",
-    "Para el rango 0-15 usa: 0..=15",
-    "Para numeros mayores a 35 usa: 36.. o el comodin _",
-    "Para los dias usa: match dia { 1 => \"Lunes\", 2 => \"Martes\", ... _ => \"invalido\" }",
+    "En match puedes usar rangos con la sintaxis ..= (inclusive)",
+    "Piensa: que patron cubre los numeros negativos?",
+    "Para cubrir 'cualquier otro valor' match tiene un comodin especial",
+    "Cada brazo del match devuelve un &str que es la clasificacion",
 ]
 en = [
-    "For temperatures use ranges: match temp { ..=-1 => ..., 0..=15 => ..., ... }",
-    "For numbers less than 0 use the pattern: ..=-1",
-    "For range 0-15 use: 0..=15",
-    "For numbers greater than 35 use: 36.. or the wildcard _",
-    "For days use: match dia { 1 => \"Lunes\", 2 => \"Martes\", ... _ => \"invalido\" }",
+    "In match you can use ranges with the ..= syntax (inclusive)",
+    "Think: what pattern covers negative numbers?",
+    "To cover 'any other value' match has a special wildcard",
+    "Each match arm returns a &str that is the classification",
 ]
 
 [solution]

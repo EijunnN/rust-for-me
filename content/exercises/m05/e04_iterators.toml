@@ -47,18 +47,18 @@ Suma: 300"""
 
 [hints]
 es = [
-    "Empieza con `numeros.iter()`",
-    "Filtra pares: `.filter(|&&n| n % 2 == 0)` (doble & porque iter da &i32 y filter da &&i32)",
-    "Transforma: `.map(|&n| n * 10)`",
-    "Recolecta: `.collect()`",
-    "Para la suma: `pares_x10.iter().sum()`",
+    "Empieza creando un iterador sobre el vector",
+    "Usa un metodo de iterador que selecciona solo los elementos que cumplen una condicion",
+    "Despues de filtrar, usa otro metodo para transformar cada elemento",
+    "Necesitas convertir el iterador de vuelta a un Vec. Hay un metodo especial para eso",
+    "Para la suma del resultado, los iteradores tienen un metodo que acumula todos los valores",
 ]
 en = [
-    "Start with `numeros.iter()`",
-    "Filter evens: `.filter(|&&n| n % 2 == 0)` (double & because iter gives &i32 and filter gives &&i32)",
-    "Transform: `.map(|&n| n * 10)`",
-    "Collect: `.collect()`",
-    "For the sum: `pares_x10.iter().sum()`",
+    "Start by creating an iterator over the vector",
+    "Use an iterator method that selects only elements matching a condition",
+    "After filtering, use another method to transform each element",
+    "You need to convert the iterator back to a Vec. There's a special method for that",
+    "For the sum of the result, iterators have a method that accumulates all values",
 ]
 
 [solution]

@@ -1,6 +1,6 @@
 [meta]
-id = "m03_l02"
-order = 2
+id = "m03_l04"
+order = 4
 
 [title]
 es = "Referencias y Borrowing"
@@ -136,14 +136,14 @@ Esta regla es lo que hace a Rust especial:
 
 > En cualquier momento dado, puedes tener **O BIEN** una referencia mutable, **O BIEN** cualquier numero de referencias inmutables. **Nunca ambas.**
 
-Esto previene **data races** (condiciones de carrera) en tiempo de compilacion:"""
+Esto previene **data races** (condiciones de carrera: cuando una parte del programa lee un dato mientras otra parte lo esta modificando al mismo tiempo, causando resultados impredecibles) en tiempo de compilacion:"""
 en = """## The fundamental borrowing rule
 
 This rule is what makes Rust special:
 
 > At any given time, you can have **EITHER** one mutable reference, **OR** any number of immutable references. **Never both.**
 
-This prevents **data races** at compile time:"""
+This prevents **data races** (when one part of a program reads data while another part is modifying it at the same time, causing unpredictable results) at compile time:"""
 
 [[blocks]]
 type = "code"

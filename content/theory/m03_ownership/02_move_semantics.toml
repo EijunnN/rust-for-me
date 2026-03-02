@@ -1,0 +1,240 @@
+[meta]
+id = "m03_l02"
+order = 2
+
+[title]
+es = "Move: como se transfiere el ownership"
+en = "Move: how ownership is transferred"
+
+[[blocks]]
+type = "text"
+es = """## Antes de empezar: Stack y Heap
+
+Para entender por que algunos valores se "mueven" y otros se "copian", necesitas entender donde viven los datos en memoria. Tu computador tiene dos zonas de memoria que los programas usan:
+
+### El Stack (pila)
+Imagina una **pila de platos**. Solo puedes poner un plato encima (apilar) o quitar el de arriba (desapilar). Es muy rapido porque siempre sabes donde esta el ultimo plato. El stack funciona igual:
+- Es **super rapido** (apilar y desapilar son operaciones triviales)
+- Los datos deben tener un **tamano fijo conocido** al compilar
+- Se limpia automaticamente cuando la funcion termina
+- Aqui viven: numeros (`i32`, `f64`), booleanos (`bool`), caracteres (`char`), y datos de tamano fijo
+
+### El Heap (monton)
+Imagina un **estacionamiento grande**. Cuando llega un carro, el encargado busca un espacio libre y te da un ticket con la ubicacion. El heap funciona igual:
+- Es **mas lento** (hay que buscar espacio libre y recordar donde esta)
+- Los datos pueden tener **tamano variable** (pueden crecer o encogerse)
+- Hay que liberar el espacio explicitamente (o que el sistema lo haga por ti)
+- Aqui viven: `String`, `Vec`, `HashMap`, y cualquier dato de tamano variable"""
+en = """## Before we start: Stack and Heap
+
+To understand why some values "move" and others "copy", you need to understand where data lives in memory. Your computer has two memory zones that programs use:
+
+### The Stack
+Imagine a **stack of plates**. You can only put a plate on top (push) or remove the top one (pop). It's very fast because you always know where the last plate is. The stack works the same way:
+- It's **super fast** (push and pop are trivial operations)
+- Data must have a **fixed size known** at compile time
+- Cleaned up automatically when the function ends
+- Lives here: numbers (`i32`, `f64`), booleans (`bool`), characters (`char`), and fixed-size data
+
+### The Heap
+Imagine a **large parking lot**. When a car arrives, the attendant finds a free spot and gives you a ticket with the location. The heap works the same way:
+- It's **slower** (must search for free space and remember where it is)
+- Data can have **variable size** (can grow or shrink)
+- The space must be explicitly freed (or the system does it for you)
+- Lives here: `String`, `Vec`, `HashMap`, and any variable-size data"""
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Resumen simple:**
+- **Stack** = rapido, tamano fijo, se limpia solo. Como una pila de platos.
+- **Heap** = mas lento, tamano variable, alguien debe liberar el espacio. Como un estacionamiento.
+- Un `i32` (4 bytes fijos) vive en el stack. Un `String` (puede tener 5 o 5000 caracteres) vive en el heap."""
+en = """**Simple summary:**
+- **Stack** = fast, fixed size, cleans itself. Like a stack of plates.
+- **Heap** = slower, variable size, someone must free the space. Like a parking lot.
+- An `i32` (fixed 4 bytes) lives on the stack. A `String` (could have 5 or 5000 characters) lives on the heap."""
+
+[[blocks]]
+type = "text"
+es = """## String vs &str: un ejemplo concreto
+
+Ahora que sabes que es el stack y el heap, veamos los dos tipos de texto en Rust:
+
+- **`&str`** (string slice): texto de tamano fijo. Generalmente vive en el binario del programa (se "hornea" cuando compilas). Es una referencia a texto que ya existe en algun lugar. No puedes modificarlo.
+- **`String`**: texto de tamano variable que vive en el heap. Puedes agregarle texto, quitarle, cambiarlo. Es el tipo que tiene ownership.
+
+Piensa en `&str` como un **cartel pegado en la pared** (fijo, no lo puedes cambiar), y `String` como una **pizarra** (puedes escribir, borrar, y escribir mas):"""
+en = """## String vs &str: a concrete example
+
+Now that you know what stack and heap are, let's see the two text types in Rust:
+
+- **`&str`** (string slice): fixed-size text. Usually lives in the program binary (it's "baked in" when you compile). It's a reference to text that already exists somewhere. You can't modify it.
+- **`String`**: variable-size text that lives on the heap. You can add text, remove it, change it. This is the type that has ownership.
+
+Think of `&str` as a **sign glued to the wall** (fixed, you can't change it), and `String` as a **whiteboard** (you can write, erase, and write more):"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // &str - texto fijo, en el binario del programa
+    let saludo: &str = "hola mundo";
+    // No puedo hacer: saludo.push_str("!"); // ERROR!
+
+    // String - en el heap, puede crecer y cambiar
+    let mut mensaje = String::from("hola");
+    mensaje.push_str(" mundo");        // Agregar texto
+    mensaje.push('!');                 // Agregar un caracter
+
+    println!("&str: {}", saludo);
+    println!("String: {}", mensaje);
+    println!("Longitud: {} bytes", mensaje.len());
+    println!("Capacidad reservada: {} bytes", mensaje.capacity());
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Move: transferencia de ownership
+
+Ahora viene la parte que hace a Rust unico. Cuando asignas un valor del heap (como `String`) a otra variable, **el ownership se transfiere**. Esto se llama **move** (mover). La variable original deja de ser valida:"""
+en = """## Move: ownership transfer
+
+Now comes the part that makes Rust unique. When you assign a heap value (like `String`) to another variable, **ownership is transferred**. This is called a **move**. The original variable is no longer valid:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''fn main() {
+    let s1 = String::from("hola");
+    let s2 = s1;  // Ownership se MUEVE de s1 a s2
+
+    // s1 ya NO es valida. s2 es el nuevo dueno.
+    println!("{}", s1);  // ERROR! s1 ya no existe
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "danger"
+es = """**Error del compilador:**
+```
+error[E0382]: borrow of moved value: `s1`
+ --> src/main.rs:5:20
+  |
+2 |     let s1 = String::from("hola");
+  |         -- move occurs because `s1` has type `String`
+3 |     let s2 = s1;
+  |              -- value moved here
+5 |     println!("{}", s1);
+  |                    ^^ value borrowed here after move
+```
+El compilador te dice exactamente que paso: el valor se movio en la linea 3, y en la linea 5 intentas usarlo despues del move."""
+en = """**Compiler error:**
+```
+error[E0382]: borrow of moved value: `s1`
+ --> src/main.rs:5:20
+  |
+2 |     let s1 = String::from("hola");
+  |         -- move occurs because `s1` has type `String`
+3 |     let s2 = s1;
+  |              -- value moved here
+5 |     println!("{}", s1);
+  |                    ^^ value borrowed here after move
+```
+The compiler tells you exactly what happened: the value moved on line 3, and on line 5 you try to use it after the move."""
+
+[[blocks]]
+type = "text"
+es = """## Por que Move y no simplemente copiar?
+
+Podrías preguntar: por que Rust no simplemente copia el `String`? El problema es que `String` tiene datos en el heap. Si Rust copiara, ambas variables apuntarian a la **misma memoria** en el heap:
+
+1. `s1` apunta a "hola" en el heap
+2. Si `s2` fuera una copia, tambien apuntaria a "hola" en el heap
+3. Cuando `s1` sale del scope, Rust libera "hola" del heap
+4. Cuando `s2` sale del scope, Rust intentaria liberar "hola" **otra vez**
+5. Esto es un **double free** — un bug grave que puede causar crashes o corrupcion de datos
+
+El move resuelve esto elegantemente: al mover el ownership, solo hay **un dueno**, y la memoria se libera **exactamente una vez**."""
+en = """## Why Move and not just copy?
+
+You might ask: why doesn't Rust just copy the `String`? The problem is that `String` has data on the heap. If Rust copied, both variables would point to the **same memory** on the heap:
+
+1. `s1` points to "hola" on the heap
+2. If `s2` were a copy, it would also point to "hola" on the heap
+3. When `s1` goes out of scope, Rust frees "hola" from the heap
+4. When `s2` goes out of scope, Rust would try to free "hola" **again**
+5. This is a **double free** — a serious bug that can cause crashes or data corruption
+
+Move solves this elegantly: by moving ownership, there's only **one owner**, and memory is freed **exactly once**."""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // Move en accion - esto SI funciona
+    let s1 = String::from("hola");
+    let s2 = s1;  // s1 se mueve a s2
+
+    // Solo s2 es valido ahora
+    println!("s2 = {}", s2);  // OK!
+    // println!("s1 = {}", s1);  // Esto daria error
+
+    // Otro ejemplo: reasignar tambien funciona
+    let a = String::from("primero");
+    let b = String::from("segundo");
+    let c = a;  // a se mueve a c
+    // a ya no es valida, pero b y c si
+    println!("b = {}, c = {}", b, c);
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Piensa en el move como pasar un paquete:** Si le pasas un paquete a alguien, tu ya no lo tienes. No desaparece, simplemente cambio de manos. En Rust, `let s2 = s1;` pasa el "paquete" (los datos de String) de `s1` a `s2`. Despues del move, `s1` tiene las manos vacias."""
+en = """**Think of move as passing a package:** If you hand a package to someone, you no longer have it. It doesn't disappear, it simply changed hands. In Rust, `let s2 = s1;` passes the "package" (the String data) from `s1` to `s2`. After the move, `s1` has empty hands."""
+
+[[blocks]]
+type = "quiz"
+es = "Que pasa cuando haces `let s2 = s1;` donde s1 es un String?"
+en = "What happens when you do `let s2 = s1;` where s1 is a String?"
+[[blocks.options]]
+es = "s1 se copia a s2, ambas variables son validas"
+en = "s1 is copied to s2, both variables are valid"
+correct = false
+[[blocks.options]]
+es = "El ownership se mueve de s1 a s2, s1 ya no es valida"
+en = "Ownership moves from s1 to s2, s1 is no longer valid"
+correct = true
+[[blocks.options]]
+es = "s1 y s2 comparten la misma memoria"
+en = "s1 and s2 share the same memory"
+correct = false
+[[blocks.options]]
+es = "Error de compilacion"
+en = "Compile error"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Por que Rust usa 'move' en lugar de copiar un String automaticamente?"
+en = "Why does Rust use 'move' instead of automatically copying a String?"
+[[blocks.options]]
+es = "Porque copiar es muy lento"
+en = "Because copying is very slow"
+correct = false
+[[blocks.options]]
+es = "Para evitar que dos variables apunten a la misma memoria del heap, lo que causaria un double free"
+en = "To prevent two variables from pointing to the same heap memory, which would cause a double free"
+correct = true
+[[blocks.options]]
+es = "Porque Rust no sabe como copiar Strings"
+en = "Because Rust doesn't know how to copy Strings"
+correct = false
+[[blocks.options]]
+es = "Es solo una preferencia de diseno sin razon tecnica"
+en = "It's just a design preference with no technical reason"
+correct = false

@@ -36,16 +36,16 @@ Teclado: $49.50 - Agotado"""
 
 [hints]
 es = [
-    "Define el struct con: `struct Producto { nombre: String, precio: f64, en_stock: bool }`",
-    "Crea instancias con: `let p1 = Producto { nombre: String::from(\"Laptop\"), ... }`",
-    "El primer producto es Laptop a $999.99 con en_stock = true",
-    "El segundo producto es Teclado a $49.50 con en_stock = false",
+    "Un struct se define con la palabra clave `struct` seguida de llaves con los campos",
+    "Los campos del struct necesitan un nombre y un tipo, separados por dos puntos",
+    "Para crear una instancia, usa el nombre del struct seguido de llaves con los valores",
+    "Mira la salida esperada para saber que valores darle a cada producto",
 ]
 en = [
-    "Define the struct with: `struct Producto { nombre: String, precio: f64, en_stock: bool }`",
-    "Create instances with: `let p1 = Producto { nombre: String::from(\"Laptop\"), ... }`",
-    "The first product is Laptop at $999.99 with en_stock = true",
-    "The second product is Teclado at $49.50 with en_stock = false",
+    "A struct is defined with the `struct` keyword followed by braces with fields",
+    "Struct fields need a name and a type, separated by a colon",
+    "To create an instance, use the struct name followed by braces with values",
+    "Look at the expected output to know what values to give each product",
 ]
 
 [solution]

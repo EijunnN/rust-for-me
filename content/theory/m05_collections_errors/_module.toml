@@ -8,8 +8,8 @@ es = "Colecciones y Strings"
 en = "Collections and Strings"
 
 [description]
-es = "Domina Vec, String y HashMap: las colecciones fundamentales de Rust. Aprende iteradores y closures."
-en = "Master Vec, String and HashMap: Rust's fundamental collections. Learn iterators and closures."
+es = "Domina Vec, String y HashMap: las colecciones fundamentales de Rust. Aprende closures e iteradores."
+en = "Master Vec, String and HashMap: Rust's fundamental collections. Learn closures and iterators."
 
 [[lessons]]
 id = "m05_l01"
@@ -32,5 +32,11 @@ title_en = "HashMaps"
 [[lessons]]
 id = "m05_l04"
 order = 4
-title_es = "Iteradores y Closures"
-title_en = "Iterators and Closures"
+title_es = "Closures: funciones anonimas"
+title_en = "Closures: anonymous functions"
+
+[[lessons]]
+id = "m05_l05"
+order = 5
+title_es = "Iteradores"
+title_en = "Iterators"

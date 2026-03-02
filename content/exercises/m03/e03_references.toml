@@ -11,13 +11,17 @@ en = "Functions with references"
 
 [description]
 es = """Completa las funciones usando referencias:
-1. `contar_caracteres` debe recibir una referencia inmutable a String y devolver su longitud.
+1. `contar_caracteres` debe recibir un &str (string slice) y devolver su longitud.
 2. `agregar_saludo` debe recibir una referencia mutable a String y agregarle ", bienvenido!" al final.
+
+Nota: preferimos &str sobre &String porque es mas flexible (acepta tanto &String como &str).
 
 La salida debe coincidir exactamente con el formato esperado."""
 en = """Complete the functions using references:
-1. `contar_caracteres` should receive an immutable reference to String and return its length.
+1. `contar_caracteres` should receive a &str (string slice) and return its length.
 2. `agregar_saludo` should receive a mutable reference to String and append ", bienvenido!" to it.
+
+Note: we prefer &str over &String because it's more flexible (accepts both &String and &str).
 
 The output must match the expected format exactly."""
 
@@ -47,20 +51,20 @@ Ferris, bienvenido!"""
 
 [hints]
 es = [
-    "Para referencia inmutable: `s: &String`",
+    "Para string slice inmutable: `s: &str`",
     "Para referencia mutable: `s: &mut String`",
-    "`.len()` devuelve la longitud de un String",
+    "`.len()` devuelve la longitud",
     "`.push_str()` agrega texto a un String mutable",
 ]
 en = [
-    "For immutable reference: `s: &String`",
+    "For immutable string slice: `s: &str`",
     "For mutable reference: `s: &mut String`",
-    "`.len()` returns the length of a String",
+    "`.len()` returns the length",
     "`.push_str()` appends text to a mutable String",
 ]
 
 [solution]
-code = '''fn contar_caracteres(s: &String) -> usize {
+code = '''fn contar_caracteres(s: &str) -> usize {
     s.len()
 }
 

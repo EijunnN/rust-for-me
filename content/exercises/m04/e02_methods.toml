@@ -72,16 +72,16 @@ Despues de reiniciar: 0"""
 
 [hints]
 es = [
-    "nuevo() devuelve Contador { valor: 0 }",
-    "incrementar necesita &mut self para modificar: fn incrementar(&mut self)",
-    "valor necesita &self para leer: fn valor(&self) -> i32",
-    "reiniciar necesita &mut self: self.valor = 0",
+    "La funcion asociada nuevo() crea una instancia con el valor inicial",
+    "Piensa que metodos necesitan leer el struct y cuales necesitan modificarlo. Eso determina si usan &self o &mut self",
+    "Para devolver un valor del struct, el metodo necesita recibir una referencia a self",
+    "Reiniciar simplemente asigna el campo a su valor por defecto",
 ]
 en = [
-    "nuevo() returns Contador { valor: 0 }",
-    "incrementar needs &mut self to modify: fn incrementar(&mut self)",
-    "valor needs &self to read: fn valor(&self) -> i32",
-    "reiniciar needs &mut self: self.valor = 0",
+    "The associated function nuevo() creates an instance with an initial value",
+    "Think about which methods need to read the struct and which need to modify it. That determines &self vs &mut self",
+    "To return a value from the struct, the method needs a reference to self",
+    "Reset simply assigns the field to its default value",
 ]
 
 [solution]

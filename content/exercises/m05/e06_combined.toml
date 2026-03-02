@@ -44,21 +44,21 @@ fn main() {
 
 [validation]
 expected_output = """Total palabras: 9
-Mas larga: genial
+Mas larga: seguro
 Unicas: 6"""
 
 [hints]
 es = [
-    "Para total: `texto.split_whitespace().count()`",
-    "Para mas larga: `.max_by_key(|w| w.len())`",
-    "Para unicas: inserta cada palabra en minuscula en un HashMap o HashSet",
-    "Un HashSet tambien funciona: `use std::collections::HashSet;`",
+    "Para contar palabras, busca un metodo de &str que separe por espacios en blanco",
+    "Para encontrar la mas larga, los iteradores tienen un metodo que encuentra el maximo segun un criterio",
+    "Para contar palabras unicas, necesitas una estructura que no permita duplicados. Convierte a minusculas primero",
+    "Piensa en que coleccion de las que aprendiste no permite elementos repetidos",
 ]
 en = [
-    "For total: `texto.split_whitespace().count()`",
-    "For longest: `.max_by_key(|w| w.len())`",
-    "For unique: insert each lowercase word into a HashMap or HashSet",
-    "A HashSet also works: `use std::collections::HashSet;`",
+    "To count words, look for a &str method that splits by whitespace",
+    "To find the longest, iterators have a method that finds the maximum based on a criteria",
+    "To count unique words, you need a structure that doesn't allow duplicates. Convert to lowercase first",
+    "Think about which collection you learned that doesn't allow repeated elements",
 ]
 
 [solution]

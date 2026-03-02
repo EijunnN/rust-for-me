@@ -52,18 +52,18 @@ Promedio: 87.6"""
 
 [hints]
 es = [
-    "Una tupla se declara asi: let persona: (&str, u8, f64) = (\"Ana\", 25, 1.68);",
-    "Destructuracion: let (nombre, edad, altura) = persona;",
-    "Array: let notas: [i32; 5] = [85, 92, 78, 95, 88];",
-    "Para el promedio, suma todos los valores y divide por la cantidad. Usa `as f64` para convertir",
-    "Promedio: let promedio = (notas[0] + notas[1] + notas[2] + notas[3] + notas[4]) as f64 / 5.0;",
+    "Una tupla agrupa varios valores de diferentes tipos entre parentesis",
+    "Para extraer los valores de una tupla, usa destructuracion con let y parentesis",
+    "Un array se declara con corchetes y todos los elementos deben ser del mismo tipo",
+    "Para calcular el promedio, necesitas sumar todos los valores y dividir por la cantidad",
+    "Recuerda: para dividir enteros como decimales, necesitas convertir a f64 con 'as f64'",
 ]
 en = [
-    "A tuple is declared like this: let persona: (&str, u8, f64) = (\"Ana\", 25, 1.68);",
-    "Destructuring: let (nombre, edad, altura) = persona;",
-    "Array: let notas: [i32; 5] = [85, 92, 78, 95, 88];",
-    "For the average, sum all values and divide by the count. Use `as f64` to convert",
-    "Average: let promedio = (notas[0] + notas[1] + notas[2] + notas[3] + notas[4]) as f64 / 5.0;",
+    "A tuple groups multiple values of different types in parentheses",
+    "To extract values from a tuple, use destructuring with let and parentheses",
+    "An array is declared with brackets and all elements must be the same type",
+    "To calculate the average, you need to sum all values and divide by the count",
+    "Remember: to divide integers as decimals, you need to convert to f64 with 'as f64'",
 ]
 
 [solution]

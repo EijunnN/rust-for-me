@@ -14,23 +14,35 @@ en = "The heart of Rust: understand the ownership system, references, borrowing,
 [[lessons]]
 id = "m03_l01"
 order = 1
-title_es = "Ownership: El concepto central"
-title_en = "Ownership: The core concept"
+title_es = "Ownership: que es y por que importa"
+title_en = "Ownership: what it is and why it matters"
 
 [[lessons]]
 id = "m03_l02"
 order = 2
-title_es = "Referencias y Borrowing"
-title_en = "References and Borrowing"
+title_es = "Move: como se transfiere el ownership"
+title_en = "Move: how ownership is transferred"
 
 [[lessons]]
 id = "m03_l03"
 order = 3
-title_es = "Slices"
-title_en = "Slices"
+title_es = "Copy, Clone y ownership en funciones"
+title_en = "Copy, Clone and ownership in functions"
 
 [[lessons]]
 id = "m03_l04"
 order = 4
+title_es = "Referencias y Borrowing"
+title_en = "References and Borrowing"
+
+[[lessons]]
+id = "m03_l05"
+order = 5
+title_es = "Slices"
+title_en = "Slices"
+
+[[lessons]]
+id = "m03_l06"
+order = 6
 title_es = "Introduccion a Lifetimes"
 title_en = "Introduction to Lifetimes"
