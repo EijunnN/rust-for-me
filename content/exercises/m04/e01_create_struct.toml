@@ -1,0 +1,74 @@
+[meta]
+id = "m04_e01"
+module = "m04"
+difficulty = "beginner"
+order = 1
+exercise_type = "write_code"
+
+[title]
+es = "Crea un struct Producto"
+en = "Create a Product struct"
+
+[description]
+es = """Crea un struct `Producto` con los campos: `nombre` (String), `precio` (f64), y `en_stock` (bool).
+Luego crea dos productos y muestra su informacion. La salida debe coincidir exactamente."""
+en = """Create a `Producto` struct with fields: `nombre` (String), `precio` (f64), and `en_stock` (bool).
+Then create two products and display their info. The output must match exactly."""
+
+[starter_code]
+code = '''// Define el struct Producto aqui
+// Define the Producto struct here
+
+
+fn main() {
+    // Crea dos productos
+    // Create two products
+
+    println!("{}: ${:.2} - {}", p1.nombre, p1.precio,
+        if p1.en_stock { "Disponible" } else { "Agotado" });
+    println!("{}: ${:.2} - {}", p2.nombre, p2.precio,
+        if p2.en_stock { "Disponible" } else { "Agotado" });
+}'''
+
+[validation]
+expected_output = """Laptop: $999.99 - Disponible
+Teclado: $49.50 - Agotado"""
+
+[hints]
+es = [
+    "Define el struct con: `struct Producto { nombre: String, precio: f64, en_stock: bool }`",
+    "Crea instancias con: `let p1 = Producto { nombre: String::from(\"Laptop\"), ... }`",
+    "El primer producto es Laptop a $999.99 con en_stock = true",
+    "El segundo producto es Teclado a $49.50 con en_stock = false",
+]
+en = [
+    "Define the struct with: `struct Producto { nombre: String, precio: f64, en_stock: bool }`",
+    "Create instances with: `let p1 = Producto { nombre: String::from(\"Laptop\"), ... }`",
+    "The first product is Laptop at $999.99 with en_stock = true",
+    "The second product is Teclado at $49.50 with en_stock = false",
+]
+
+[solution]
+code = '''struct Producto {
+    nombre: String,
+    precio: f64,
+    en_stock: bool,
+}
+
+fn main() {
+    let p1 = Producto {
+        nombre: String::from("Laptop"),
+        precio: 999.99,
+        en_stock: true,
+    };
+    let p2 = Producto {
+        nombre: String::from("Teclado"),
+        precio: 49.50,
+        en_stock: false,
+    };
+
+    println!("{}: ${:.2} - {}", p1.nombre, p1.precio,
+        if p1.en_stock { "Disponible" } else { "Agotado" });
+    println!("{}: ${:.2} - {}", p2.nombre, p2.precio,
+        if p2.en_stock { "Disponible" } else { "Agotado" });
+}'''

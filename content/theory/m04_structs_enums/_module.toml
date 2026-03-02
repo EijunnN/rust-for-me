@@ -1,0 +1,36 @@
+[meta]
+id = "m04"
+order = 4
+icon = "🧱"
+
+[title]
+es = "Structs, Enums y Pattern Matching"
+en = "Structs, Enums and Pattern Matching"
+
+[description]
+es = "Crea tipos de datos personalizados con structs y enums. Domina el pattern matching y descubre Option y Result."
+en = "Create custom data types with structs and enums. Master pattern matching and discover Option and Result."
+
+[[lessons]]
+id = "m04_l01"
+order = 1
+title_es = "Structs: tus propios tipos"
+title_en = "Structs: your own types"
+
+[[lessons]]
+id = "m04_l02"
+order = 2
+title_es = "Metodos e Implementaciones"
+title_en = "Methods and Implementations"
+
+[[lessons]]
+id = "m04_l03"
+order = 3
+title_es = "Enums y Pattern Matching"
+title_en = "Enums and Pattern Matching"
+
+[[lessons]]
+id = "m04_l04"
+order = 4
+title_es = "Option y Result"
+title_en = "Option and Result"

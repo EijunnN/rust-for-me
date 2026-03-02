@@ -1,0 +1,87 @@
+[meta]
+id = "m03_e06"
+module = "m03"
+difficulty = "intermediate"
+order = 6
+exercise_type = "fix_bug"
+
+[title]
+es = "Agrega las anotaciones de lifetime"
+en = "Add the lifetime annotations"
+
+[description]
+es = """La funcion `elegir` recibe dos referencias &str y devuelve una de ellas segun un booleano.
+El compilador no puede inferir los lifetimes porque hay multiples referencias de entrada.
+Agrega las anotaciones de lifetime necesarias para que compile."""
+en = """The function `elegir` receives two &str references and returns one based on a boolean.
+The compiler cannot infer lifetimes because there are multiple input references.
+Add the necessary lifetime annotations to make it compile."""
+
+[broken_code]
+code = '''fn elegir(a: &str, b: &str, primero: bool) -> &str {
+    if primero {
+        a
+    } else {
+        b
+    }
+}
+
+fn main() {
+    let x = String::from("Rust");
+    let y = String::from("Python");
+    let resultado = elegir(&x, &y, true);
+    println!("Elegido: {}", resultado);
+}'''
+
+[compiler_error]
+es = "error[E0106]: missing lifetime specifier -- La funcion tiene dos referencias de entrada y devuelve una referencia. Rust necesita saber de cual parametro viene el resultado."
+en = "error[E0106]: missing lifetime specifier -- The function has two input references and returns a reference. Rust needs to know from which parameter the result comes."
+
+[starter_code]
+code = '''fn elegir(a: &str, b: &str, primero: bool) -> &str {
+    if primero {
+        a
+    } else {
+        b
+    }
+}
+
+fn main() {
+    let x = String::from("Rust");
+    let y = String::from("Python");
+    let resultado = elegir(&x, &y, true);
+    println!("Elegido: {}", resultado);
+}'''
+
+[validation]
+expected_output = "Elegido: Rust"
+
+[hints]
+es = [
+    "Necesitas declarar un lifetime generico: `<'a>` despues del nombre de la funcion",
+    "Ambas referencias de entrada comparten el mismo lifetime: `a: &'a str, b: &'a str`",
+    "El retorno tambien usa el mismo lifetime: `-> &'a str`",
+    "La firma completa: `fn elegir<'a>(a: &'a str, b: &'a str, primero: bool) -> &'a str`",
+]
+en = [
+    "You need to declare a generic lifetime: `<'a>` after the function name",
+    "Both input references share the same lifetime: `a: &'a str, b: &'a str`",
+    "The return also uses the same lifetime: `-> &'a str`",
+    "The complete signature: `fn elegir<'a>(a: &'a str, b: &'a str, primero: bool) -> &'a str`",
+]
+
+[solution]
+code = '''fn elegir<'a>(a: &'a str, b: &'a str, primero: bool) -> &'a str {
+    if primero {
+        a
+    } else {
+        b
+    }
+}
+
+fn main() {
+    let x = String::from("Rust");
+    let y = String::from("Python");
+    let resultado = elegir(&x, &y, true);
+    println!("Elegido: {}", resultado);
+}'''

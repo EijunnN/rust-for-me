@@ -1,0 +1,92 @@
+[meta]
+id = "m05_e06"
+module = "m05"
+difficulty = "intermediate"
+order = 6
+exercise_type = "write_code"
+
+[title]
+es = "Proyecto mini: analizador de texto"
+en = "Mini project: text analyzer"
+
+[description]
+es = """Crea una funcion `analizar_texto` que reciba un &str y devuelva una tupla con:
+1. El numero total de palabras
+2. La palabra mas larga
+3. El numero de palabras unicas (sin repetir, case-insensitive)
+
+Usa split_whitespace(), HashMap, e iteradores."""
+en = """Create a function `analizar_texto` that receives a &str and returns a tuple with:
+1. The total number of words
+2. The longest word
+3. The number of unique words (no repeats, case-insensitive)
+
+Use split_whitespace(), HashMap, and iterators."""
+
+[starter_code]
+code = '''use std::collections::HashMap;
+
+fn analizar_texto(texto: &str) -> (usize, String, usize) {
+    // 1. Cuenta total de palabras
+    // 2. Encuentra la palabra mas larga
+    // 3. Cuenta palabras unicas (case-insensitive)
+    todo!()
+}
+
+fn main() {
+    let texto = "Rust es genial Rust es rapido y Rust es seguro";
+    let (total, larga, unicas) = analizar_texto(texto);
+
+    println!("Total palabras: {}", total);
+    println!("Mas larga: {}", larga);
+    println!("Unicas: {}", unicas);
+}'''
+
+[validation]
+expected_output = """Total palabras: 9
+Mas larga: genial
+Unicas: 6"""
+
+[hints]
+es = [
+    "Para total: `texto.split_whitespace().count()`",
+    "Para mas larga: `.max_by_key(|w| w.len())`",
+    "Para unicas: inserta cada palabra en minuscula en un HashMap o HashSet",
+    "Un HashSet tambien funciona: `use std::collections::HashSet;`",
+]
+en = [
+    "For total: `texto.split_whitespace().count()`",
+    "For longest: `.max_by_key(|w| w.len())`",
+    "For unique: insert each lowercase word into a HashMap or HashSet",
+    "A HashSet also works: `use std::collections::HashSet;`",
+]
+
+[solution]
+code = '''use std::collections::HashMap;
+
+fn analizar_texto(texto: &str) -> (usize, String, usize) {
+    let palabras: Vec<&str> = texto.split_whitespace().collect();
+    let total = palabras.len();
+
+    let larga = palabras.iter()
+        .max_by_key(|w| w.len())
+        .unwrap_or(&"")
+        .to_string();
+
+    let mut unicas_map: HashMap<String, bool> = HashMap::new();
+    for palabra in &palabras {
+        unicas_map.entry(palabra.to_lowercase()).or_insert(true);
+    }
+    let unicas = unicas_map.len();
+
+    (total, larga, unicas)
+}
+
+fn main() {
+    let texto = "Rust es genial Rust es rapido y Rust es seguro";
+    let (total, larga, unicas) = analizar_texto(texto);
+
+    println!("Total palabras: {}", total);
+    println!("Mas larga: {}", larga);
+    println!("Unicas: {}", unicas);
+}'''

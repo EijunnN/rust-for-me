@@ -1,0 +1,235 @@
+[meta]
+id = "m05_l02"
+order = 2
+
+[title]
+es = "Strings a fondo"
+en = "Strings in depth"
+
+[[blocks]]
+type = "text"
+es = """## Por que Strings es "complicado" en Rust?
+
+Si vienes de Python, JavaScript o Java, los strings en Rust pueden parecer complicados al principio. La razon es que Rust expone la complejidad real de los strings que otros lenguajes esconden:
+
+- Los strings son **UTF-8**: un caracter puede ocupar 1, 2, 3, o 4 bytes.
+- No puedes acceder por indice (`s[0]`) porque no es O(1) en UTF-8.
+- Hay dos tipos: `String` (heap, mutable) y `&str` (slice, inmutable).
+
+Esta complejidad existe para garantizar que tu programa **nunca** produzca strings corruptos o invalidos."""
+en = """## Why are Strings "complicated" in Rust?
+
+If you come from Python, JavaScript, or Java, strings in Rust may seem complicated at first. The reason is that Rust exposes the real complexity of strings that other languages hide:
+
+- Strings are **UTF-8**: a character can take 1, 2, 3, or 4 bytes.
+- You can't index by position (`s[0]`) because it's not O(1) in UTF-8.
+- There are two types: `String` (heap, mutable) and `&str` (slice, immutable).
+
+This complexity exists to guarantee your program **never** produces corrupt or invalid strings."""
+
+[[blocks]]
+type = "text"
+es = """## Crear y manipular Strings"""
+en = """## Creating and manipulating Strings"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // Crear Strings
+    let s1 = String::from("hola");
+    let s2 = "mundo".to_string();  // Otra forma
+    let s3 = String::new();        // String vacio
+
+    // Concatenar
+    let mut saludo = String::from("Hola");
+    saludo.push_str(", mundo");   // Agregar &str
+    saludo.push('!');              // Agregar char
+    println!("{}", saludo);
+
+    // format! - la forma mas comoda de concatenar
+    let nombre = "Ferris";
+    let edad = 5;
+    let mensaje = format!("{} tiene {} anos", nombre, edad);
+    println!("{}", mensaje);
+
+    // Concatenar con +  (consume el primer String)
+    let a = String::from("Rust");
+    let b = String::from(" es genial");
+    let c = a + &b;  // a se mueve, b se presta
+    // println!("{}", a);  // ERROR: a fue movido
+    println!("{}", c);
+    println!("{}", b);  // b sigue valido (fue prestado)
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Consejo: prefiere `format!` para concatenar.**
+El operador `+` mueve el primer String, lo que puede ser confuso. `format!` siempre toma referencias y es mas legible:
+```rust
+let resultado = format!("{} {} {}", a, b, c);  // Claro y simple
+```"""
+en = """**Tip: prefer `format!` for concatenation.**
+The `+` operator moves the first String, which can be confusing. `format!` always takes references and is more readable:
+```rust
+let resultado = format!("{} {} {}", a, b, c);  // Clear and simple
+```"""
+
+[[blocks]]
+type = "text"
+es = """## UTF-8 y por que no puedes indexar Strings
+
+Un String en Rust es una secuencia de bytes UTF-8. Caracteres diferentes ocupan diferente cantidad de bytes:"""
+en = """## UTF-8 and why you can't index Strings
+
+A String in Rust is a sequence of UTF-8 bytes. Different characters take different amounts of bytes:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let hola = String::from("Hola");
+    let nihao = String::from("你好");       // Chino
+    let emoji = String::from("🦀🔥");       // Emojis
+
+    println!("'{}': {} bytes, {} chars", hola, hola.len(), hola.chars().count());
+    println!("'{}': {} bytes, {} chars", nihao, nihao.len(), nihao.chars().count());
+    println!("'{}': {} bytes, {} chars", emoji, emoji.len(), emoji.chars().count());
+
+    // Por eso s[0] no funciona: que deberia devolver?
+    // El primer BYTE? El primer CARACTER? El primer GRAFEMA?
+    // Rust te obliga a ser explicito:
+
+    // Iterar por caracteres
+    print!("Chars de '{}': ", nihao);
+    for c in nihao.chars() {
+        print!("{} ", c);
+    }
+    println!();
+
+    // Iterar por bytes
+    print!("Bytes de 'Hola': ");
+    for b in hola.bytes() {
+        print!("{} ", b);
+    }
+    println!();
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Metodos utiles de String"""
+en = """## Useful String methods"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let texto = String::from("  Hola, Mundo Rust!  ");
+
+    // Recortar espacios
+    println!("trim: '{}'", texto.trim());
+
+    // Mayusculas/minusculas
+    println!("UPPER: {}", texto.trim().to_uppercase());
+    println!("lower: {}", texto.trim().to_lowercase());
+
+    // Buscar
+    println!("Contiene 'Rust'? {}", texto.contains("Rust"));
+    println!("Empieza con '  H'? {}", texto.starts_with("  H"));
+
+    // Reemplazar
+    let nuevo = texto.trim().replace("Mundo", "Planet");
+    println!("Reemplazado: {}", nuevo);
+
+    // Dividir
+    let csv = "manzana,banana,cereza,durazno";
+    let frutas: Vec<&str> = csv.split(',').collect();
+    println!("Frutas: {:?}", frutas);
+
+    // Repetir
+    let linea = "-".repeat(30);
+    println!("{}", linea);
+
+    // Verificar si es vacio
+    let vacio = String::new();
+    println!("Esta vacio? {}", vacio.is_empty());
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Slicing de Strings (con cuidado!)
+
+Puedes crear slices de un String, pero debes asegurarte de cortar en limites de caracteres validos:"""
+en = """## String slicing (carefully!)
+
+You can create slices of a String, but you must make sure to cut at valid character boundaries:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let saludo = String::from("Hola mundo");
+
+    // Slicing seguro (caracteres ASCII = 1 byte cada uno)
+    let primera = &saludo[0..4];  // "Hola"
+    let segunda = &saludo[5..];   // "mundo"
+    println!("'{}' y '{}'", primera, segunda);
+
+    // Para texto con caracteres multi-byte, usa .chars()
+    let japones = "こんにちは";
+    let primeros_dos: String = japones.chars().take(2).collect();
+    println!("Primeros 2 chars de '{}': '{}'", japones, primeros_dos);
+
+    // Extraer palabras
+    let frase = "Rust es rapido y seguro";
+    let palabras: Vec<&str> = frase.split_whitespace().collect();
+    println!("Palabras: {:?}", palabras);
+    println!("Total: {} palabras", palabras.len());
+}'''
+
+[[blocks]]
+type = "quiz"
+es = "Por que `\"Hola\"[0]` no funciona en Rust?"
+en = "Why doesn't `\"Hola\"[0]` work in Rust?"
+[[blocks.options]]
+es = "Porque Rust no tiene strings"
+en = "Because Rust doesn't have strings"
+correct = false
+[[blocks.options]]
+es = "Porque UTF-8 tiene caracteres de tamano variable y el indice de bytes no corresponde al indice de caracteres"
+en = "Because UTF-8 has variable-size characters and byte index doesn't correspond to character index"
+correct = true
+[[blocks.options]]
+es = "Porque los strings son inmutables"
+en = "Because strings are immutable"
+correct = false
+[[blocks.options]]
+es = "Es un bug que se arreglara"
+en = "It's a bug that will be fixed"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Cual es la diferencia entre `String` y `&str`?"
+en = "What is the difference between `String` and `&str`?"
+[[blocks.options]]
+es = "String es para texto largo, &str para texto corto"
+en = "String is for long text, &str for short text"
+correct = false
+[[blocks.options]]
+es = "String es owned (heap, puede crecer); &str es una referencia/slice (puede ser de String o literal)"
+en = "String is owned (heap, can grow); &str is a reference/slice (can be from String or literal)"
+correct = true
+[[blocks.options]]
+es = "No hay diferencia, son sinonimos"
+en = "There's no difference, they're synonyms"
+correct = false
+[[blocks.options]]
+es = "&str es mas rapido que String"
+en = "&str is faster than String"
+correct = false

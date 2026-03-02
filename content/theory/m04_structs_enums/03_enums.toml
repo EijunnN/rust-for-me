@@ -1,0 +1,321 @@
+[meta]
+id = "m04_l03"
+order = 3
+
+[title]
+es = "Enums y Pattern Matching"
+en = "Enums and Pattern Matching"
+
+[[blocks]]
+type = "text"
+es = """## El Problema: representar estados con strings o numeros
+
+En muchos lenguajes, los estados se representan con strings o numeros magicos. Esto crea bugs porque nada te impide usar un valor invalido:"""
+en = """## The Problem: representing states with strings or numbers
+
+In many languages, states are represented with strings or magic numbers. This creates bugs because nothing prevents you from using an invalid value:"""
+
+[[blocks]]
+type = "code"
+language = "python"
+runnable = false
+code = '''# Python - estados como strings (peligroso)
+status = "pendiente"
+
+# Typo silencioso que nunca falla... hasta que explota
+if status == "pendiemte":  # Bug! Typo nunca detectado
+    print("Procesando...")
+
+# O peor: un estado que no existe
+status = "cancelando_parcialmente"  # Inventado, nadie lo maneja'''
+
+[[blocks]]
+type = "text"
+es = """## La solucion: Enums
+
+Un **enum** (enumeracion) define un tipo que puede ser **una de varias variantes** posibles. El compilador verifica que siempre uses variantes validas y que manejes todas:"""
+en = """## The solution: Enums
+
+An **enum** (enumeration) defines a type that can be **one of several possible variants**. The compiler verifies that you always use valid variants and handle all of them:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''#[derive(Debug)]
+enum EstadoPedido {
+    Pendiente,
+    Procesando,
+    Enviado,
+    Entregado,
+    Cancelado,
+}
+
+fn describir_estado(estado: &EstadoPedido) -> &str {
+    match estado {
+        EstadoPedido::Pendiente => "Esperando confirmacion",
+        EstadoPedido::Procesando => "En preparacion",
+        EstadoPedido::Enviado => "En camino",
+        EstadoPedido::Entregado => "Recibido por el cliente",
+        EstadoPedido::Cancelado => "Cancelado",
+    }
+}
+
+fn main() {
+    let mi_pedido = EstadoPedido::Enviado;
+    println!("Estado: {:?}", mi_pedido);
+    println!("Descripcion: {}", describir_estado(&mi_pedido));
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Enums con datos
+
+Lo que hace a los enums de Rust realmente poderosos es que cada variante puede **contener datos**. Es como si cada variante fuera un struct diferente:"""
+en = """## Enums with data
+
+What makes Rust enums truly powerful is that each variant can **contain data**. It's like each variant being a different struct:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''#[derive(Debug)]
+enum Mensaje {
+    Texto(String),                    // Contiene un String
+    Numero(i32),                      // Contiene un entero
+    Coordenada { x: f64, y: f64 },   // Contiene campos nombrados
+    Salir,                            // Sin datos
+}
+
+fn procesar(msg: &Mensaje) {
+    match msg {
+        Mensaje::Texto(t) => println!("Texto: {}", t),
+        Mensaje::Numero(n) => println!("Numero: {}", n),
+        Mensaje::Coordenada { x, y } => println!("Posicion: ({}, {})", x, y),
+        Mensaje::Salir => println!("Adios!"),
+    }
+}
+
+fn main() {
+    let mensajes = vec![
+        Mensaje::Texto(String::from("hola")),
+        Mensaje::Numero(42),
+        Mensaje::Coordenada { x: 3.0, y: 7.5 },
+        Mensaje::Salir,
+    ];
+
+    for msg in &mensajes {
+        procesar(msg);
+    }
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Pattern Matching avanzado con match
+
+`match` es mucho mas que un switch. Puedes destructurar los datos de cada variante, usar guardas, y combinar patrones:"""
+en = """## Advanced Pattern Matching with match
+
+`match` is much more than a switch. You can destructure data from each variant, use guards, and combine patterns:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''#[derive(Debug)]
+enum Moneda {
+    Centavo,
+    Diez,
+    Veinticinco,
+    Dolar,
+    Personalizada(u32),  // Valor personalizado en centavos
+}
+
+fn valor_en_centavos(moneda: &Moneda) -> u32 {
+    match moneda {
+        Moneda::Centavo => 1,
+        Moneda::Diez => 10,
+        Moneda::Veinticinco => 25,
+        Moneda::Dolar => 100,
+        Moneda::Personalizada(valor) => *valor,
+    }
+}
+
+fn clasificar_moneda(moneda: &Moneda) {
+    match moneda {
+        // Combinar variantes con |
+        Moneda::Centavo | Moneda::Diez => {
+            println!("{:?}: moneda pequena", moneda);
+        }
+        // Guardia con if
+        Moneda::Personalizada(v) if *v > 100 => {
+            println!("Personalizada de {} centavos: valor alto!", v);
+        }
+        // Resto
+        _ => {
+            println!("{:?}: {} centavos", moneda, valor_en_centavos(moneda));
+        }
+    }
+}
+
+fn main() {
+    let monedas = vec![
+        Moneda::Centavo,
+        Moneda::Veinticinco,
+        Moneda::Dolar,
+        Moneda::Personalizada(50),
+        Moneda::Personalizada(200),
+    ];
+
+    let mut total = 0;
+    for moneda in &monedas {
+        clasificar_moneda(moneda);
+        total += valor_en_centavos(moneda);
+    }
+    println!("\nTotal: {} centavos (${:.2})", total, total as f64 / 100.0);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## if let: match simplificado
+
+Cuando solo te interesa **una variante** y quieres ignorar el resto, `if let` es mas conciso que `match`:"""
+en = """## if let: simplified match
+
+When you only care about **one variant** and want to ignore the rest, `if let` is more concise than `match`:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''#[derive(Debug)]
+enum Configuracion {
+    Valor(i32),
+    Texto(String),
+    Nada,
+}
+
+fn main() {
+    let config = Configuracion::Valor(42);
+
+    // Con match (verboso para un solo caso)
+    match &config {
+        Configuracion::Valor(v) => println!("match: valor = {}", v),
+        _ => {}  // Ignorar el resto
+    }
+
+    // Con if let (conciso y claro)
+    if let Configuracion::Valor(v) = &config {
+        println!("if let: valor = {}", v);
+    }
+
+    // if let con else
+    let otra = Configuracion::Nada;
+    if let Configuracion::Valor(v) = &otra {
+        println!("Tiene valor: {}", v);
+    } else {
+        println!("No tiene valor numerico");
+    }
+
+    // while let - iterar mientras un patron coincida
+    let mut pila = vec![1, 2, 3];
+    print!("Desapilando: ");
+    while let Some(tope) = pila.pop() {
+        print!("{} ", tope);
+    }
+    println!();
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Enums con metodos
+
+Al igual que los structs, los enums pueden tener bloques `impl` con metodos:"""
+en = """## Enums with methods
+
+Just like structs, enums can have `impl` blocks with methods:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''#[derive(Debug)]
+enum Semaforo {
+    Rojo,
+    Amarillo,
+    Verde,
+}
+
+impl Semaforo {
+    fn siguiente(&self) -> Semaforo {
+        match self {
+            Semaforo::Rojo => Semaforo::Verde,
+            Semaforo::Verde => Semaforo::Amarillo,
+            Semaforo::Amarillo => Semaforo::Rojo,
+        }
+    }
+
+    fn duracion_segundos(&self) -> u32 {
+        match self {
+            Semaforo::Rojo => 60,
+            Semaforo::Amarillo => 5,
+            Semaforo::Verde => 45,
+        }
+    }
+
+    fn puede_avanzar(&self) -> bool {
+        matches!(self, Semaforo::Verde)
+    }
+}
+
+fn main() {
+    let mut luz = Semaforo::Rojo;
+    for _ in 0..6 {
+        println!("{:?}: {} segundos, avanzar: {}",
+            luz, luz.duracion_segundos(), luz.puede_avanzar());
+        luz = luz.siguiente();
+    }
+}'''
+
+[[blocks]]
+type = "quiz"
+es = "Que ventaja tienen los enums de Rust sobre usar strings para representar estados?"
+en = "What advantage do Rust enums have over using strings to represent states?"
+[[blocks.options]]
+es = "Los enums son mas rapidos"
+en = "Enums are faster"
+correct = false
+[[blocks.options]]
+es = "El compilador verifica que uses variantes validas y manejes todos los casos"
+en = "The compiler verifies that you use valid variants and handle all cases"
+correct = true
+[[blocks.options]]
+es = "Los enums usan menos memoria"
+en = "Enums use less memory"
+correct = false
+[[blocks.options]]
+es = "Los strings no existen en Rust"
+en = "Strings don't exist in Rust"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Que hace `if let` en Rust?"
+en = "What does `if let` do in Rust?"
+[[blocks.options]]
+es = "Crea una variable condicional"
+en = "Creates a conditional variable"
+correct = false
+[[blocks.options]]
+es = "Es un match simplificado que solo comprueba un patron, ignorando el resto"
+en = "It's a simplified match that only checks one pattern, ignoring the rest"
+correct = true
+[[blocks.options]]
+es = "Declara una variable si la condicion es verdadera"
+en = "Declares a variable if the condition is true"
+correct = false
+[[blocks.options]]
+es = "Es lo mismo que un if normal"
+en = "It's the same as a regular if"
+correct = false

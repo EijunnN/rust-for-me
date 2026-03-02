@@ -1,0 +1,293 @@
+[meta]
+id = "m04_l02"
+order = 2
+
+[title]
+es = "Metodos e Implementaciones"
+en = "Methods and Implementations"
+
+[[blocks]]
+type = "text"
+es = """## El Problema: funciones sueltas operando sobre datos
+
+Sin metodos, necesitas pasar el struct a cada funcion. El codigo se vuelve verboso y es dificil saber que funciones van con que datos:"""
+en = """## The Problem: loose functions operating on data
+
+Without methods, you need to pass the struct to each function. Code becomes verbose and it's hard to know which functions go with which data:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''struct Rectangulo {
+    ancho: f64,
+    alto: f64,
+}
+
+// Funciones sueltas - no esta claro que pertenecen a Rectangulo
+fn area(rect: &Rectangulo) -> f64 {
+    rect.ancho * rect.alto
+}
+
+fn perimetro(rect: &Rectangulo) -> f64 {
+    2.0 * (rect.ancho + rect.alto)
+}
+
+fn es_cuadrado(rect: &Rectangulo) -> bool {
+    rect.ancho == rect.alto
+}'''
+
+[[blocks]]
+type = "text"
+es = """## La solucion: bloques `impl`
+
+Los bloques `impl` (implementation) asocian funciones directamente con un tipo. Las funciones dentro de `impl` pueden ser **metodos** (reciben `&self`) o **funciones asociadas** (no reciben self):"""
+en = """## The solution: `impl` blocks
+
+`impl` (implementation) blocks associate functions directly with a type. Functions inside `impl` can be **methods** (receive `&self`) or **associated functions** (don't receive self):"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''#[derive(Debug)]
+struct Rectangulo {
+    ancho: f64,
+    alto: f64,
+}
+
+impl Rectangulo {
+    // Funcion asociada (como un constructor) - se llama con ::
+    fn nuevo(ancho: f64, alto: f64) -> Rectangulo {
+        Rectangulo { ancho, alto }
+    }
+
+    // Funcion asociada: cuadrado (constructor alternativo)
+    fn cuadrado(lado: f64) -> Rectangulo {
+        Rectangulo { ancho: lado, alto: lado }
+    }
+
+    // Metodo: recibe &self (referencia inmutable a la instancia)
+    fn area(&self) -> f64 {
+        self.ancho * self.alto
+    }
+
+    // Metodo: referencia inmutable
+    fn perimetro(&self) -> f64 {
+        2.0 * (self.ancho + self.alto)
+    }
+
+    // Metodo: devuelve bool
+    fn es_cuadrado(&self) -> bool {
+        self.ancho == self.alto
+    }
+
+    // Metodo: recibe &mut self (puede modificar la instancia)
+    fn escalar(&mut self, factor: f64) {
+        self.ancho *= factor;
+        self.alto *= factor;
+    }
+
+    // Metodo: toma ownership (consume self) - raro pero util
+    fn describir(self) -> String {
+        format!("Rectangulo {}x{}", self.ancho, self.alto)
+    }
+}
+
+fn main() {
+    // Funciones asociadas se llaman con ::
+    let mut rect = Rectangulo::nuevo(10.0, 5.0);
+    let cuad = Rectangulo::cuadrado(7.0);
+
+    // Metodos se llaman con .
+    println!("Rectangulo: {:?}", rect);
+    println!("Area: {}", rect.area());
+    println!("Perimetro: {}", rect.perimetro());
+    println!("Es cuadrado? {}", rect.es_cuadrado());
+
+    println!("\nCuadrado: {:?}", cuad);
+    println!("Area cuadrado: {}", cuad.area());
+    println!("Es cuadrado? {}", cuad.es_cuadrado());
+
+    // Metodo mutable
+    rect.escalar(2.0);
+    println!("\nDespues de escalar x2: {:?}", rect);
+    println!("Nueva area: {}", rect.area());
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Los tres tipos de self
+
+El primer parametro de un metodo determina como accede a la instancia:
+
+| Parametro | Significado | Uso tipico |
+|-----------|-------------|------------|
+| `&self` | Referencia inmutable | Leer datos (la mayoria de metodos) |
+| `&mut self` | Referencia mutable | Modificar datos |
+| `self` | Toma ownership | Transformar o consumir la instancia |
+
+La regla es simple: usa `&self` por defecto. Solo usa `&mut self` si necesitas modificar, y `self` si necesitas consumir la instancia (raro)."""
+en = """## The three types of self
+
+The first parameter of a method determines how it accesses the instance:
+
+| Parameter | Meaning | Typical use |
+|-----------|---------|-------------|
+| `&self` | Immutable reference | Read data (most methods) |
+| `&mut self` | Mutable reference | Modify data |
+| `self` | Takes ownership | Transform or consume the instance |
+
+The rule is simple: use `&self` by default. Only use `&mut self` if you need to modify, and `self` if you need to consume the instance (rare)."""
+
+[[blocks]]
+type = "text"
+es = """## Ejemplo completo: una cuenta bancaria"""
+en = """## Complete example: a bank account"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''#[derive(Debug)]
+struct CuentaBancaria {
+    titular: String,
+    saldo: f64,
+}
+
+impl CuentaBancaria {
+    fn nueva(titular: &str, saldo_inicial: f64) -> CuentaBancaria {
+        CuentaBancaria {
+            titular: String::from(titular),
+            saldo: saldo_inicial,
+        }
+    }
+
+    fn saldo(&self) -> f64 {
+        self.saldo
+    }
+
+    fn depositar(&mut self, cantidad: f64) {
+        if cantidad > 0.0 {
+            self.saldo += cantidad;
+            println!("  + Deposito: ${:.2}", cantidad);
+        }
+    }
+
+    fn retirar(&mut self, cantidad: f64) -> bool {
+        if cantidad > 0.0 && cantidad <= self.saldo {
+            self.saldo -= cantidad;
+            println!("  - Retiro: ${:.2}", cantidad);
+            true
+        } else {
+            println!("  ! Fondos insuficientes para ${:.2}", cantidad);
+            false
+        }
+    }
+
+    fn resumen(&self) {
+        println!("Cuenta de {}: ${:.2}", self.titular, self.saldo);
+    }
+}
+
+fn main() {
+    let mut cuenta = CuentaBancaria::nueva("Ferris", 1000.0);
+    cuenta.resumen();
+
+    cuenta.depositar(500.0);
+    cuenta.retirar(200.0);
+    cuenta.retirar(2000.0);  // Fondos insuficientes
+
+    println!();
+    cuenta.resumen();
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Multiples bloques impl
+
+Puedes tener varios bloques `impl` para el mismo tipo. Esto es util para organizar el codigo:"""
+en = """## Multiple impl blocks
+
+You can have multiple `impl` blocks for the same type. This is useful for organizing code:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''struct Circulo {
+    radio: f64,
+}
+
+// Constructores
+impl Circulo {
+    fn nuevo(radio: f64) -> Circulo {
+        Circulo { radio }
+    }
+}
+
+// Calculos
+impl Circulo {
+    fn area(&self) -> f64 {
+        std::f64::consts::PI * self.radio * self.radio
+    }
+
+    fn circunferencia(&self) -> f64 {
+        2.0 * std::f64::consts::PI * self.radio
+    }
+
+    fn contiene_punto(&self, x: f64, y: f64) -> bool {
+        (x * x + y * y).sqrt() <= self.radio
+    }
+}
+
+fn main() {
+    let c = Circulo::nuevo(5.0);
+    println!("Radio: {}", c.radio);
+    println!("Area: {:.2}", c.area());
+    println!("Circunferencia: {:.2}", c.circunferencia());
+    println!("Contiene (3,4)? {}", c.contiene_punto(3.0, 4.0));
+    println!("Contiene (4,4)? {}", c.contiene_punto(4.0, 4.0));
+}'''
+
+[[blocks]]
+type = "quiz"
+es = "Cual es la diferencia entre una funcion asociada y un metodo en un bloque `impl`?"
+en = "What is the difference between an associated function and a method in an `impl` block?"
+[[blocks.options]]
+es = "No hay diferencia"
+en = "There's no difference"
+correct = false
+[[blocks.options]]
+es = "Los metodos reciben `self` (o &self, &mut self) como primer parametro; las funciones asociadas no"
+en = "Methods receive `self` (or &self, &mut self) as first parameter; associated functions don't"
+correct = true
+[[blocks.options]]
+es = "Las funciones asociadas son privadas"
+en = "Associated functions are private"
+correct = false
+[[blocks.options]]
+es = "Los metodos son mas rapidos"
+en = "Methods are faster"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Como se llama a una funcion asociada como `Rectangulo::nuevo(10.0, 5.0)`?"
+en = "How do you call an associated function like `Rectangulo::nuevo(10.0, 5.0)`?"
+[[blocks.options]]
+es = "Con el operador punto: `rect.nuevo(10.0, 5.0)`"
+en = "With the dot operator: `rect.nuevo(10.0, 5.0)`"
+correct = false
+[[blocks.options]]
+es = "Con doble dos puntos: `Rectangulo::nuevo(10.0, 5.0)`"
+en = "With double colon: `Rectangulo::nuevo(10.0, 5.0)`"
+correct = true
+[[blocks.options]]
+es = "Con la palabra clave `new`: `new Rectangulo(10.0, 5.0)`"
+en = "With the `new` keyword: `new Rectangulo(10.0, 5.0)`"
+correct = false
+[[blocks.options]]
+es = "Con parentesis directos: `Rectangulo(10.0, 5.0)`"
+en = "With direct parentheses: `Rectangulo(10.0, 5.0)`"
+correct = false

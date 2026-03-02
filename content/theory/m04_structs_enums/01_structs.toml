@@ -1,0 +1,261 @@
+[meta]
+id = "m04_l01"
+order = 1
+
+[title]
+es = "Structs: tus propios tipos"
+en = "Structs: your own types"
+
+[[blocks]]
+type = "text"
+es = """## El Problema: datos relacionados sin estructura
+
+Cuando tienes datos que pertenecen juntos (el nombre de un usuario, su email, su edad), usar variables separadas es fragil y propenso a errores:"""
+en = """## The Problem: related data without structure
+
+When you have data that belongs together (a user's name, email, age), using separate variables is fragile and error-prone:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''// MAL: datos relacionados sueltos
+fn main() {
+    let nombre1 = "Ana";
+    let email1 = "ana@email.com";
+    let edad1 = 28;
+
+    let nombre2 = "Carlos";
+    let email2 = "carlos@email.com";
+    let edad2 = 35;
+
+    // Facil confundir: que pasa si mezclo nombre1 con edad2?
+    println!("{} tiene {} anos", nombre1, edad2); // Bug silencioso!
+}'''
+
+[[blocks]]
+type = "text"
+es = """## La solucion: Structs
+
+Un **struct** es un tipo personalizado que agrupa datos relacionados bajo un solo nombre. Cada dato se llama **campo** (field):"""
+en = """## The solution: Structs
+
+A **struct** is a custom type that groups related data under a single name. Each piece of data is called a **field**:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''// Definicion del struct
+struct Usuario {
+    nombre: String,
+    email: String,
+    edad: u32,
+    activo: bool,
+}
+
+fn main() {
+    // Crear una instancia
+    let usuario1 = Usuario {
+        nombre: String::from("Ana"),
+        email: String::from("ana@email.com"),
+        edad: 28,
+        activo: true,
+    };
+
+    println!("Nombre: {}", usuario1.nombre);
+    println!("Email: {}", usuario1.email);
+    println!("Edad: {}", usuario1.edad);
+    println!("Activo: {}", usuario1.activo);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Structs mutables
+
+Para modificar un struct, **toda la instancia** debe ser mutable. Rust no permite que solo algunos campos sean mutables:"""
+en = """## Mutable structs
+
+To modify a struct, the **entire instance** must be mutable. Rust doesn't allow only some fields to be mutable:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''struct Punto {
+    x: f64,
+    y: f64,
+}
+
+fn main() {
+    let mut p = Punto { x: 1.0, y: 2.0 };
+    println!("Antes: ({}, {})", p.x, p.y);
+
+    p.x = 5.0;  // OK porque p es mut
+    p.y = 10.0;
+    println!("Despues: ({}, {})", p.x, p.y);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Funciones constructoras y Field Init Shorthand
+
+Es comun crear funciones que construyen un struct. Rust tiene un atajo: si el parametro tiene el mismo nombre que el campo, puedes omitir la repeticion:"""
+en = """## Constructor functions and Field Init Shorthand
+
+It's common to create functions that build a struct. Rust has a shortcut: if the parameter has the same name as the field, you can omit the repetition:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''struct Color {
+    r: u8,
+    g: u8,
+    b: u8,
+}
+
+// Field init shorthand: si variable == campo, no repitas
+fn nuevo_color(r: u8, g: u8, b: u8) -> Color {
+    Color { r, g, b }  // En lugar de Color { r: r, g: g, b: b }
+}
+
+fn main() {
+    let rojo = nuevo_color(255, 0, 0);
+    let verde = Color { r: 0, g: 255, b: 0 };
+
+    println!("Rojo: rgb({}, {}, {})", rojo.r, rojo.g, rojo.b);
+    println!("Verde: rgb({}, {}, {})", verde.r, verde.g, verde.b);
+
+    // Struct update syntax: crear un struct basado en otro
+    let rojo_oscuro = Color { r: 139, ..rojo };  // g y b vienen de rojo
+    println!("Rojo oscuro: rgb({}, {}, {})", rojo_oscuro.r, rojo_oscuro.g, rojo_oscuro.b);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Tuple Structs y Unit Structs
+
+Rust tiene dos variantes adicionales de structs:
+
+- **Tuple struct**: como una tupla con nombre. Util para crear tipos distintos sobre el mismo dato.
+- **Unit struct**: sin campos. Util como marcador o para implementar traits."""
+en = """## Tuple Structs and Unit Structs
+
+Rust has two additional struct variants:
+
+- **Tuple struct**: like a named tuple. Useful for creating distinct types over the same data.
+- **Unit struct**: no fields. Useful as a marker or to implement traits."""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''// Tuple structs - dan tipo distinto al mismo dato
+struct Metros(f64);
+struct Kilometros(f64);
+
+fn main() {
+    let distancia = Metros(100.0);
+    let largo_viaje = Kilometros(42.195);
+
+    // No puedes mezclarlos accidentalmente!
+    // let suma = distancia.0 + largo_viaje.0; // Conceptualmente incorrecto
+    // Pero el compilador no lo impide aqui porque ambos .0 son f64.
+    // La ventaja es en las funciones: puedes exigir el tipo correcto.
+
+    println!("Distancia: {} metros", distancia.0);
+    println!("Maraton: {} km", largo_viaje.0);
+
+    // Conversion explicita
+    let en_km = Kilometros(distancia.0 / 1000.0);
+    println!("{} metros = {} km", distancia.0, en_km.0);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Imprimir structs con Debug
+
+Por defecto, no puedes imprimir un struct con `println!`. Necesitas derivar el trait `Debug`:"""
+en = """## Printing structs with Debug
+
+By default, you can't print a struct with `println!`. You need to derive the `Debug` trait:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''#[derive(Debug)]  // Permite imprimir con {:?} y {:#?}
+struct Rectangulo {
+    ancho: f64,
+    alto: f64,
+}
+
+fn main() {
+    let rect = Rectangulo { ancho: 30.0, alto: 50.0 };
+
+    // {:?} - formato compacto
+    println!("Rectangulo: {:?}", rect);
+
+    // {:#?} - formato bonito (pretty-print)
+    println!("Detalle: {:#?}", rect);
+
+    let area = rect.ancho * rect.alto;
+    println!("Area: {}", area);
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Traits derivables comunes:**
+- `#[derive(Debug)]` — permite imprimir con `{:?}` para depuracion
+- `#[derive(Clone)]` — permite crear copias con `.clone()`
+- `#[derive(PartialEq)]` — permite comparar con `==` y `!=`
+- Puedes combinarlos: `#[derive(Debug, Clone, PartialEq)]`"""
+en = """**Common derivable traits:**
+- `#[derive(Debug)]` — allows printing with `{:?}` for debugging
+- `#[derive(Clone)]` — allows creating copies with `.clone()`
+- `#[derive(PartialEq)]` — allows comparison with `==` and `!=`
+- You can combine them: `#[derive(Debug, Clone, PartialEq)]`"""
+
+[[blocks]]
+type = "quiz"
+es = "Para modificar un campo de un struct, que necesitas hacer?"
+en = "To modify a field of a struct, what do you need to do?"
+[[blocks.options]]
+es = "Declarar solo ese campo como mutable"
+en = "Declare only that field as mutable"
+correct = false
+[[blocks.options]]
+es = "Declarar toda la instancia del struct como `let mut`"
+en = "Declare the entire struct instance as `let mut`"
+correct = true
+[[blocks.options]]
+es = "Los structs no se pueden modificar en Rust"
+en = "Structs cannot be modified in Rust"
+correct = false
+[[blocks.options]]
+es = "Usar la palabra clave `mutable` en la definicion del struct"
+en = "Use the `mutable` keyword in the struct definition"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Que hace `#[derive(Debug)]` en un struct?"
+en = "What does `#[derive(Debug)]` do on a struct?"
+[[blocks.options]]
+es = "Hace que el struct sea mas rapido"
+en = "Makes the struct faster"
+correct = false
+[[blocks.options]]
+es = "Permite imprimir el struct con `{:?}` para depuracion"
+en = "Allows printing the struct with `{:?}` for debugging"
+correct = true
+[[blocks.options]]
+es = "Agrega un campo de debug al struct"
+en = "Adds a debug field to the struct"
+correct = false
+[[blocks.options]]
+es = "Activa el modo debug del compilador"
+en = "Activates the compiler's debug mode"
+correct = false

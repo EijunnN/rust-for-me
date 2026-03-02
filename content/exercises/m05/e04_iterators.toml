@@ -1,0 +1,78 @@
+[meta]
+id = "m05_e04"
+module = "m05"
+difficulty = "intermediate"
+order = 4
+exercise_type = "write_code"
+
+[title]
+es = "Encadenando iteradores"
+en = "Chaining iterators"
+
+[description]
+es = """Usa iteradores (NO bucles for) para:
+1. Filtrar los numeros pares de un vector
+2. Multiplicar cada uno por 10
+3. Recolectar en un nuevo vector
+4. Calcular la suma
+
+Todo con una sola cadena de iteradores."""
+en = """Use iterators (NOT for loops) to:
+1. Filter even numbers from a vector
+2. Multiply each by 10
+3. Collect into a new vector
+4. Calculate the sum
+
+All with a single iterator chain."""
+
+[starter_code]
+code = '''fn main() {
+    let numeros = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    // Usa .iter().filter().map().collect() para obtener
+    // los pares multiplicados por 10
+    let pares_x10: Vec<i32> = todo!();
+
+    println!("Pares x10: {:?}", pares_x10);
+
+    // Calcula la suma usando .iter().sum()
+    let suma: i32 = todo!();
+
+    println!("Suma: {}", suma);
+}'''
+
+[validation]
+expected_output = """Pares x10: [20, 40, 60, 80, 100]
+Suma: 300"""
+
+[hints]
+es = [
+    "Empieza con `numeros.iter()`",
+    "Filtra pares: `.filter(|&&n| n % 2 == 0)` (doble & porque iter da &i32 y filter da &&i32)",
+    "Transforma: `.map(|&n| n * 10)`",
+    "Recolecta: `.collect()`",
+    "Para la suma: `pares_x10.iter().sum()`",
+]
+en = [
+    "Start with `numeros.iter()`",
+    "Filter evens: `.filter(|&&n| n % 2 == 0)` (double & because iter gives &i32 and filter gives &&i32)",
+    "Transform: `.map(|&n| n * 10)`",
+    "Collect: `.collect()`",
+    "For the sum: `pares_x10.iter().sum()`",
+]
+
+[solution]
+code = '''fn main() {
+    let numeros = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    let pares_x10: Vec<i32> = numeros.iter()
+        .filter(|&&n| n % 2 == 0)
+        .map(|&n| n * 10)
+        .collect();
+
+    println!("Pares x10: {:?}", pares_x10);
+
+    let suma: i32 = pares_x10.iter().sum();
+
+    println!("Suma: {}", suma);
+}'''

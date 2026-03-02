@@ -1,0 +1,36 @@
+[meta]
+id = "m03"
+order = 3
+icon = "🔑"
+
+[title]
+es = "Ownership y Borrowing"
+en = "Ownership and Borrowing"
+
+[description]
+es = "El corazon de Rust: comprende el sistema de ownership, referencias, borrowing y slices que hacen a Rust unico."
+en = "The heart of Rust: understand the ownership system, references, borrowing, and slices that make Rust unique."
+
+[[lessons]]
+id = "m03_l01"
+order = 1
+title_es = "Ownership: El concepto central"
+title_en = "Ownership: The core concept"
+
+[[lessons]]
+id = "m03_l02"
+order = 2
+title_es = "Referencias y Borrowing"
+title_en = "References and Borrowing"
+
+[[lessons]]
+id = "m03_l03"
+order = 3
+title_es = "Slices"
+title_en = "Slices"
+
+[[lessons]]
+id = "m03_l04"
+order = 4
+title_es = "Introduccion a Lifetimes"
+title_en = "Introduction to Lifetimes"

@@ -1,0 +1,272 @@
+[meta]
+id = "m03_l04"
+order = 4
+
+[title]
+es = "Introduccion a Lifetimes"
+en = "Introduction to Lifetimes"
+
+[[blocks]]
+type = "text"
+es = """## El Problema: referencias colgantes
+
+Una **referencia colgante** (dangling reference) ocurre cuando una referencia apunta a memoria que ya fue liberada. Este es uno de los bugs mas peligrosos en C/C++. Rust lo previene completamente:"""
+en = """## The Problem: dangling references
+
+A **dangling reference** occurs when a reference points to memory that has already been freed. This is one of the most dangerous bugs in C/C++. Rust prevents it completely:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''fn crear_dangling() -> &String {  // ERROR!
+    let s = String::from("hola");
+    &s  // Intentamos devolver una referencia a s
+}  // s se libera aqui. La referencia apuntaria a memoria liberada!
+
+fn main() {
+    let referencia = crear_dangling();
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "danger"
+es = """**Error del compilador:**
+```
+error[E0106]: missing lifetime specifier
+ --> src/main.rs:1:26
+  |
+1 | fn crear_dangling() -> &String {
+  |                        ^ expected named lifetime parameter
+  |
+  = help: this function's return type contains a borrowed value,
+          but there is nothing for it to be borrowed from
+```
+Rust detecta que la referencia viviria mas que el dato al que apunta. Esto es un error de **lifetime** (tiempo de vida)."""
+en = """**Compiler error:**
+```
+error[E0106]: missing lifetime specifier
+ --> src/main.rs:1:26
+  |
+1 | fn crear_dangling() -> &String {
+  |                        ^ expected named lifetime parameter
+  |
+  = help: this function's return type contains a borrowed value,
+          but there is nothing for it to be borrowed from
+```
+Rust detects that the reference would live longer than the data it points to. This is a **lifetime** error."""
+
+[[blocks]]
+type = "text"
+es = """## Que son los lifetimes?
+
+Un **lifetime** es el periodo durante el cual una referencia es valida. La mayoria del tiempo, Rust infiere los lifetimes automaticamente (igual que infiere tipos). Pero a veces necesitas ayudar al compilador anotandolos explicitamente.
+
+Los lifetimes se escriben con un apostrofe seguido de un nombre (por convencion, letras minusculas): `'a`, `'b`, `'input`, etc.
+
+No cambian cuanto vive una referencia. Solo le dicen al compilador **la relacion** entre los lifetimes de diferentes referencias para que pueda verificar la seguridad."""
+en = """## What are lifetimes?
+
+A **lifetime** is the period during which a reference is valid. Most of the time, Rust infers lifetimes automatically (just like it infers types). But sometimes you need to help the compiler by annotating them explicitly.
+
+Lifetimes are written with an apostrophe followed by a name (by convention, lowercase letters): `'a`, `'b`, `'input`, etc.
+
+They don't change how long a reference lives. They only tell the compiler **the relationship** between the lifetimes of different references so it can verify safety."""
+
+[[blocks]]
+type = "text"
+es = """## Cuando necesitas anotar lifetimes?
+
+La regla es simple: necesitas anotaciones cuando una funcion recibe **multiples referencias** y devuelve **una referencia**. El compilador necesita saber: la referencia devuelta, de cual parametro viene?"""
+en = """## When do you need to annotate lifetimes?
+
+The rule is simple: you need annotations when a function receives **multiple references** and returns **a reference**. The compiler needs to know: the returned reference, which parameter does it come from?"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''// El compilador no sabe si el resultado viene de x o de y
+// Necesitamos decirle: "el resultado vive tanto como x Y y"
+fn mas_largo<'a>(x: &'a str, y: &'a str) -> &'a str {
+    if x.len() >= y.len() {
+        x
+    } else {
+        y
+    }
+}
+
+fn main() {
+    let string1 = String::from("cadena larga");
+
+    {
+        let string2 = String::from("xyz");
+        let resultado = mas_largo(&string1, &string2);
+        println!("El mas largo es: {}", resultado);
+    }
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Leyendo la anotacion `<'a>`
+
+Leamos `fn mas_largo<'a>(x: &'a str, y: &'a str) -> &'a str` paso a paso:
+
+1. `<'a>` — declaramos un lifetime generico llamado `'a`
+2. `x: &'a str` — `x` es una referencia que vive al menos durante `'a`
+3. `y: &'a str` — `y` es una referencia que vive al menos durante `'a`
+4. `-> &'a str` — el resultado es una referencia que vive durante `'a`
+
+En la practica, `'a` sera el lifetime **mas corto** entre `x` y `y`. Esto le dice a Rust: "el resultado no vivira mas que el parametro que viva menos"."""
+en = """## Reading the `<'a>` annotation
+
+Let's read `fn mas_largo<'a>(x: &'a str, y: &'a str) -> &'a str` step by step:
+
+1. `<'a>` — we declare a generic lifetime called `'a`
+2. `x: &'a str` — `x` is a reference that lives at least for `'a`
+3. `y: &'a str` — `y` is a reference that lives at least for `'a`
+4. `-> &'a str` — the result is a reference that lives for `'a`
+
+In practice, `'a` will be the **shortest** lifetime between `x` and `y`. This tells Rust: "the result won't live longer than whichever parameter lives less"."""
+
+[[blocks]]
+type = "text"
+es = """## Lifetime elision: cuando Rust infiere por ti
+
+La buena noticia: en la mayoria de casos, no necesitas escribir lifetimes. Rust tiene **reglas de elision** que los infieren automaticamente:
+
+1. Cada parametro de referencia recibe su propio lifetime.
+2. Si solo hay un parametro de referencia, su lifetime se asigna a todas las referencias de salida.
+3. Si hay un `&self` o `&mut self`, el lifetime de self se asigna a las salidas.
+
+Estas reglas cubren la gran mayoria de funciones:"""
+en = """## Lifetime elision: when Rust infers for you
+
+The good news: in most cases, you don't need to write lifetimes. Rust has **elision rules** that infer them automatically:
+
+1. Each reference parameter gets its own lifetime.
+2. If there's only one reference parameter, its lifetime is assigned to all output references.
+3. If there's a `&self` or `&mut self`, self's lifetime is assigned to outputs.
+
+These rules cover the vast majority of functions:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''// No necesita anotacion: un solo parametro de referencia (regla 2)
+fn primera_palabra(s: &str) -> &str {
+    let bytes = s.as_bytes();
+    for (i, &byte) in bytes.iter().enumerate() {
+        if byte == b' ' {
+            return &s[0..i];
+        }
+    }
+    s
+}
+
+// No necesita anotacion: no devuelve referencia
+fn contar_vocales(s: &str) -> usize {
+    s.chars().filter(|c| "aeiouAEIOU".contains(*c)).count()
+}
+
+// NECESITA anotacion: dos parametros de referencia Y devuelve referencia
+fn mas_largo<'a>(x: &'a str, y: &'a str) -> &'a str {
+    if x.len() >= y.len() { x } else { y }
+}
+
+fn main() {
+    let texto = String::from("hola mundo");
+    let palabra = primera_palabra(&texto);
+    println!("Primera palabra: {}", palabra);
+
+    println!("Vocales: {}", contar_vocales("murcielago"));
+
+    let a = "Rust";
+    let b = "es genial";
+    println!("Mas largo: {}", mas_largo(a, b));
+}'''
+
+[[blocks]]
+type = "text"
+es = """## El lifetime estatico: 'static
+
+Existe un lifetime especial llamado `'static` que significa "esta referencia vive durante toda la ejecucion del programa". Los string literals tienen lifetime `'static` porque estan incrustados en el binario del programa:"""
+en = """## The static lifetime: 'static
+
+There's a special lifetime called `'static` which means "this reference lives for the entire program execution". String literals have `'static` lifetime because they're embedded in the program binary:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // Los string literals tienen lifetime 'static
+    let s: &'static str = "vivo para siempre";
+    println!("{}", s);
+
+    // Esto es porque el texto esta en el binario del programa,
+    // que existe durante toda la ejecucion.
+
+    // Nota: 'static es el lifetime mas largo posible.
+    // No abuses de el. La mayoria de veces, un lifetime generico
+    // como 'a es la solucion correcta.
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Resumen de lifetimes:**
+- Los lifetimes garantizan que las referencias nunca apunten a datos liberados.
+- La mayoria del tiempo, Rust los infiere automaticamente (lifetime elision).
+- Solo necesitas anotarlos cuando la funcion tiene multiples referencias de entrada y devuelve una referencia.
+- `'static` significa "vive todo el programa" — los string literals lo tienen por defecto.
+- Los lifetimes NO cambian cuanto vive un dato. Solo ayudan al compilador a verificar seguridad."""
+en = """**Lifetime summary:**
+- Lifetimes guarantee that references never point to freed data.
+- Most of the time, Rust infers them automatically (lifetime elision).
+- You only need to annotate them when the function has multiple input references and returns a reference.
+- `'static` means "lives for the whole program" — string literals have it by default.
+- Lifetimes DON'T change how long data lives. They only help the compiler verify safety."""
+
+[[blocks]]
+type = "quiz"
+es = "Que es una referencia colgante (dangling reference)?"
+en = "What is a dangling reference?"
+[[blocks.options]]
+es = "Una referencia que apunta a memoria que ya fue liberada"
+en = "A reference that points to memory that has already been freed"
+correct = true
+[[blocks.options]]
+es = "Una referencia que no ha sido inicializada"
+en = "A reference that hasn't been initialized"
+correct = false
+[[blocks.options]]
+es = "Una referencia mutable"
+en = "A mutable reference"
+correct = false
+[[blocks.options]]
+es = "Una referencia que apunta a un valor en el stack"
+en = "A reference that points to a value on the stack"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Cuando necesitas anotar lifetimes explicitamente en una funcion?"
+en = "When do you need to explicitly annotate lifetimes in a function?"
+[[blocks.options]]
+es = "Siempre que uses referencias"
+en = "Whenever you use references"
+correct = false
+[[blocks.options]]
+es = "Cuando la funcion tiene multiples referencias de entrada y devuelve una referencia"
+en = "When the function has multiple input references and returns a reference"
+correct = true
+[[blocks.options]]
+es = "Solo en funciones publicas"
+en = "Only in public functions"
+correct = false
+[[blocks.options]]
+es = "Nunca, Rust siempre los infiere"
+en = "Never, Rust always infers them"
+correct = false

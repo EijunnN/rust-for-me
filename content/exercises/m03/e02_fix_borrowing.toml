@@ -1,0 +1,75 @@
+[meta]
+id = "m03_e02"
+module = "m03"
+difficulty = "beginner"
+order = 2
+exercise_type = "fix_bug"
+
+[title]
+es = "Corrige el error de borrowing"
+en = "Fix the borrowing error"
+
+[description]
+es = """El siguiente codigo intenta crear una referencia mutable mientras existe una inmutable.
+Reorganiza el codigo para que las referencias inmutables se usen ANTES de crear la mutable.
+No elimines ninguna linea, solo reordena."""
+en = """The following code tries to create a mutable reference while an immutable one exists.
+Reorganize the code so that immutable references are used BEFORE creating the mutable one.
+Don't remove any lines, just reorder."""
+
+[broken_code]
+code = '''fn main() {
+    let mut texto = String::from("hola");
+
+    let ref1 = &texto;
+    let ref_mut = &mut texto;
+    ref_mut.push_str(" mundo");
+
+    println!("ref1: {}", ref1);
+    println!("texto: {}", texto);
+}'''
+
+[compiler_error]
+es = "error[E0502]: cannot borrow `texto` as mutable because it is also borrowed as immutable -- No puedes tener una referencia mutable mientras existan referencias inmutables activas."
+en = "error[E0502]: cannot borrow `texto` as mutable because it is also borrowed as immutable -- You can't have a mutable reference while immutable references are active."
+
+[starter_code]
+code = '''fn main() {
+    let mut texto = String::from("hola");
+
+    let ref1 = &texto;
+    let ref_mut = &mut texto;
+    ref_mut.push_str(" mundo");
+
+    println!("ref1: {}", ref1);
+    println!("texto: {}", texto);
+}'''
+
+[validation]
+expected_output = """ref1: hola
+texto: hola mundo"""
+
+[hints]
+es = [
+    "El error es que ref1 (inmutable) y ref_mut (mutable) coexisten",
+    "Rust permite &mut DESPUES de que las referencias inmutables dejan de usarse",
+    "Mueve el println! de ref1 ANTES de crear la referencia mutable",
+]
+en = [
+    "The error is that ref1 (immutable) and ref_mut (mutable) coexist",
+    "Rust allows &mut AFTER immutable references are no longer used",
+    "Move the println! for ref1 BEFORE creating the mutable reference",
+]
+
+[solution]
+code = '''fn main() {
+    let mut texto = String::from("hola");
+
+    let ref1 = &texto;
+    println!("ref1: {}", ref1);
+
+    let ref_mut = &mut texto;
+    ref_mut.push_str(" mundo");
+
+    println!("texto: {}", texto);
+}'''

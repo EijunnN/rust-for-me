@@ -1,0 +1,74 @@
+[meta]
+id = "m03_e05"
+module = "m03"
+difficulty = "intermediate"
+order = 5
+exercise_type = "write_code"
+
+[title]
+es = "Trabajando con slices"
+en = "Working with slices"
+
+[description]
+es = """Completa la funcion `extraer_dominio` que recibe un email como `&str` y devuelve el dominio (la parte despues del @).
+
+Por ejemplo: `"usuario@gmail.com"` debe devolver `"gmail.com"`.
+
+Pista: usa `.find('@')` para encontrar la posicion de @ y luego crea un slice desde esa posicion + 1."""
+en = """Complete the function `extraer_dominio` that receives an email as `&str` and returns the domain (the part after the @).
+
+For example: `"usuario@gmail.com"` should return `"gmail.com"`.
+
+Hint: use `.find('@')` to find the position of @ and then create a slice from that position + 1."""
+
+[starter_code]
+code = '''fn extraer_dominio(email: &str) -> &str {
+    // Encuentra la posicion de '@' y devuelve un slice
+    // del texto despues de '@'
+    // Find the position of '@' and return a slice
+    // of the text after '@'
+    todo!()
+}
+
+fn main() {
+    let email1 = "ferris@rust-lang.org";
+    let email2 = "usuario@gmail.com";
+
+    println!("{} -> {}", email1, extraer_dominio(email1));
+    println!("{} -> {}", email2, extraer_dominio(email2));
+}'''
+
+[validation]
+expected_output = """ferris@rust-lang.org -> rust-lang.org
+usuario@gmail.com -> gmail.com"""
+
+[hints]
+es = [
+    "`email.find('@')` devuelve `Option<usize>` — la posicion de @",
+    "Usa `if let Some(pos) = email.find('@')` para extraer la posicion",
+    "Crea un slice desde pos+1 hasta el final: `&email[pos + 1..]`",
+    "Si no hay @, puedes devolver el email completo",
+]
+en = [
+    "`email.find('@')` returns `Option<usize>` — the position of @",
+    "Use `if let Some(pos) = email.find('@')` to extract the position",
+    "Create a slice from pos+1 to the end: `&email[pos + 1..]`",
+    "If there's no @, you can return the full email",
+]
+
+[solution]
+code = '''fn extraer_dominio(email: &str) -> &str {
+    if let Some(pos) = email.find('@') {
+        &email[pos + 1..]
+    } else {
+        email
+    }
+}
+
+fn main() {
+    let email1 = "ferris@rust-lang.org";
+    let email2 = "usuario@gmail.com";
+
+    println!("{} -> {}", email1, extraer_dominio(email1));
+    println!("{} -> {}", email2, extraer_dominio(email2));
+}'''

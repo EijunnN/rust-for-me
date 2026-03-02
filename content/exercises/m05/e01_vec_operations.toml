@@ -1,0 +1,65 @@
+[meta]
+id = "m05_e01"
+module = "m05"
+difficulty = "beginner"
+order = 1
+exercise_type = "write_code"
+
+[title]
+es = "Operaciones con vectores"
+en = "Vector operations"
+
+[description]
+es = """Crea un vector de numeros del 1 al 5. Luego:
+1. Agrega el 6 al final.
+2. Elimina el primer elemento.
+3. Imprime el vector resultante y su longitud.
+
+La salida debe coincidir exactamente."""
+en = """Create a vector of numbers from 1 to 5. Then:
+1. Add 6 to the end.
+2. Remove the first element.
+3. Print the resulting vector and its length.
+
+The output must match exactly."""
+
+[starter_code]
+code = '''fn main() {
+    // 1. Crea un vector con numeros 1 a 5
+    // 1. Create a vector with numbers 1 to 5
+
+    // 2. Agrega 6 al final
+    // 2. Add 6 to the end
+
+    // 3. Elimina el primer elemento
+    // 3. Remove the first element
+
+    println!("{:?}", numeros);
+    println!("Longitud: {}", numeros.len());
+}'''
+
+[validation]
+expected_output = """[2, 3, 4, 5, 6]
+Longitud: 5"""
+
+[hints]
+es = [
+    "Crea el vector con: `let mut numeros = vec![1, 2, 3, 4, 5];`",
+    "Agregar al final: `numeros.push(6);`",
+    "Eliminar en posicion 0: `numeros.remove(0);`",
+]
+en = [
+    "Create the vector with: `let mut numeros = vec![1, 2, 3, 4, 5];`",
+    "Add to end: `numeros.push(6);`",
+    "Remove at position 0: `numeros.remove(0);`",
+]
+
+[solution]
+code = '''fn main() {
+    let mut numeros = vec![1, 2, 3, 4, 5];
+    numeros.push(6);
+    numeros.remove(0);
+
+    println!("{:?}", numeros);
+    println!("Longitud: {}", numeros.len());
+}'''

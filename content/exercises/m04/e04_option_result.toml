@@ -1,0 +1,138 @@
+[meta]
+id = "m04_e04"
+module = "m04"
+difficulty = "intermediate"
+order = 4
+exercise_type = "write_code"
+
+[title]
+es = "Usando Option y Result"
+en = "Using Option and Result"
+
+[description]
+es = """Completa las dos funciones:
+
+1. `buscar_nota` recibe un nombre y un array de tuplas (nombre, nota). Devuelve `Option<u32>` — `Some(nota)` si encuentra el nombre, `None` si no.
+
+2. `calcular_promedio` recibe un slice de u32. Devuelve `Result<f64, String>` — `Ok(promedio)` si el slice no esta vacio, `Err` con mensaje si esta vacio.
+
+La salida debe coincidir exactamente."""
+en = """Complete the two functions:
+
+1. `buscar_nota` receives a name and an array of tuples (name, grade). Returns `Option<u32>` — `Some(grade)` if it finds the name, `None` if not.
+
+2. `calcular_promedio` receives a slice of u32. Returns `Result<f64, String>` — `Ok(average)` if the slice isn't empty, `Err` with message if it's empty.
+
+The output must match exactly."""
+
+[starter_code]
+code = '''fn buscar_nota(nombre: &str, notas: &[(&str, u32)]) -> Option<u32> {
+    // Busca el nombre en el array de tuplas
+    // Si lo encuentra, devuelve Some(nota)
+    // Si no, devuelve None
+    todo!()
+}
+
+fn calcular_promedio(notas: &[u32]) -> Result<f64, String> {
+    // Si el slice esta vacio, devuelve Err("No hay notas")
+    // Si no, calcula y devuelve Ok(promedio)
+    todo!()
+}
+
+fn main() {
+    let estudiantes = vec![
+        ("Ana", 95),
+        ("Carlos", 82),
+        ("Lucia", 78),
+    ];
+
+    // Buscar notas
+    match buscar_nota("Carlos", &estudiantes) {
+        Some(nota) => println!("Carlos: {}", nota),
+        None => println!("Carlos no encontrado"),
+    }
+    match buscar_nota("Pedro", &estudiantes) {
+        Some(nota) => println!("Pedro: {}", nota),
+        None => println!("Pedro no encontrado"),
+    }
+
+    // Calcular promedios
+    let todas: Vec<u32> = estudiantes.iter().map(|(_, n)| *n).collect();
+    match calcular_promedio(&todas) {
+        Ok(prom) => println!("Promedio: {:.1}", prom),
+        Err(e) => println!("Error: {}", e),
+    }
+
+    let vacias: Vec<u32> = vec![];
+    match calcular_promedio(&vacias) {
+        Ok(prom) => println!("Promedio: {:.1}", prom),
+        Err(e) => println!("Error: {}", e),
+    }
+}'''
+
+[validation]
+expected_output = """Carlos: 82
+Pedro no encontrado
+Promedio: 85.0
+Error: No hay notas"""
+
+[hints]
+es = [
+    "Para buscar_nota: itera con `for (n, nota) in notas` y compara `*n == nombre`",
+    "Para calcular_promedio: verifica `notas.is_empty()` primero",
+    "El promedio es: suma as f64 / longitud as f64",
+    "Para la suma puedes usar: `notas.iter().sum::<u32>()`",
+]
+en = [
+    "For buscar_nota: iterate with `for (n, nota) in notas` and compare `*n == nombre`",
+    "For calcular_promedio: check `notas.is_empty()` first",
+    "The average is: sum as f64 / length as f64",
+    "For the sum you can use: `notas.iter().sum::<u32>()`",
+]
+
+[solution]
+code = '''fn buscar_nota(nombre: &str, notas: &[(&str, u32)]) -> Option<u32> {
+    for (n, nota) in notas {
+        if *n == nombre {
+            return Some(*nota);
+        }
+    }
+    None
+}
+
+fn calcular_promedio(notas: &[u32]) -> Result<f64, String> {
+    if notas.is_empty() {
+        return Err(String::from("No hay notas"));
+    }
+    let suma: u32 = notas.iter().sum();
+    Ok(suma as f64 / notas.len() as f64)
+}
+
+fn main() {
+    let estudiantes = vec![
+        ("Ana", 95),
+        ("Carlos", 82),
+        ("Lucia", 78),
+    ];
+
+    match buscar_nota("Carlos", &estudiantes) {
+        Some(nota) => println!("Carlos: {}", nota),
+        None => println!("Carlos no encontrado"),
+    }
+    match buscar_nota("Pedro", &estudiantes) {
+        Some(nota) => println!("Pedro: {}", nota),
+        None => println!("Pedro no encontrado"),
+    }
+
+    let todas: Vec<u32> = estudiantes.iter().map(|(_, n)| *n).collect();
+    match calcular_promedio(&todas) {
+        Ok(prom) => println!("Promedio: {:.1}", prom),
+        Err(e) => println!("Error: {}", e),
+    }
+
+    let vacias: Vec<u32> = vec![];
+    match calcular_promedio(&vacias) {
+        Ok(prom) => println!("Promedio: {:.1}", prom),
+        Err(e) => println!("Error: {}", e),
+    }
+}'''

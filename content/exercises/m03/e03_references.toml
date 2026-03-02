@@ -1,0 +1,78 @@
+[meta]
+id = "m03_e03"
+module = "m03"
+difficulty = "beginner"
+order = 3
+exercise_type = "write_code"
+
+[title]
+es = "Funciones con referencias"
+en = "Functions with references"
+
+[description]
+es = """Completa las funciones usando referencias:
+1. `contar_caracteres` debe recibir una referencia inmutable a String y devolver su longitud.
+2. `agregar_saludo` debe recibir una referencia mutable a String y agregarle ", bienvenido!" al final.
+
+La salida debe coincidir exactamente con el formato esperado."""
+en = """Complete the functions using references:
+1. `contar_caracteres` should receive an immutable reference to String and return its length.
+2. `agregar_saludo` should receive a mutable reference to String and append ", bienvenido!" to it.
+
+The output must match the expected format exactly."""
+
+[starter_code]
+code = '''// Completa esta funcion: recibe referencia inmutable
+fn contar_caracteres(s: ) -> usize {
+    // tu codigo aqui
+}
+
+// Completa esta funcion: recibe referencia mutable
+fn agregar_saludo(s: ) {
+    // tu codigo aqui
+}
+
+fn main() {
+    let mut nombre = String::from("Ferris");
+    let longitud = contar_caracteres(&nombre);
+    println!("'{}' tiene {} caracteres", nombre, longitud);
+
+    agregar_saludo(&mut nombre);
+    println!("{}", nombre);
+}'''
+
+[validation]
+expected_output = """'Ferris' tiene 6 caracteres
+Ferris, bienvenido!"""
+
+[hints]
+es = [
+    "Para referencia inmutable: `s: &String`",
+    "Para referencia mutable: `s: &mut String`",
+    "`.len()` devuelve la longitud de un String",
+    "`.push_str()` agrega texto a un String mutable",
+]
+en = [
+    "For immutable reference: `s: &String`",
+    "For mutable reference: `s: &mut String`",
+    "`.len()` returns the length of a String",
+    "`.push_str()` appends text to a mutable String",
+]
+
+[solution]
+code = '''fn contar_caracteres(s: &String) -> usize {
+    s.len()
+}
+
+fn agregar_saludo(s: &mut String) {
+    s.push_str(", bienvenido!");
+}
+
+fn main() {
+    let mut nombre = String::from("Ferris");
+    let longitud = contar_caracteres(&nombre);
+    println!("'{}' tiene {} caracteres", nombre, longitud);
+
+    agregar_saludo(&mut nombre);
+    println!("{}", nombre);
+}'''

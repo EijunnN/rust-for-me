@@ -1,0 +1,89 @@
+[meta]
+id = "m05_e03"
+module = "m05"
+difficulty = "intermediate"
+order = 3
+exercise_type = "write_code"
+
+[title]
+es = "Contar con HashMap"
+en = "Counting with HashMap"
+
+[description]
+es = """Completa la funcion `contar_caracteres` que recibe un &str y devuelve un HashMap con cada caracter (en minuscula) y cuantas veces aparece. Ignora los espacios.
+
+Ejemplo: "Hola Mundo" -> {'h': 1, 'o': 2, 'l': 1, 'a': 1, 'm': 1, 'u': 1, 'n': 1, 'd': 1}"""
+en = """Complete the function `contar_caracteres` that receives a &str and returns a HashMap with each character (lowercase) and how many times it appears. Ignore spaces.
+
+Example: "Hola Mundo" -> {'h': 1, 'o': 2, 'l': 1, 'a': 1, 'm': 1, 'u': 1, 'n': 1, 'd': 1}"""
+
+[starter_code]
+code = '''use std::collections::HashMap;
+
+fn contar_caracteres(texto: &str) -> HashMap<char, u32> {
+    // Crea un HashMap y cuenta cada caracter (en minuscula)
+    // Ignora los espacios
+    todo!()
+}
+
+fn main() {
+    let conteo = contar_caracteres("Rust Rust");
+
+    // Ordenar para output consistente
+    let mut pares: Vec<_> = conteo.iter().collect();
+    pares.sort_by_key(|(c, _)| *c);
+
+    for (c, n) in pares {
+        println!("'{}': {}", c, n);
+    }
+}'''
+
+[validation]
+expected_output = """'r': 2
+'s': 2
+'t': 2
+'u': 2"""
+
+[hints]
+es = [
+    "Crea un `HashMap::new()` mutable",
+    "Itera sobre `texto.chars()`",
+    "Usa `c.to_lowercase()` para obtener la version minuscula (devuelve un iterador)",
+    "Ignora espacios con `if c == ' ' { continue; }`",
+    "Usa el patron `entry().or_insert(0)` y luego `*count += 1`",
+]
+en = [
+    "Create a mutable `HashMap::new()`",
+    "Iterate over `texto.chars()`",
+    "Use `c.to_lowercase()` to get the lowercase version (returns an iterator)",
+    "Ignore spaces with `if c == ' ' { continue; }`",
+    "Use the `entry().or_insert(0)` pattern then `*count += 1`",
+]
+
+[solution]
+code = '''use std::collections::HashMap;
+
+fn contar_caracteres(texto: &str) -> HashMap<char, u32> {
+    let mut conteo = HashMap::new();
+    for c in texto.chars() {
+        if c == ' ' {
+            continue;
+        }
+        for lower in c.to_lowercase() {
+            let count = conteo.entry(lower).or_insert(0);
+            *count += 1;
+        }
+    }
+    conteo
+}
+
+fn main() {
+    let conteo = contar_caracteres("Rust Rust");
+
+    let mut pares: Vec<_> = conteo.iter().collect();
+    pares.sort_by_key(|(c, _)| *c);
+
+    for (c, n) in pares {
+        println!("'{}': {}", c, n);
+    }
+}'''

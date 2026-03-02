@@ -1,0 +1,65 @@
+[meta]
+id = "m03_e01"
+module = "m03"
+difficulty = "beginner"
+order = 1
+exercise_type = "fix_bug"
+
+[title]
+es = "Corrige el error de ownership"
+en = "Fix the ownership error"
+
+[description]
+es = """El siguiente codigo intenta usar una variable despues de que su ownership fue movido.
+Corrige el error usando `.clone()` para crear una copia del String.
+No cambies la logica del programa, solo haz que compile."""
+en = """The following code tries to use a variable after its ownership was moved.
+Fix the error using `.clone()` to create a copy of the String.
+Don't change the program's logic, just make it compile."""
+
+[broken_code]
+code = '''fn main() {
+    let nombre = String::from("Ferris");
+    let saludo = nombre;
+
+    println!("Nombre: {}", nombre);
+    println!("Saludo: {}", saludo);
+}'''
+
+[compiler_error]
+es = "error[E0382]: borrow of moved value: `nombre` -- El ownership de `nombre` se movio a `saludo`. Usa `.clone()` para crear una copia."
+en = "error[E0382]: borrow of moved value: `nombre` -- Ownership of `nombre` was moved to `saludo`. Use `.clone()` to create a copy."
+
+[starter_code]
+code = '''fn main() {
+    let nombre = String::from("Ferris");
+    let saludo = nombre;
+
+    println!("Nombre: {}", nombre);
+    println!("Saludo: {}", saludo);
+}'''
+
+[validation]
+expected_output = """Nombre: Ferris
+Saludo: Ferris"""
+
+[hints]
+es = [
+    "El error dice 'borrow of moved value' — el ownership de nombre se movio a saludo",
+    "Necesitas crear una copia independiente del String",
+    "Usa `.clone()` en la asignacion: `let saludo = nombre.clone();`",
+]
+en = [
+    "The error says 'borrow of moved value' — ownership of nombre was moved to saludo",
+    "You need to create an independent copy of the String",
+    "Use `.clone()` in the assignment: `let saludo = nombre.clone();`",
+]
+
+[solution]
+code = '''fn main() {
+    let nombre = String::from("Ferris");
+    let saludo = nombre.clone();
+
+    println!("Nombre: {}", nombre);
+    println!("Saludo: {}", saludo);
+}'''

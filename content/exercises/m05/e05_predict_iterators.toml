@@ -1,0 +1,94 @@
+[meta]
+id = "m05_e05"
+module = "m05"
+difficulty = "intermediate"
+order = 5
+exercise_type = "predict_output"
+
+[title]
+es = "Predice la salida: iteradores y closures"
+en = "Predict the output: iterators and closures"
+
+[description]
+es = """Sin ejecutar el codigo, predice cual sera la salida. Presta atencion a filter, map, y fold."""
+en = """Without running the code, predict the output. Pay attention to filter, map, and fold."""
+
+[starter_code]
+code = '''fn main() {
+    let nums = vec![1, 2, 3, 4, 5];
+
+    let resultado: Vec<i32> = nums.iter()
+        .filter(|&&x| x > 2)
+        .map(|&x| x * x)
+        .collect();
+    println!("{:?}", resultado);
+
+    let producto: i32 = nums.iter()
+        .fold(1, |acc, &x| acc * x);
+    println!("{}", producto);
+
+    let tiene_par = nums.iter().any(|&x| x % 2 == 0);
+    println!("{}", tiene_par);
+}'''
+
+[validation]
+expected_output = """[9, 16, 25]
+120
+true"""
+
+[hints]
+es = [
+    "filter(x > 2) deja: 3, 4, 5",
+    "map(x * x) convierte: 9, 16, 25",
+    "fold con multiplicacion: 1*1*2*3*4*5 = 120",
+    "any(x % 2 == 0): hay al menos un par? Si (2 y 4), asi que true",
+]
+en = [
+    "filter(x > 2) keeps: 3, 4, 5",
+    "map(x * x) transforms: 9, 16, 25",
+    "fold with multiplication: 1*1*2*3*4*5 = 120",
+    "any(x % 2 == 0): is there at least one even? Yes (2 and 4), so true",
+]
+
+[[options]]
+es = "[9, 16, 25], 120, true"
+en = "[9, 16, 25], 120, true"
+correct = true
+
+[[options]]
+es = "[1, 4, 9, 16, 25], 120, true"
+en = "[1, 4, 9, 16, 25], 120, true"
+correct = false
+
+[[options]]
+es = "[9, 16, 25], 15, true"
+en = "[9, 16, 25], 15, true"
+correct = false
+
+[[options]]
+es = "[9, 16, 25], 120, false"
+en = "[9, 16, 25], 120, false"
+correct = false
+
+[solution]
+code = '''// filter(x > 2): solo pasa 3, 4, 5
+// map(x * x): 3*3=9, 4*4=16, 5*5=25 -> [9, 16, 25]
+// fold(1, acc * x): 1*1=1, 1*2=2, 2*3=6, 6*4=24, 24*5=120
+// any(x % 2 == 0): 2 es par, asi que true
+
+fn main() {
+    let nums = vec![1, 2, 3, 4, 5];
+
+    let resultado: Vec<i32> = nums.iter()
+        .filter(|&&x| x > 2)
+        .map(|&x| x * x)
+        .collect();
+    println!("{:?}", resultado);
+
+    let producto: i32 = nums.iter()
+        .fold(1, |acc, &x| acc * x);
+    println!("{}", producto);
+
+    let tiene_par = nums.iter().any(|&x| x % 2 == 0);
+    println!("{}", tiene_par);
+}'''

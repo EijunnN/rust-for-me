@@ -1,0 +1,228 @@
+[meta]
+id = "m05_l01"
+order = 1
+
+[title]
+es = "Vectores (Vec)"
+en = "Vectors (Vec)"
+
+[[blocks]]
+type = "text"
+es = """## El Problema: arrays de tamano fijo
+
+Los arrays en Rust tienen un tamano fijo conocido en compilacion. Pero en la vida real, a menudo no sabes cuantos elementos tendras: una lista de usuarios, resultados de busqueda, lineas de un archivo..."""
+en = """## The Problem: fixed-size arrays
+
+Arrays in Rust have a fixed size known at compile time. But in real life, you often don't know how many elements you'll have: a list of users, search results, lines from a file..."""
+
+[[blocks]]
+type = "text"
+es = """## La solucion: Vec<T>
+
+`Vec<T>` (vector) es una coleccion que puede **crecer y encogerse** en tiempo de ejecucion. Es la estructura de datos mas usada en Rust. Almacena sus elementos en el heap, contiguos en memoria:"""
+en = """## The solution: Vec<T>
+
+`Vec<T>` (vector) is a collection that can **grow and shrink** at runtime. It's the most used data structure in Rust. It stores its elements on the heap, contiguous in memory:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // Crear vectores
+    let mut numeros: Vec<i32> = Vec::new();  // Vacio, tipo explicito
+    let colores = vec!["rojo", "verde", "azul"];  // Macro vec! con valores
+
+    // Agregar elementos
+    numeros.push(10);
+    numeros.push(20);
+    numeros.push(30);
+    println!("Numeros: {:?}", numeros);
+    println!("Colores: {:?}", colores);
+
+    // Acceso por indice (puede provocar panic si el indice no existe)
+    println!("Primer numero: {}", numeros[0]);
+    println!("Ultimo color: {}", colores[2]);
+
+    // Acceso seguro con .get() -> retorna Option<&T>
+    match numeros.get(5) {
+        Some(valor) => println!("Indice 5: {}", valor),
+        None => println!("Indice 5 no existe"),
+    }
+
+    // Longitud y capacidad
+    println!("Longitud: {}, Capacidad: {}", numeros.len(), numeros.capacity());
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Modificar vectores"""
+en = """## Modifying vectors"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let mut frutas = vec![
+        String::from("manzana"),
+        String::from("banana"),
+        String::from("cereza"),
+    ];
+    println!("Original: {:?}", frutas);
+
+    // Agregar al final
+    frutas.push(String::from("durazno"));
+
+    // Eliminar el ultimo
+    let ultima = frutas.pop();  // Devuelve Option<T>
+    println!("Eliminada: {:?}", ultima);
+
+    // Insertar en posicion
+    frutas.insert(1, String::from("arandano"));
+    println!("Con arandano: {:?}", frutas);
+
+    // Eliminar en posicion
+    frutas.remove(0);
+    println!("Sin primera: {:?}", frutas);
+
+    // Verificar si contiene
+    println!("Tiene banana? {}", frutas.contains(&String::from("banana")));
+
+    // Longitud
+    println!("Total: {} frutas", frutas.len());
+    println!("Esta vacio? {}", frutas.is_empty());
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Iterar sobre vectores
+
+Hay varias formas de iterar, y la eleccion afecta el ownership:"""
+en = """## Iterating over vectors
+
+There are several ways to iterate, and the choice affects ownership:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let numeros = vec![1, 2, 3, 4, 5];
+
+    // Referencia inmutable: el vector sigue siendo accesible despues
+    print!("Lectura: ");
+    for n in &numeros {
+        print!("{} ", n);
+    }
+    println!();
+    println!("Vector intacto: {:?}", numeros);
+
+    // Referencia mutable: puedes modificar los elementos
+    let mut datos = vec![1, 2, 3, 4, 5];
+    for n in &mut datos {
+        *n *= 10;  // Multiplica cada elemento por 10
+    }
+    println!("Multiplicados: {:?}", datos);
+
+    // Consumir: el vector se mueve y ya no es accesible
+    let nombres = vec!["Ana", "Luis", "Maria"];
+    for nombre in nombres {
+        // nombres ya no es accesible despues de este loop
+        print!("{} ", nombre);
+    }
+    println!();
+    // println!("{:?}", nombres);  // ERROR: nombres fue movido
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Regla para iterar vectores:**
+- `for x in &vec` — solo leer. El vector sigue disponible.
+- `for x in &mut vec` — leer y modificar. Necesitas `*x` para acceder al valor.
+- `for x in vec` — consumir. El vector se mueve al loop y ya no existe despues."""
+en = """**Rule for iterating vectors:**
+- `for x in &vec` — read only. The vector remains available.
+- `for x in &mut vec` — read and modify. You need `*x` to access the value.
+- `for x in vec` — consume. The vector is moved into the loop and no longer exists after."""
+
+[[blocks]]
+type = "text"
+es = """## Ejemplo practico: estadisticas"""
+en = """## Practical example: statistics"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn estadisticas(datos: &[f64]) -> (f64, f64, f64) {
+    let n = datos.len() as f64;
+    let suma: f64 = datos.iter().sum();
+    let promedio = suma / n;
+
+    let mut ordenados = datos.to_vec();
+    ordenados.sort_by(|a, b| a.partial_cmp(b).unwrap());
+
+    let min = ordenados[0];
+    let max = ordenados[ordenados.len() - 1];
+
+    (promedio, min, max)
+}
+
+fn main() {
+    let temperaturas = vec![22.5, 18.0, 25.3, 19.8, 28.1, 15.5, 23.7];
+
+    println!("Temperaturas: {:?}", temperaturas);
+
+    let (prom, min, max) = estadisticas(&temperaturas);
+    println!("Promedio: {:.1}C", prom);
+    println!("Minima:  {:.1}C", min);
+    println!("Maxima:  {:.1}C", max);
+
+    // Filtrar: solo las mayores a 20
+    let calidas: Vec<&f64> = temperaturas.iter().filter(|&&t| t > 20.0).collect();
+    println!("Dias calidos (>20C): {:?}", calidas);
+}'''
+
+[[blocks]]
+type = "quiz"
+es = "Cual es la diferencia principal entre un array `[i32; 5]` y un `Vec<i32>`?"
+en = "What is the main difference between an array `[i32; 5]` and a `Vec<i32>`?"
+[[blocks.options]]
+es = "El array es mas rapido"
+en = "The array is faster"
+correct = false
+[[blocks.options]]
+es = "El array tiene tamano fijo (stack); el Vec puede crecer y encogerse (heap)"
+en = "The array has fixed size (stack); Vec can grow and shrink (heap)"
+correct = true
+[[blocks.options]]
+es = "El Vec no puede almacenar tipos primitivos"
+en = "Vec can't store primitive types"
+correct = false
+[[blocks.options]]
+es = "No hay diferencia real"
+en = "There's no real difference"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Que devuelve `vec.get(10)` si el vector tiene solo 3 elementos?"
+en = "What does `vec.get(10)` return if the vector has only 3 elements?"
+[[blocks.options]]
+es = "0"
+en = "0"
+correct = false
+[[blocks.options]]
+es = "None (es seguro, devuelve Option)"
+en = "None (it's safe, returns Option)"
+correct = true
+[[blocks.options]]
+es = "El programa se detiene con panic"
+en = "The program stops with panic"
+correct = false
+[[blocks.options]]
+es = "Un error de compilacion"
+en = "A compilation error"
+correct = false

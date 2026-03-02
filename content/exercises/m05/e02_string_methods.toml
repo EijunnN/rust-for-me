@@ -1,0 +1,75 @@
+[meta]
+id = "m05_e02"
+module = "m05"
+difficulty = "beginner"
+order = 2
+exercise_type = "write_code"
+
+[title]
+es = "Manipulacion de Strings"
+en = "String manipulation"
+
+[description]
+es = """Completa la funcion `procesar_nombre` que recibe un nombre con posibles espacios al inicio/final y lo devuelve:
+1. Sin espacios al inicio/final (trim)
+2. Con la primera letra en mayuscula y el resto en minuscula
+
+Ejemplo: "  aNA  " -> "Ana"
+
+Pista: usa `.trim()`, `.to_lowercase()`, y manipula los chars."""
+en = """Complete the function `procesar_nombre` that receives a name with possible leading/trailing spaces and returns it:
+1. Without leading/trailing spaces (trim)
+2. With first letter capitalized and rest lowercase
+
+Example: "  aNA  " -> "Ana"
+
+Hint: use `.trim()`, `.to_lowercase()`, and manipulate chars."""
+
+[starter_code]
+code = '''fn procesar_nombre(nombre: &str) -> String {
+    // 1. Elimina espacios con .trim()
+    // 2. Convierte a minusculas
+    // 3. Capitaliza la primera letra
+    todo!()
+}
+
+fn main() {
+    println!("{}", procesar_nombre("  aNA  "));
+    println!("{}", procesar_nombre("cARLOS"));
+    println!("{}", procesar_nombre("  lucia"));
+}'''
+
+[validation]
+expected_output = """Ana
+Carlos
+Lucia"""
+
+[hints]
+es = [
+    "Primero: `let limpio = nombre.trim().to_lowercase();`",
+    "Luego toma el primer char y el resto por separado",
+    "Para capitalizar: `let primera: String = limpio.chars().take(1).flat_map(|c| c.to_uppercase()).collect();`",
+    "Para el resto: `let resto: String = limpio.chars().skip(1).collect();`",
+    "Combina: `format!(\"{}{}\", primera, resto)`",
+]
+en = [
+    "First: `let limpio = nombre.trim().to_lowercase();`",
+    "Then take the first char and the rest separately",
+    "To capitalize: `let primera: String = limpio.chars().take(1).flat_map(|c| c.to_uppercase()).collect();`",
+    "For the rest: `let resto: String = limpio.chars().skip(1).collect();`",
+    "Combine: `format!(\"{}{}\", primera, resto)`",
+]
+
+[solution]
+code = '''fn procesar_nombre(nombre: &str) -> String {
+    let limpio = nombre.trim().to_lowercase();
+    let primera: String = limpio.chars().take(1).flat_map(|c| c.to_uppercase()).collect();
+    let resto: String = limpio.chars().skip(1).collect();
+    format!("{}{}", primera, resto)
+}
+
+fn main() {
+    println!("{}", procesar_nombre("  aNA  "));
+    println!("{}", procesar_nombre("cARLOS"));
+    println!("{}", procesar_nombre("  lucia"));
+}'''

@@ -1,0 +1,324 @@
+[meta]
+id = "m03_l02"
+order = 2
+
+[title]
+es = "Referencias y Borrowing"
+en = "References and Borrowing"
+
+[[blocks]]
+type = "text"
+es = """## El Problema: tener que devolver el ownership es incomodo
+
+En la leccion anterior vimos que pasar un `String` a una funcion mueve el ownership. Tener que devolver el valor cada vez es tedioso y poco practico:"""
+en = """## The Problem: having to return ownership is awkward
+
+In the previous lesson we saw that passing a `String` to a function moves ownership. Having to return the value every time is tedious and impractical:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''// Esto es TERRIBLE - no hagas esto
+fn calcular_longitud(s: String) -> (String, usize) {
+    let len = s.len();
+    (s, len)  // Tenemos que devolver s para no perderlo
+}
+
+fn main() {
+    let s1 = String::from("hola");
+    let (s1, len) = calcular_longitud(s1);  // Incomodo!
+    println!("La longitud de '{}' es {}", s1, len);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## La solucion: Referencias (&)
+
+En lugar de transferir el ownership, puedes **prestar** el valor usando una **referencia** (`&`). Es como prestarle un libro a un amigo: el amigo puede leerlo, pero tu sigues siendo el dueno.
+
+Una referencia te permite acceder a un valor **sin tomar ownership**. Esto se llama **borrowing** (prestamo):"""
+en = """## The solution: References (&)
+
+Instead of transferring ownership, you can **lend** the value using a **reference** (`&`). It's like lending a book to a friend: they can read it, but you're still the owner.
+
+A reference lets you access a value **without taking ownership**. This is called **borrowing**:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn calcular_longitud(s: &String) -> usize {  // &String = referencia a String
+    s.len()
+}  // s sale del scope, pero como NO tiene ownership, no se libera nada
+
+fn main() {
+    let s1 = String::from("hola mundo");
+    let len = calcular_longitud(&s1);  // &s1 = prestamos s1, no movemos
+
+    // s1 sigue siendo valida porque nunca cedimos ownership!
+    println!("La longitud de '{}' es {}", s1, len);
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Analogia del Borrowing:**
+- **Ownership** = ser dueno de un libro. Solo tu puedes decidir que pasa con el.
+- **Referencia inmutable** (`&`) = prestar el libro para que alguien lo lea. Pueden leerlo pero no escribir en el.
+- **Referencia mutable** (`&mut`) = prestar el libro con permiso para que escriban notas. Solo una persona puede tenerlo a la vez.
+- **Move** = regalar el libro. Ya no es tuyo."""
+en = """**Borrowing Analogy:**
+- **Ownership** = owning a book. Only you can decide what happens to it.
+- **Immutable reference** (`&`) = lending the book for someone to read. They can read but not write in it.
+- **Mutable reference** (`&mut`) = lending the book with permission to write notes. Only one person can have it at a time.
+- **Move** = giving the book away. It's no longer yours."""
+
+[[blocks]]
+type = "text"
+es = """## Referencias inmutables: multiples lectores
+
+Puedes tener **multiples referencias inmutables** al mismo tiempo. Esto es seguro porque nadie esta modificando el dato:"""
+en = """## Immutable references: multiple readers
+
+You can have **multiple immutable references** at the same time. This is safe because nobody is modifying the data:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let s = String::from("hola");
+
+    // Multiples referencias inmutables: OK!
+    let r1 = &s;
+    let r2 = &s;
+    let r3 = &s;
+
+    println!("r1: {}, r2: {}, r3: {}", r1, r2, r3);
+    // Todas leen el mismo dato. Es seguro porque nadie modifica.
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Referencias mutables: un solo escritor
+
+Para modificar un valor prestado, necesitas una **referencia mutable** (`&mut`). Pero Rust tiene una regla estricta: solo puedes tener **una referencia mutable** a la vez, y **no puedes mezclar** referencias mutables con inmutables:"""
+en = """## Mutable references: a single writer
+
+To modify a borrowed value, you need a **mutable reference** (`&mut`). But Rust has a strict rule: you can only have **one mutable reference** at a time, and you **cannot mix** mutable with immutable references:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn agregar_exclamacion(s: &mut String) {
+    s.push_str("!!!");
+}
+
+fn main() {
+    let mut s = String::from("hola");  // La variable debe ser mut
+    println!("Antes: {}", s);
+
+    agregar_exclamacion(&mut s);  // Prestamos de forma mutable
+    println!("Despues: {}", s);
+
+    // Podemos prestar &mut multiples veces, pero no simultaneamente
+    agregar_exclamacion(&mut s);
+    println!("Otra vez: {}", s);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## La regla fundamental del borrowing
+
+Esta regla es lo que hace a Rust especial:
+
+> En cualquier momento dado, puedes tener **O BIEN** una referencia mutable, **O BIEN** cualquier numero de referencias inmutables. **Nunca ambas.**
+
+Esto previene **data races** (condiciones de carrera) en tiempo de compilacion:"""
+en = """## The fundamental borrowing rule
+
+This rule is what makes Rust special:
+
+> At any given time, you can have **EITHER** one mutable reference, **OR** any number of immutable references. **Never both.**
+
+This prevents **data races** at compile time:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''fn main() {
+    let mut s = String::from("hola");
+
+    let r1 = &s;      // OK: primera referencia inmutable
+    let r2 = &s;      // OK: segunda referencia inmutable
+    let r3 = &mut s;  // ERROR! No puedes tener &mut mientras existan &
+
+    println!("{}, {}, {}", r1, r2, r3);
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "danger"
+es = """**Error del compilador:**
+```
+error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
+ --> src/main.rs:5:14
+  |
+3 |     let r1 = &s;
+  |              -- immutable borrow occurs here
+4 |     let r2 = &s;
+  |              -- immutable borrow occurs here
+5 |     let r3 = &mut s;
+  |              ^^^^^^ mutable borrow occurs here
+6 |     println!("{}, {}, {}", r1, r2, r3);
+  |                            -- immutable borrow later used here
+```
+Imagina que mientras alguien lee un documento (referencia inmutable), otra persona lo esta editando (referencia mutable). El lector podria ver datos a medio cambiar. Rust previene esto."""
+en = """**Compiler error:**
+```
+error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
+ --> src/main.rs:5:14
+  |
+3 |     let r1 = &s;
+  |              -- immutable borrow occurs here
+4 |     let r2 = &s;
+  |              -- immutable borrow occurs here
+5 |     let r3 = &mut s;
+  |              ^^^^^^ mutable borrow occurs here
+6 |     println!("{}, {}, {}", r1, r2, r3);
+  |                            -- immutable borrow later used here
+```
+Imagine while someone is reading a document (immutable reference), another person is editing it (mutable reference). The reader could see half-changed data. Rust prevents this."""
+
+[[blocks]]
+type = "text"
+es = """## Non-Lexical Lifetimes (NLL): Rust es inteligente
+
+Rust no solo mira donde se declara una referencia, sino donde se **usa por ultima vez**. Una referencia termina cuando ya no se necesita, no al final del scope:"""
+en = """## Non-Lexical Lifetimes (NLL): Rust is smart
+
+Rust doesn't just look at where a reference is declared, but where it's **last used**. A reference ends when it's no longer needed, not at the end of the scope:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let mut s = String::from("hola");
+
+    let r1 = &s;
+    let r2 = &s;
+    println!("Inmutables: {} y {}", r1, r2);
+    // r1 y r2 ya no se usan despues de este punto
+
+    // Ahora SI podemos crear una referencia mutable
+    let r3 = &mut s;
+    r3.push_str(" mundo");
+    println!("Mutable: {}", r3);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Ejemplo practico: funciones que leen vs funciones que modifican"""
+en = """## Practical example: functions that read vs functions that modify"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''// Esta funcion solo LEE: recibe referencia inmutable
+fn primera_palabra(s: &String) -> &str {
+    let bytes = s.as_bytes();
+    for (i, &byte) in bytes.iter().enumerate() {
+        if byte == b' ' {
+            return &s[0..i];
+        }
+    }
+    &s[..]
+}
+
+// Esta funcion MODIFICA: recibe referencia mutable
+fn a_mayusculas(s: &mut String) {
+    *s = s.to_uppercase();
+}
+
+// Esta funcion TOMA OWNERSHIP: recibe el String directo
+fn consumir(s: String) {
+    println!("Consumido: {}", s);
+    // s se libera aqui
+}
+
+fn main() {
+    let mut texto = String::from("hola mundo cruel");
+
+    // Leer (borrowing inmutable)
+    let palabra = primera_palabra(&texto);
+    println!("Primera palabra: {}", palabra);
+
+    // Modificar (borrowing mutable)
+    a_mayusculas(&mut texto);
+    println!("Mayusculas: {}", texto);
+
+    // Consumir (ownership transfer)
+    consumir(texto);
+    // println!("{}", texto);  // ERROR! texto fue movido
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Regla general para parametros de funcion:**
+- Usa `&T` cuando la funcion solo necesita **leer** el dato.
+- Usa `&mut T` cuando la funcion necesita **modificar** el dato.
+- Usa `T` (sin referencia) solo cuando la funcion necesita **tomar ownership** (raro).
+- La mayoria de funciones usan `&T` o `&mut T`."""
+en = """**General rule for function parameters:**
+- Use `&T` when the function only needs to **read** the data.
+- Use `&mut T` when the function needs to **modify** the data.
+- Use `T` (no reference) only when the function needs to **take ownership** (rare).
+- Most functions use `&T` or `&mut T`."""
+
+[[blocks]]
+type = "quiz"
+es = "Cuantas referencias inmutables puedes tener a la vez de un mismo dato?"
+en = "How many immutable references can you have at once to the same data?"
+[[blocks.options]]
+es = "Solo una"
+en = "Only one"
+correct = false
+[[blocks.options]]
+es = "Maximo dos"
+en = "Maximum two"
+correct = false
+[[blocks.options]]
+es = "Tantas como quieras, siempre que no haya una referencia mutable activa"
+en = "As many as you want, as long as there's no active mutable reference"
+correct = true
+[[blocks.options]]
+es = "Depende del tamano del dato"
+en = "It depends on the data size"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Por que Rust no permite tener una referencia mutable y una inmutable al mismo tiempo?"
+en = "Why doesn't Rust allow having a mutable and an immutable reference at the same time?"
+[[blocks.options]]
+es = "Para ahorrar memoria"
+en = "To save memory"
+correct = false
+[[blocks.options]]
+es = "Porque previene data races: un lector podria ver datos a medio modificar"
+en = "Because it prevents data races: a reader could see half-modified data"
+correct = true
+[[blocks.options]]
+es = "Es una limitacion del compilador que se arreglara en el futuro"
+en = "It's a compiler limitation that will be fixed in the future"
+correct = false
+[[blocks.options]]
+es = "Porque las referencias mutables son mas lentas"
+en = "Because mutable references are slower"
+correct = false

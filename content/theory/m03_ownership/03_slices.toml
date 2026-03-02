@@ -1,0 +1,265 @@
+[meta]
+id = "m03_l03"
+order = 3
+
+[title]
+es = "Slices"
+en = "Slices"
+
+[[blocks]]
+type = "text"
+es = """## El Problema: referencias que se dessincronizan
+
+Imagina que tienes un String y quieres trabajar con una parte de el. Si guardas la posicion (indice) de la parte que te interesa, esa posicion puede volverse invalida si el String cambia:"""
+en = """## The Problem: references that get out of sync
+
+Imagine you have a String and want to work with part of it. If you store the position (index) of the part you're interested in, that position can become invalid if the String changes:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''fn primera_palabra_indice(s: &String) -> usize {
+    let bytes = s.as_bytes();
+    for (i, &byte) in bytes.iter().enumerate() {
+        if byte == b' ' {
+            return i;
+        }
+    }
+    s.len()
+}
+
+fn main() {
+    let mut s = String::from("hola mundo");
+    let indice = primera_palabra_indice(&s);  // indice = 4
+
+    s.clear();  // Vaciamos el string!
+
+    // indice sigue siendo 4, pero el string esta vacio
+    // El indice ya no tiene sentido - BUG silencioso!
+    println!("Primera palabra termina en: {}", indice);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## La solucion: String Slices (&str)
+
+Un **slice** es una referencia a una porcion contigua de una coleccion. Para Strings, el tipo de un slice es `&str`. A diferencia de un indice, un slice esta vinculado al dato original, asi que el compilador puede verificar que siga siendo valido:"""
+en = """## The solution: String Slices (&str)
+
+A **slice** is a reference to a contiguous portion of a collection. For Strings, the type of a slice is `&str`. Unlike an index, a slice is tied to the original data, so the compiler can verify it's still valid:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let s = String::from("hola mundo");
+
+    // Slices: referencia a una porcion del String
+    let hola = &s[0..4];    // "hola" (desde 0 hasta 4, sin incluir 4)
+    let mundo = &s[5..10];  // "mundo"
+
+    println!("'{}' y '{}'", hola, mundo);
+
+    // Atajos de sintaxis
+    let primero = &s[..4];   // Desde el inicio: igual que &s[0..4]
+    let ultimo = &s[5..];    // Hasta el final: igual que &s[5..s.len()]
+    let todo = &s[..];       // Todo el string: igual que &s[0..s.len()]
+
+    println!("Primero: '{}', Ultimo: '{}', Todo: '{}'", primero, ultimo, todo);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Slices previenen bugs
+
+Ahora, si intentamos modificar el String mientras existe un slice, el compilador nos detiene:"""
+en = """## Slices prevent bugs
+
+Now, if we try to modify the String while a slice exists, the compiler stops us:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''fn primera_palabra(s: &String) -> &str {
+    let bytes = s.as_bytes();
+    for (i, &byte) in bytes.iter().enumerate() {
+        if byte == b' ' {
+            return &s[0..i];
+        }
+    }
+    &s[..]
+}
+
+fn main() {
+    let mut s = String::from("hola mundo");
+    let palabra = primera_palabra(&s);  // Borrows s immutably
+
+    s.clear();  // ERROR! No puedes mutar s mientras palabra la referencia
+
+    println!("Primera palabra: {}", palabra);
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "danger"
+es = """**Error del compilador:**
+```
+error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
+ --> src/main.rs:13:5
+  |
+12|     let palabra = primera_palabra(&s);
+  |                                   -- immutable borrow occurs here
+13|     s.clear();
+  |     ^^^^^^^^^ mutable borrow occurs here
+14|     println!("Primera palabra: {}", palabra);
+  |                                     ------- immutable borrow later used here
+```
+El slice (`palabra`) es una referencia inmutable a `s`. No puedes mutar `s` mientras ese slice existe. Rust previene el bug!"""
+en = """**Compiler error:**
+```
+error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
+ --> src/main.rs:13:5
+  |
+12|     let palabra = primera_palabra(&s);
+  |                                   -- immutable borrow occurs here
+13|     s.clear();
+  |     ^^^^^^^^^ mutable borrow occurs here
+14|     println!("Primera palabra: {}", palabra);
+  |                                     ------- immutable borrow later used here
+```
+The slice (`palabra`) is an immutable reference to `s`. You can't mutate `s` while that slice exists. Rust prevents the bug!"""
+
+[[blocks]]
+type = "text"
+es = """## Prefiere &str sobre &String
+
+En la practica, es mejor que las funciones reciban `&str` en lugar de `&String`. Un `&str` es mas flexible porque puede aceptar tanto slices de `String` como string literals:"""
+en = """## Prefer &str over &String
+
+In practice, it's better for functions to receive `&str` instead of `&String`. A `&str` is more flexible because it can accept both `String` slices and string literals:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''// Buena practica: recibir &str en lugar de &String
+fn contar_palabras(texto: &str) -> usize {
+    texto.split_whitespace().count()
+}
+
+fn main() {
+    // Funciona con String
+    let frase = String::from("Rust es genial y seguro");
+    println!("Palabras en String: {}", contar_palabras(&frase));
+
+    // Funciona con &str directamente
+    println!("Palabras en &str: {}", contar_palabras("hola mundo"));
+
+    // Funciona con slices
+    println!("Palabras en slice: {}", contar_palabras(&frase[0..14]));
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Slices de arrays
+
+Los slices no son exclusivos de Strings. Tambien puedes crear slices de arrays y vectores:"""
+en = """## Array slices
+
+Slices aren't exclusive to Strings. You can also create slices of arrays and vectors:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn suma(numeros: &[i32]) -> i32 {
+    let mut total = 0;
+    for n in numeros {
+        total += n;
+    }
+    total
+}
+
+fn promedio(numeros: &[i32]) -> f64 {
+    if numeros.is_empty() {
+        return 0.0;
+    }
+    suma(numeros) as f64 / numeros.len() as f64
+}
+
+fn main() {
+    let notas = [85, 92, 78, 95, 88];
+
+    // Slice de todo el array
+    println!("Suma total: {}", suma(&notas));
+    println!("Promedio: {:.1}", promedio(&notas));
+
+    // Slice de una parte
+    let primeras_tres = &notas[0..3];
+    println!("Primeras 3 notas: {:?}", primeras_tres);
+    println!("Promedio primeras 3: {:.1}", promedio(primeras_tres));
+
+    // Slice de las ultimas dos
+    let ultimas = &notas[3..];
+    println!("Ultimas notas: {:?}", ultimas);
+    println!("Promedio ultimas: {:.1}", promedio(ultimas));
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Resumen de tipos de slice:**
+- `&str` = slice de un String o string literal
+- `&[i32]` = slice de un array o vector de i32
+- `&[T]` = slice de cualquier coleccion de tipo T
+- Los slices siempre son referencias (contienen un puntero y una longitud)"""
+en = """**Summary of slice types:**
+- `&str` = slice of a String or string literal
+- `&[i32]` = slice of an array or vector of i32
+- `&[T]` = slice of any collection of type T
+- Slices are always references (they contain a pointer and a length)"""
+
+[[blocks]]
+type = "quiz"
+es = "Cual es la ventaja de usar un slice (`&str`) en lugar de un indice (`usize`) para representar una parte de un String?"
+en = "What is the advantage of using a slice (`&str`) instead of an index (`usize`) to represent part of a String?"
+[[blocks.options]]
+es = "El slice es mas rapido"
+en = "The slice is faster"
+correct = false
+[[blocks.options]]
+es = "El slice esta vinculado al String original, asi que el compilador puede verificar que siga siendo valido"
+en = "The slice is tied to the original String, so the compiler can verify it's still valid"
+correct = true
+[[blocks.options]]
+es = "Los indices no funcionan en Rust"
+en = "Indices don't work in Rust"
+correct = false
+[[blocks.options]]
+es = "El slice usa menos memoria"
+en = "The slice uses less memory"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Por que es mejor que una funcion reciba `&str` en lugar de `&String`?"
+en = "Why is it better for a function to receive `&str` instead of `&String`?"
+[[blocks.options]]
+es = "Porque &str es mas rapido"
+en = "Because &str is faster"
+correct = false
+[[blocks.options]]
+es = "Porque &str acepta tanto String (via &), string literals, como slices — es mas flexible"
+en = "Because &str accepts String (via &), string literals, and slices — it's more flexible"
+correct = true
+[[blocks.options]]
+es = "Porque &String no existe en Rust"
+en = "Because &String doesn't exist in Rust"
+correct = false
+[[blocks.options]]
+es = "No hay diferencia real"
+en = "There's no real difference"
+correct = false

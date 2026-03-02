@@ -1,0 +1,112 @@
+[meta]
+id = "m04_e05"
+module = "m04"
+difficulty = "intermediate"
+order = 5
+exercise_type = "predict_output"
+
+[title]
+es = "Predice la salida: enums y pattern matching"
+en = "Predict the output: enums and pattern matching"
+
+[description]
+es = """Sin ejecutar el codigo, predice cual sera la salida. Presta atencion a los valores en cada variante del enum y como match los destructura."""
+en = """Without running the code, predict the output. Pay attention to the values in each enum variant and how match destructures them."""
+
+[starter_code]
+code = '''enum Animal {
+    Perro(String),
+    Gato { nombre: String, vidas: u8 },
+    Pez,
+}
+
+fn describir(animal: &Animal) -> String {
+    match animal {
+        Animal::Perro(nombre) => format!("{} dice guau!", nombre),
+        Animal::Gato { nombre, vidas } => format!("{} tiene {} vidas", nombre, vidas),
+        Animal::Pez => String::from("Burbuja burbuja"),
+    }
+}
+
+fn main() {
+    let mascotas = vec![
+        Animal::Gato { nombre: String::from("Michi"), vidas: 7 },
+        Animal::Perro(String::from("Rex")),
+        Animal::Pez,
+    ];
+
+    for mascota in &mascotas {
+        println!("{}", describir(mascota));
+    }
+}'''
+
+[validation]
+expected_output = """Michi tiene 7 vidas
+Rex dice guau!
+Burbuja burbuja"""
+
+[hints]
+es = [
+    "El vector tiene 3 elementos: Gato, Perro, Pez (en ese orden)",
+    "Gato se crea con nombre='Michi' y vidas=7",
+    "Perro se crea con nombre='Rex'",
+    "Pez no tiene datos, siempre devuelve 'Burbuja burbuja'",
+]
+en = [
+    "The vector has 3 elements: Gato, Perro, Pez (in that order)",
+    "Gato is created with nombre='Michi' and vidas=7",
+    "Perro is created with nombre='Rex'",
+    "Pez has no data, always returns 'Burbuja burbuja'",
+]
+
+[[options]]
+es = "Michi tiene 7 vidas, Rex dice guau!, Burbuja burbuja"
+en = "Michi tiene 7 vidas, Rex dice guau!, Burbuja burbuja"
+correct = true
+
+[[options]]
+es = "Rex dice guau!, Michi tiene 7 vidas, Burbuja burbuja"
+en = "Rex dice guau!, Michi tiene 7 vidas, Burbuja burbuja"
+correct = false
+
+[[options]]
+es = "Error de compilacion"
+en = "Compilation error"
+correct = false
+
+[[options]]
+es = "Michi tiene 9 vidas, Rex dice guau!, Burbuja burbuja"
+en = "Michi tiene 9 vidas, Rex dice guau!, Burbuja burbuja"
+correct = false
+
+[solution]
+code = '''// El vector se itera en orden: Gato, Perro, Pez
+// 1. Gato { nombre: "Michi", vidas: 7 } -> "Michi tiene 7 vidas"
+// 2. Perro("Rex") -> "Rex dice guau!"
+// 3. Pez -> "Burbuja burbuja"
+
+enum Animal {
+    Perro(String),
+    Gato { nombre: String, vidas: u8 },
+    Pez,
+}
+
+fn describir(animal: &Animal) -> String {
+    match animal {
+        Animal::Perro(nombre) => format!("{} dice guau!", nombre),
+        Animal::Gato { nombre, vidas } => format!("{} tiene {} vidas", nombre, vidas),
+        Animal::Pez => String::from("Burbuja burbuja"),
+    }
+}
+
+fn main() {
+    let mascotas = vec![
+        Animal::Gato { nombre: String::from("Michi"), vidas: 7 },
+        Animal::Perro(String::from("Rex")),
+        Animal::Pez,
+    ];
+
+    for mascota in &mascotas {
+        println!("{}", describir(mascota));
+    }
+}'''

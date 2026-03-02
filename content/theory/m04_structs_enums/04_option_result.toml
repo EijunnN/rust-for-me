@@ -1,0 +1,312 @@
+[meta]
+id = "m04_l04"
+order = 4
+
+[title]
+es = "Option y Result"
+en = "Option and Result"
+
+[[blocks]]
+type = "text"
+es = """## El Problema: null, el error del billon de dolares
+
+Tony Hoare, creador del concepto de `null`, lo llamo "mi error del billon de dolares". En lenguajes con null, cualquier variable puede ser null en cualquier momento, y olvidar verificarlo causa crashes:"""
+en = """## The Problem: null, the billion-dollar mistake
+
+Tony Hoare, creator of the `null` concept, called it "my billion-dollar mistake". In languages with null, any variable can be null at any time, and forgetting to check causes crashes:"""
+
+[[blocks]]
+type = "code"
+language = "javascript"
+runnable = false
+code = '''// JavaScript - null puede aparecer en cualquier lugar
+function getUser(id) {
+    // Podria devolver null si el usuario no existe
+    return database.find(id);
+}
+
+let user = getUser(999);
+console.log(user.name); // TypeError: Cannot read property 'name' of null
+// El programa explota en produccion a las 3am'''
+
+[[blocks]]
+type = "text"
+es = """## La solucion de Rust: Option<T>
+
+Rust **no tiene null**. En su lugar, tiene el enum `Option<T>` que representa explicitamente "podria haber un valor o no":
+
+```
+enum Option<T> {
+    Some(T),    // Hay un valor de tipo T
+    None,       // No hay valor
+}
+```
+
+`Option` esta tan integrado en Rust que puedes usar `Some` y `None` directamente sin prefijo."""
+en = """## Rust's solution: Option<T>
+
+Rust **has no null**. Instead, it has the `Option<T>` enum that explicitly represents "there might be a value or not":
+
+```
+enum Option<T> {
+    Some(T),    // There is a value of type T
+    None,       // There is no value
+}
+```
+
+`Option` is so integrated into Rust that you can use `Some` and `None` directly without prefix."""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn buscar_usuario(id: u32) -> Option<String> {
+    match id {
+        1 => Some(String::from("Ana")),
+        2 => Some(String::from("Carlos")),
+        3 => Some(String::from("Lucia")),
+        _ => None,  // Usuario no encontrado
+    }
+}
+
+fn main() {
+    // Patron basico: match
+    let usuario = buscar_usuario(2);
+    match &usuario {
+        Some(nombre) => println!("Encontrado: {}", nombre),
+        None => println!("Usuario no encontrado"),
+    }
+
+    // if let: cuando solo te interesa Some
+    if let Some(nombre) = buscar_usuario(1) {
+        println!("Usuario 1: {}", nombre);
+    }
+
+    // unwrap_or: valor por defecto si es None
+    let nombre = buscar_usuario(999).unwrap_or(String::from("Anonimo"));
+    println!("Usuario 999: {}", nombre);
+
+    // is_some() / is_none(): verificar sin extraer
+    println!("Existe usuario 1? {}", buscar_usuario(1).is_some());
+    println!("Existe usuario 5? {}", buscar_usuario(5).is_some());
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Metodos utiles de Option
+
+Option tiene muchos metodos que hacen el codigo mas expresivo y conciso:"""
+en = """## Useful Option methods
+
+Option has many methods that make code more expressive and concise:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn dividir(a: f64, b: f64) -> Option<f64> {
+    if b == 0.0 {
+        None  // No se puede dividir por cero
+    } else {
+        Some(a / b)
+    }
+}
+
+fn main() {
+    // unwrap_or: proporcionar un valor por defecto
+    let r1 = dividir(10.0, 3.0).unwrap_or(0.0);
+    let r2 = dividir(10.0, 0.0).unwrap_or(0.0);
+    println!("10/3 = {:.2}, 10/0 = {}", r1, r2);
+
+    // map: transformar el valor interno sin sacarlo del Option
+    let resultado = dividir(10.0, 4.0)
+        .map(|v| format!("{:.2}", v))
+        .unwrap_or(String::from("Error"));
+    println!("10/4 = {}", resultado);
+
+    // and_then: encadenar operaciones que devuelven Option
+    let doble_division = dividir(100.0, 5.0)
+        .and_then(|r| dividir(r, 2.0));
+    println!("100/5/2 = {:?}", doble_division);
+
+    // unwrap_or_else: calcular valor por defecto perezosamente
+    let valor = dividir(10.0, 0.0)
+        .unwrap_or_else(|| {
+            println!("  (calculando valor por defecto...)");
+            -1.0
+        });
+    println!("Resultado: {}", valor);
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "danger"
+es = """**Nunca uses `.unwrap()` en produccion!**
+`.unwrap()` extrae el valor de un `Some`, pero si es `None`, **el programa se detiene con panic**. Es util para prototipos y pruebas, pero en codigo real usa `match`, `if let`, `unwrap_or`, o `?` (que veremos con Result)."""
+en = """**Never use `.unwrap()` in production!**
+`.unwrap()` extracts the value from a `Some`, but if it's `None`, **the program panics**. It's useful for prototypes and tests, but in real code use `match`, `if let`, `unwrap_or`, or `?` (which we'll see with Result)."""
+
+[[blocks]]
+type = "text"
+es = """## Result<T, E>: operaciones que pueden fallar
+
+Mientras `Option` representa "hay valor o no hay", `Result` representa "exito o error con informacion":
+
+```
+enum Result<T, E> {
+    Ok(T),     // Operacion exitosa, contiene el valor
+    Err(E),    // Error, contiene informacion del error
+}
+```
+
+`Result` se usa para operaciones que pueden fallar: leer archivos, parsear numeros, conexiones de red, etc."""
+en = """## Result<T, E>: operations that can fail
+
+While `Option` represents "there's a value or not", `Result` represents "success or error with information":
+
+```
+enum Result<T, E> {
+    Ok(T),     // Successful operation, contains the value
+    Err(E),    // Error, contains error information
+}
+```
+
+`Result` is used for operations that can fail: reading files, parsing numbers, network connections, etc."""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn parsear_edad(texto: &str) -> Result<u32, String> {
+    match texto.trim().parse::<u32>() {
+        Ok(edad) => {
+            if edad > 150 {
+                Err(format!("{} no es una edad valida", edad))
+            } else {
+                Ok(edad)
+            }
+        }
+        Err(_) => Err(format!("'{}' no es un numero valido", texto)),
+    }
+}
+
+fn main() {
+    let pruebas = vec!["25", "abc", "200", "  42  ", "-5"];
+
+    for texto in pruebas {
+        match parsear_edad(texto) {
+            Ok(edad) => println!("'{}' -> Edad: {}", texto, edad),
+            Err(error) => println!("'{}' -> Error: {}", texto, error),
+        }
+    }
+}'''
+
+[[blocks]]
+type = "text"
+es = """## El operador ?: propagacion elegante de errores
+
+El operador `?` es azucar sintactica para: "si es Ok, extrae el valor; si es Err, devuelvelo inmediatamente". Elimina la necesidad de match anidados:"""
+en = """## The ? operator: elegant error propagation
+
+The `?` operator is syntactic sugar for: "if it's Ok, extract the value; if it's Err, return it immediately". It eliminates the need for nested matches:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''#[derive(Debug)]
+struct Config {
+    puerto: u16,
+    max_conexiones: u32,
+}
+
+fn parsear_config(puerto_str: &str, max_str: &str) -> Result<Config, String> {
+    // El ? extrae Ok o devuelve Err automaticamente
+    let puerto: u16 = puerto_str.parse()
+        .map_err(|_| format!("Puerto invalido: '{}'", puerto_str))?;
+    let max: u32 = max_str.parse()
+        .map_err(|_| format!("Max conexiones invalido: '{}'", max_str))?;
+
+    if puerto < 1024 {
+        return Err(String::from("Puerto debe ser >= 1024"));
+    }
+
+    Ok(Config {
+        puerto,
+        max_conexiones: max,
+    })
+}
+
+fn main() {
+    // Caso exitoso
+    match parsear_config("8080", "100") {
+        Ok(config) => println!("Config: {:?}", config),
+        Err(e) => println!("Error: {}", e),
+    }
+
+    // Caso con error
+    match parsear_config("abc", "100") {
+        Ok(config) => println!("Config: {:?}", config),
+        Err(e) => println!("Error: {}", e),
+    }
+
+    // Puerto invalido
+    match parsear_config("80", "100") {
+        Ok(config) => println!("Config: {:?}", config),
+        Err(e) => println!("Error: {}", e),
+    }
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Option vs Result - Cuando usar cada uno?**
+- **Option<T>**: cuando la ausencia de valor NO es un error. Ejemplo: buscar un elemento que podria no existir.
+- **Result<T, E>**: cuando la ausencia de valor ES un error y quieres saber POR QUE fallo. Ejemplo: parsear un numero, leer un archivo.
+- Ambos obligan a manejar el caso negativo. No puedes ignorarlos como en otros lenguajes."""
+en = """**Option vs Result - When to use each?**
+- **Option<T>**: when the absence of a value is NOT an error. Example: looking for an element that might not exist.
+- **Result<T, E>**: when the absence of a value IS an error and you want to know WHY it failed. Example: parsing a number, reading a file.
+- Both force you to handle the negative case. You can't ignore them like in other languages."""
+
+[[blocks]]
+type = "quiz"
+es = "Por que Rust no tiene null?"
+en = "Why doesn't Rust have null?"
+[[blocks.options]]
+es = "Porque es un lenguaje nuevo y null ya no se usa"
+en = "Because it's a new language and null is no longer used"
+correct = false
+[[blocks.options]]
+es = "Porque Option<T> obliga a manejar la ausencia de valor explicitamente, previniendo NullPointerException"
+en = "Because Option<T> forces handling absence of value explicitly, preventing NullPointerException"
+correct = true
+[[blocks.options]]
+es = "Porque Rust no tiene punteros"
+en = "Because Rust doesn't have pointers"
+correct = false
+[[blocks.options]]
+es = "Por razones de rendimiento"
+en = "For performance reasons"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Que hace el operador `?` en una funcion que devuelve Result?"
+en = "What does the `?` operator do in a function that returns Result?"
+[[blocks.options]]
+es = "Convierte un Result en un Option"
+en = "Converts a Result into an Option"
+correct = false
+[[blocks.options]]
+es = "Si es Ok extrae el valor; si es Err devuelve el error inmediatamente de la funcion"
+en = "If it's Ok it extracts the value; if it's Err it immediately returns the error from the function"
+correct = true
+[[blocks.options]]
+es = "Ignora los errores"
+en = "Ignores errors"
+correct = false
+[[blocks.options]]
+es = "Imprime el error en la consola"
+en = "Prints the error to the console"
+correct = false

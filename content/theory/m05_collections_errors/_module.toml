@@ -1,0 +1,36 @@
+[meta]
+id = "m05"
+order = 5
+icon = "📚"
+
+[title]
+es = "Colecciones y Strings"
+en = "Collections and Strings"
+
+[description]
+es = "Domina Vec, String y HashMap: las colecciones fundamentales de Rust. Aprende iteradores y closures."
+en = "Master Vec, String and HashMap: Rust's fundamental collections. Learn iterators and closures."
+
+[[lessons]]
+id = "m05_l01"
+order = 1
+title_es = "Vectores (Vec)"
+title_en = "Vectors (Vec)"
+
+[[lessons]]
+id = "m05_l02"
+order = 2
+title_es = "Strings a fondo"
+title_en = "Strings in depth"
+
+[[lessons]]
+id = "m05_l03"
+order = 3
+title_es = "HashMaps"
+title_en = "HashMaps"
+
+[[lessons]]
+id = "m05_l04"
+order = 4
+title_es = "Iteradores y Closures"
+title_en = "Iterators and Closures"

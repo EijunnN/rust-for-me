@@ -1,0 +1,222 @@
+[meta]
+id = "m05_l03"
+order = 3
+
+[title]
+es = "HashMaps"
+en = "HashMaps"
+
+[[blocks]]
+type = "text"
+es = """## El Problema: buscar datos por clave
+
+Con vectores, buscar un elemento requiere recorrer toda la lista (O(n)). Si tienes miles de elementos, esto es lento. Necesitas una estructura que permita buscar por clave en tiempo constante:"""
+en = """## The Problem: looking up data by key
+
+With vectors, finding an element requires traversing the entire list (O(n)). If you have thousands of elements, this is slow. You need a structure that allows lookup by key in constant time:"""
+
+[[blocks]]
+type = "text"
+es = """## La solucion: HashMap<K, V>
+
+Un `HashMap` almacena pares **clave-valor**. Dado una clave, puedes encontrar su valor en tiempo O(1). Es equivalente a `dict` en Python, `Map` en JavaScript, o `HashMap` en Java:"""
+en = """## The solution: HashMap<K, V>
+
+A `HashMap` stores **key-value** pairs. Given a key, you can find its value in O(1) time. It's equivalent to `dict` in Python, `Map` in JavaScript, or `HashMap` in Java:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''use std::collections::HashMap;
+
+fn main() {
+    // Crear un HashMap
+    let mut edades: HashMap<String, u32> = HashMap::new();
+
+    // Insertar pares clave-valor
+    edades.insert(String::from("Ana"), 28);
+    edades.insert(String::from("Carlos"), 35);
+    edades.insert(String::from("Lucia"), 22);
+
+    println!("Edades: {:?}", edades);
+
+    // Acceso seguro con .get() -> Option<&V>
+    match edades.get("Ana") {
+        Some(edad) => println!("Ana tiene {} anos", edad),
+        None => println!("Ana no encontrada"),
+    }
+
+    // Verificar si existe una clave
+    println!("Existe Carlos? {}", edades.contains_key("Carlos"));
+    println!("Existe Pedro? {}", edades.contains_key("Pedro"));
+
+    // Longitud
+    println!("Total: {} personas", edades.len());
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Actualizar valores"""
+en = """## Updating values"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''use std::collections::HashMap;
+
+fn main() {
+    let mut puntos: HashMap<String, i32> = HashMap::new();
+
+    // Insertar: si la clave existe, se sobreescribe
+    puntos.insert(String::from("Ana"), 100);
+    puntos.insert(String::from("Ana"), 200);  // Sobreescribe!
+    println!("Ana: {}", puntos["Ana"]);  // 200
+
+    // entry + or_insert: solo inserta si la clave NO existe
+    puntos.entry(String::from("Ana")).or_insert(999);      // No cambia (ya existe)
+    puntos.entry(String::from("Carlos")).or_insert(150);   // Inserta (no existia)
+    println!("Ana: {}, Carlos: {}", puntos["Ana"], puntos["Carlos"]);
+
+    // entry + or_insert para contar ocurrencias (patron comun!)
+    let texto = "hola mundo hola rust hola";
+    let mut conteo: HashMap<&str, i32> = HashMap::new();
+
+    for palabra in texto.split_whitespace() {
+        let cuenta = conteo.entry(palabra).or_insert(0);
+        *cuenta += 1;  // Incrementar el valor
+    }
+    println!("Conteo de palabras: {:?}", conteo);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Iterar sobre HashMaps"""
+en = """## Iterating over HashMaps"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''use std::collections::HashMap;
+
+fn main() {
+    let mut inventario: HashMap<&str, u32> = HashMap::new();
+    inventario.insert("manzanas", 50);
+    inventario.insert("bananas", 30);
+    inventario.insert("naranjas", 45);
+    inventario.insert("uvas", 0);
+
+    // Iterar sobre pares clave-valor
+    println!("=== Inventario ===");
+    for (fruta, cantidad) in &inventario {
+        println!("{}: {} unidades", fruta, cantidad);
+    }
+
+    // Filtrar: solo los que tienen stock
+    println!("\n=== Con stock ===");
+    for (fruta, cantidad) in &inventario {
+        if *cantidad > 0 {
+            println!("{}: {}", fruta, cantidad);
+        }
+    }
+
+    // Sumar total
+    let total: u32 = inventario.values().sum();
+    println!("\nTotal de frutas: {}", total);
+
+    // Eliminar una clave
+    inventario.remove("uvas");
+    println!("Despues de eliminar uvas: {} tipos", inventario.len());
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Ejemplo practico: sistema de calificaciones"""
+en = """## Practical example: grading system"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''use std::collections::HashMap;
+
+fn main() {
+    let notas = vec![
+        ("Ana", vec![85, 92, 78]),
+        ("Carlos", vec![90, 88, 95]),
+        ("Lucia", vec![70, 65, 80]),
+    ];
+
+    let mut promedios: HashMap<&str, f64> = HashMap::new();
+
+    for (nombre, calificaciones) in &notas {
+        let suma: i32 = calificaciones.iter().sum();
+        let prom = suma as f64 / calificaciones.len() as f64;
+        promedios.insert(nombre, prom);
+    }
+
+    println!("{:<10} | {:>10}", "Estudiante", "Promedio");
+    println!("{}", "-".repeat(25));
+    for (nombre, prom) in &promedios {
+        let estado = if *prom >= 80.0 { "Aprobado" } else { "Repaso" };
+        println!("{:<10} | {:>7.1} ({})", nombre, prom, estado);
+    }
+
+    // Mejor promedio
+    if let Some((mejor, nota)) = promedios.iter()
+        .max_by(|a, b| a.1.partial_cmp(b.1).unwrap()) {
+        println!("\nMejor estudiante: {} con {:.1}", mejor, nota);
+    }
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**HashMap no mantiene orden!**
+A diferencia de un Vec, los elementos de un HashMap no tienen orden garantizado. Si necesitas orden de insercion, usa `BTreeMap` en su lugar (de `std::collections::BTreeMap`)."""
+en = """**HashMap doesn't maintain order!**
+Unlike a Vec, HashMap elements have no guaranteed order. If you need insertion order, use `BTreeMap` instead (from `std::collections::BTreeMap`)."""
+
+[[blocks]]
+type = "quiz"
+es = "Que patron usas para contar cuantas veces aparece cada palabra en un texto?"
+en = "What pattern do you use to count how many times each word appears in a text?"
+[[blocks.options]]
+es = "Un Vec con la palabra y el conteo"
+en = "A Vec with the word and count"
+correct = false
+[[blocks.options]]
+es = "`entry().or_insert(0)` seguido de `*cuenta += 1`"
+en = "`entry().or_insert(0)` followed by `*cuenta += 1`"
+correct = true
+[[blocks.options]]
+es = "Usar `.contains()` y luego `.insert()`"
+en = "Use `.contains()` then `.insert()`"
+correct = false
+[[blocks.options]]
+es = "Crear un nuevo HashMap para cada palabra"
+en = "Create a new HashMap for each word"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Que devuelve `map.get(\"clave\")` si la clave no existe?"
+en = "What does `map.get(\"key\")` return if the key doesn't exist?"
+[[blocks.options]]
+es = "Un valor por defecto (0, \"\", etc.)"
+en = "A default value (0, \"\", etc.)"
+correct = false
+[[blocks.options]]
+es = "None (devuelve Option<&V>)"
+en = "None (returns Option<&V>)"
+correct = true
+[[blocks.options]]
+es = "Panic / error en tiempo de ejecucion"
+en = "Panic / runtime error"
+correct = false
+[[blocks.options]]
+es = "Error de compilacion"
+en = "Compilation error"
+correct = false

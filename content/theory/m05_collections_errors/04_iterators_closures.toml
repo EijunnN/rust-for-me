@@ -1,0 +1,306 @@
+[meta]
+id = "m05_l04"
+order = 4
+
+[title]
+es = "Iteradores y Closures"
+en = "Iterators and Closures"
+
+[[blocks]]
+type = "text"
+es = """## El Problema: bucles repetitivos y verbosos
+
+Escribir bucles `for` para cada operacion (filtrar, transformar, acumular) produce codigo repetitivo y propenso a errores:"""
+en = """## The Problem: repetitive and verbose loops
+
+Writing `for` loops for each operation (filter, transform, accumulate) produces repetitive, error-prone code:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = false
+code = '''// Verboso: filtrar, transformar, sumar con bucles manuales
+fn main() {
+    let numeros = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    // Paso 1: filtrar pares
+    let mut pares = Vec::new();
+    for n in &numeros {
+        if n % 2 == 0 {
+            pares.push(*n);
+        }
+    }
+
+    // Paso 2: multiplicar por 3
+    let mut triplicados = Vec::new();
+    for n in &pares {
+        triplicados.push(n * 3);
+    }
+
+    // Paso 3: sumar
+    let mut suma = 0;
+    for n in &triplicados {
+        suma += n;
+    }
+    // 3 bucles, 3 vectores intermedios... tedioso!
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Closures: funciones anonimas
+
+Antes de ver iteradores, necesitamos entender **closures**. Un closure es una funcion anonima que puedes guardar en una variable o pasar como argumento. La sintaxis usa `|parametros|`:"""
+en = """## Closures: anonymous functions
+
+Before seeing iterators, we need to understand **closures**. A closure is an anonymous function you can store in a variable or pass as an argument. The syntax uses `|parameters|`:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    // Closure basico
+    let sumar = |a: i32, b: i32| -> i32 { a + b };
+    println!("3 + 4 = {}", sumar(3, 4));
+
+    // Closure con inferencia de tipos (lo mas comun)
+    let duplicar = |x| x * 2;
+    println!("duplicar(5) = {}", duplicar(5));
+
+    // Closure que captura variables del entorno
+    let nombre = "Ferris";
+    let saludar = || println!("Hola, {}!", nombre);
+    saludar();
+
+    // Closure mutable que captura una variable
+    let mut contador = 0;
+    let mut incrementar = || {
+        contador += 1;
+        contador
+    };
+    println!("1: {}", incrementar());
+    println!("2: {}", incrementar());
+    println!("3: {}", incrementar());
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Iteradores: la forma idomiatica de Rust
+
+Los iteradores permiten encadenar operaciones sobre colecciones de forma declarativa. Es mas legible, mas seguro, y a menudo mas rapido que los bucles manuales:"""
+en = """## Iterators: the idiomatic Rust way
+
+Iterators allow chaining operations on collections declaratively. It's more readable, safer, and often faster than manual loops:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let numeros = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    // Una sola cadena: filtrar pares, triplicar, sumar
+    let resultado: i32 = numeros.iter()
+        .filter(|&&n| n % 2 == 0)   // Solo pares: 2, 4, 6, 8, 10
+        .map(|&n| n * 3)             // Triplicar: 6, 12, 18, 24, 30
+        .sum();                       // Sumar: 90
+
+    println!("Resultado: {}", resultado);
+
+    // Paso a paso para entender
+    let pares: Vec<&i32> = numeros.iter().filter(|&&n| n % 2 == 0).collect();
+    println!("Pares: {:?}", pares);
+
+    let cuadrados: Vec<i32> = numeros.iter().map(|&n| n * n).collect();
+    println!("Cuadrados: {:?}", cuadrados);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Metodos de iterador mas comunes
+
+Estos son los metodos que usaras el 90% del tiempo:"""
+en = """## Most common iterator methods
+
+These are the methods you'll use 90% of the time:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let palabras = vec!["Rust", "es", "rapido", "y", "seguro"];
+
+    // map: transformar cada elemento
+    let mayusculas: Vec<String> = palabras.iter()
+        .map(|p| p.to_uppercase())
+        .collect();
+    println!("map: {:?}", mayusculas);
+
+    // filter: quedarse solo con los que cumplen la condicion
+    let largas: Vec<&&str> = palabras.iter()
+        .filter(|p| p.len() > 2)
+        .collect();
+    println!("filter (len > 2): {:?}", largas);
+
+    // find: buscar el primero que cumpla la condicion
+    let primera_larga = palabras.iter().find(|p| p.len() > 4);
+    println!("find (len > 4): {:?}", primera_larga);
+
+    // any / all: verificar condiciones
+    let hay_cortas = palabras.iter().any(|p| p.len() <= 2);
+    let todas_ascii = palabras.iter().all(|p| p.is_ascii());
+    println!("Hay cortas? {} | Todas ASCII? {}", hay_cortas, todas_ascii);
+
+    // enumerate: agregar indice
+    for (i, palabra) in palabras.iter().enumerate() {
+        print!("[{}]{} ", i, palabra);
+    }
+    println!();
+
+    // count: contar elementos
+    let total = palabras.iter().count();
+    let largas_count = palabras.iter().filter(|p| p.len() > 2).count();
+    println!("Total: {}, Largas: {}", total, largas_count);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## fold: el metodo mas poderoso
+
+`fold` (tambien conocido como `reduce` en otros lenguajes) acumula todos los elementos en un solo valor:"""
+en = """## fold: the most powerful method
+
+`fold` (also known as `reduce` in other languages) accumulates all elements into a single value:"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let numeros = vec![1, 2, 3, 4, 5];
+
+    // sum es azucar para fold
+    let suma: i32 = numeros.iter().sum();
+    let suma_fold = numeros.iter().fold(0, |acumulador, &x| acumulador + x);
+    println!("sum: {} = fold: {}", suma, suma_fold);
+
+    // Producto de todos los numeros
+    let producto = numeros.iter().fold(1, |acc, &x| acc * x);
+    println!("Producto: {}", producto);  // 120
+
+    // Encontrar el maximo manualmente
+    let max = numeros.iter().fold(i32::MIN, |acc, &x| if x > acc { x } else { acc });
+    println!("Maximo: {}", max);
+
+    // Construir un string con fold
+    let palabras = vec!["Rust", "es", "increible"];
+    let frase = palabras.iter()
+        .fold(String::new(), |acc, &palabra| {
+            if acc.is_empty() {
+                String::from(palabra)
+            } else {
+                format!("{} {}", acc, palabra)
+            }
+        });
+    println!("{}", frase);
+
+    // Alternativa mas simple: join (disponible en slices de &str)
+    let frase2 = palabras.join(" ");
+    println!("{}", frase2);
+}'''
+
+[[blocks]]
+type = "text"
+es = """## Ejemplo completo: procesamiento de datos"""
+en = """## Complete example: data processing"""
+
+[[blocks]]
+type = "code"
+language = "rust"
+runnable = true
+code = '''fn main() {
+    let ventas = vec![
+        ("Laptop", 999.99, 3),
+        ("Mouse", 29.99, 15),
+        ("Teclado", 79.99, 8),
+        ("Monitor", 449.99, 5),
+        ("Cable USB", 9.99, 50),
+    ];
+
+    // Total de ingresos
+    let total: f64 = ventas.iter()
+        .map(|(_, precio, cantidad)| precio * *cantidad as f64)
+        .sum();
+    println!("Ingresos totales: ${:.2}", total);
+
+    // Producto mas vendido (por cantidad)
+    let mas_vendido = ventas.iter()
+        .max_by_key(|(_, _, cant)| *cant);
+    if let Some((nombre, _, cant)) = mas_vendido {
+        println!("Mas vendido: {} ({} unidades)", nombre, cant);
+    }
+
+    // Productos con ingreso > $500
+    let grandes: Vec<_> = ventas.iter()
+        .filter(|(_, precio, cant)| precio * *cant as f64 > 500.0)
+        .map(|(nombre, precio, cant)| {
+            format!("{}: ${:.2}", nombre, precio * *cant as f64)
+        })
+        .collect();
+    println!("Ventas > $500: {:?}", grandes);
+
+    // Unidades totales vendidas
+    let unidades: i32 = ventas.iter().map(|(_, _, c)| *c).sum();
+    println!("Total unidades: {}", unidades);
+}'''
+
+[[blocks]]
+type = "callout"
+variant = "info"
+es = """**Iteradores son perezosos (lazy)**
+Los iteradores no hacen nada hasta que se **consumen** con `.collect()`, `.sum()`, `.count()`, `.for_each()`, etc. Esto significa que encadenar `.filter().map().filter()` no crea colecciones intermedias — se procesa todo en una sola pasada, elemento por elemento. Por eso los iteradores son tan eficientes."""
+en = """**Iterators are lazy**
+Iterators don't do anything until they are **consumed** with `.collect()`, `.sum()`, `.count()`, `.for_each()`, etc. This means chaining `.filter().map().filter()` doesn't create intermediate collections — everything is processed in a single pass, element by element. That's why iterators are so efficient."""
+
+[[blocks]]
+type = "quiz"
+es = "Que hace `.filter(|x| x > &5)` en un iterador?"
+en = "What does `.filter(|x| x > &5)` do on an iterator?"
+[[blocks.options]]
+es = "Elimina los elementos menores o iguales a 5 del vector original"
+en = "Removes elements less than or equal to 5 from the original vector"
+correct = false
+[[blocks.options]]
+es = "Crea un nuevo iterador que solo produce elementos mayores a 5"
+en = "Creates a new iterator that only yields elements greater than 5"
+correct = true
+[[blocks.options]]
+es = "Ordena los elementos de mayor a menor"
+en = "Sorts elements from highest to lowest"
+correct = false
+[[blocks.options]]
+es = "Cuenta cuantos elementos son mayores a 5"
+en = "Counts how many elements are greater than 5"
+correct = false
+
+[[blocks]]
+type = "quiz"
+es = "Por que los iteradores de Rust son eficientes a pesar de encadenar multiples operaciones?"
+en = "Why are Rust iterators efficient despite chaining multiple operations?"
+[[blocks.options]]
+es = "Porque Rust es un lenguaje compilado"
+en = "Because Rust is a compiled language"
+correct = false
+[[blocks.options]]
+es = "Porque son perezosos: no crean colecciones intermedias, procesan elemento por elemento"
+en = "Because they're lazy: they don't create intermediate collections, processing element by element"
+correct = true
+[[blocks.options]]
+es = "Porque usan multiples hilos internamente"
+en = "Because they use multiple threads internally"
+correct = false
+[[blocks.options]]
+es = "No son eficientes, los bucles for son mas rapidos"
+en = "They're not efficient, for loops are faster"
+correct = false

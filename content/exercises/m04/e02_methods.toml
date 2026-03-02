@@ -1,0 +1,121 @@
+[meta]
+id = "m04_e02"
+module = "m04"
+difficulty = "beginner"
+order = 2
+exercise_type = "write_code"
+
+[title]
+es = "Agrega metodos al struct"
+en = "Add methods to the struct"
+
+[description]
+es = """Completa la implementacion del struct `Contador`:
+1. `nuevo()` — funcion asociada que crea un Contador con valor 0
+2. `incrementar()` — metodo que incrementa el valor en 1
+3. `valor()` — metodo que devuelve el valor actual
+4. `reiniciar()` — metodo que pone el valor en 0
+
+La salida debe coincidir exactamente."""
+en = """Complete the implementation of the `Contador` struct:
+1. `nuevo()` — associated function that creates a Contador with value 0
+2. `incrementar()` — method that increments the value by 1
+3. `valor()` — method that returns the current value
+4. `reiniciar()` — method that sets the value to 0
+
+The output must match exactly."""
+
+[starter_code]
+code = '''struct Contador {
+    valor: i32,
+}
+
+impl Contador {
+    // 1. Funcion asociada: crea un nuevo Contador con valor 0
+    fn nuevo() -> Contador {
+        todo!()
+    }
+
+    // 2. Metodo: incrementa el valor en 1
+    fn incrementar() {
+        todo!()
+    }
+
+    // 3. Metodo: devuelve el valor actual
+    fn valor() -> i32 {
+        todo!()
+    }
+
+    // 4. Metodo: reinicia el valor a 0
+    fn reiniciar() {
+        todo!()
+    }
+}
+
+fn main() {
+    let mut c = Contador::nuevo();
+    println!("Inicio: {}", c.valor());
+
+    c.incrementar();
+    c.incrementar();
+    c.incrementar();
+    println!("Despues de 3 incrementos: {}", c.valor());
+
+    c.reiniciar();
+    println!("Despues de reiniciar: {}", c.valor());
+}'''
+
+[validation]
+expected_output = """Inicio: 0
+Despues de 3 incrementos: 3
+Despues de reiniciar: 0"""
+
+[hints]
+es = [
+    "nuevo() devuelve Contador { valor: 0 }",
+    "incrementar necesita &mut self para modificar: fn incrementar(&mut self)",
+    "valor necesita &self para leer: fn valor(&self) -> i32",
+    "reiniciar necesita &mut self: self.valor = 0",
+]
+en = [
+    "nuevo() returns Contador { valor: 0 }",
+    "incrementar needs &mut self to modify: fn incrementar(&mut self)",
+    "valor needs &self to read: fn valor(&self) -> i32",
+    "reiniciar needs &mut self: self.valor = 0",
+]
+
+[solution]
+code = '''struct Contador {
+    valor: i32,
+}
+
+impl Contador {
+    fn nuevo() -> Contador {
+        Contador { valor: 0 }
+    }
+
+    fn incrementar(&mut self) {
+        self.valor += 1;
+    }
+
+    fn valor(&self) -> i32 {
+        self.valor
+    }
+
+    fn reiniciar(&mut self) {
+        self.valor = 0;
+    }
+}
+
+fn main() {
+    let mut c = Contador::nuevo();
+    println!("Inicio: {}", c.valor());
+
+    c.incrementar();
+    c.incrementar();
+    c.incrementar();
+    println!("Despues de 3 incrementos: {}", c.valor());
+
+    c.reiniciar();
+    println!("Despues de reiniciar: {}", c.valor());
+}'''

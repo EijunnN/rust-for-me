@@ -1,0 +1,105 @@
+[meta]
+id = "m03_e04"
+module = "m03"
+difficulty = "intermediate"
+order = 4
+exercise_type = "predict_output"
+
+[title]
+es = "Predice la salida: ownership y scope"
+en = "Predict the output: ownership and scope"
+
+[description]
+es = """Sin ejecutar el codigo, predice cual sera la salida. Presta atencion a cuando se mueven los valores, cuando se copian, y cuando salen del scope."""
+en = """Without running the code, predict the output. Pay attention to when values are moved, when they are copied, and when they go out of scope."""
+
+[starter_code]
+code = '''fn tomar(s: String) -> usize {
+    s.len()
+}
+
+fn copiar(x: i32) -> i32 {
+    x + 10
+}
+
+fn main() {
+    let num = 5;
+    let resultado = copiar(num);
+    println!("{} -> {}", num, resultado);
+
+    let texto = String::from("Rust");
+    let longitud = tomar(texto);
+    println!("longitud: {}", longitud);
+
+    let a = 42;
+    let b = a;
+    println!("{} {}", a, b);
+}'''
+
+[validation]
+expected_output = """5 -> 15
+longitud: 4
+42 42"""
+
+[hints]
+es = [
+    "i32 implementa Copy, asi que `num` sigue valido despues de pasarlo a `copiar()`",
+    "String NO implementa Copy, `texto` se mueve a `tomar()` y ya no es accesible",
+    "La funcion tomar() devuelve s.len() que es un usize (Copy), no el String",
+    "a y b son i32 (Copy), asi que ambos son validos",
+]
+en = [
+    "i32 implements Copy, so `num` is still valid after passing it to `copiar()`",
+    "String does NOT implement Copy, `texto` is moved to `tomar()` and is no longer accessible",
+    "The tomar() function returns s.len() which is a usize (Copy), not the String",
+    "a and b are i32 (Copy), so both are valid",
+]
+
+[[options]]
+es = "5 -> 15, longitud: 4, 42 42"
+en = "5 -> 15, longitud: 4, 42 42"
+correct = true
+
+[[options]]
+es = "Error de compilacion: uso de valor movido"
+en = "Compilation error: use of moved value"
+correct = false
+
+[[options]]
+es = "5 -> 15, longitud: 4, 42 52"
+en = "5 -> 15, longitud: 4, 42 52"
+correct = false
+
+[[options]]
+es = "5 -> 10, longitud: 4, 42 42"
+en = "5 -> 10, longitud: 4, 42 42"
+correct = false
+
+[solution]
+code = '''// num es i32 (Copy): copiar(num) no mueve num, lo copia
+// copiar(5) devuelve 5 + 10 = 15
+// texto es String (Move): tomar(texto) mueve texto a la funcion
+// tomar("Rust") devuelve "Rust".len() = 4
+// a es i32 (Copy): let b = a copia a, ambos valen 42
+
+fn tomar(s: String) -> usize {
+    s.len()
+}
+
+fn copiar(x: i32) -> i32 {
+    x + 10
+}
+
+fn main() {
+    let num = 5;
+    let resultado = copiar(num);
+    println!("{} -> {}", num, resultado);
+
+    let texto = String::from("Rust");
+    let longitud = tomar(texto);
+    println!("longitud: {}", longitud);
+
+    let a = 42;
+    let b = a;
+    println!("{} {}", a, b);
+}'''

@@ -1,0 +1,97 @@
+[meta]
+id = "m04_e03"
+module = "m04"
+difficulty = "intermediate"
+order = 3
+exercise_type = "write_code"
+
+[title]
+es = "Enum con datos y match"
+en = "Enum with data and match"
+
+[description]
+es = """Crea un enum `Forma` con tres variantes:
+- `Circulo(f64)` — contiene el radio
+- `Rectangulo(f64, f64)` — contiene ancho y alto
+- `Triangulo(f64, f64)` — contiene base y altura
+
+Luego implementa la funcion `calcular_area` que usa match para calcular el area de cada forma.
+
+Formulas: Circulo = PI * r^2, Rectangulo = ancho * alto, Triangulo = base * altura / 2"""
+en = """Create a `Forma` enum with three variants:
+- `Circulo(f64)` — contains the radius
+- `Rectangulo(f64, f64)` — contains width and height
+- `Triangulo(f64, f64)` — contains base and height
+
+Then implement the `calcular_area` function that uses match to calculate the area of each shape.
+
+Formulas: Circle = PI * r^2, Rectangle = width * height, Triangle = base * height / 2"""
+
+[starter_code]
+code = '''// Define el enum Forma aqui
+// Define the Forma enum here
+
+
+fn calcular_area(forma: &Forma) -> f64 {
+    // Usa match para calcular el area segun la variante
+    // Use match to calculate the area based on the variant
+    todo!()
+}
+
+fn main() {
+    let formas = vec![
+        Forma::Circulo(5.0),
+        Forma::Rectangulo(10.0, 5.0),
+        Forma::Triangulo(8.0, 6.0),
+    ];
+
+    for forma in &formas {
+        println!("Area: {:.2}", calcular_area(forma));
+    }
+}'''
+
+[validation]
+expected_output = """Area: 78.54
+Area: 50.00
+Area: 24.00"""
+
+[hints]
+es = [
+    "Define: `enum Forma { Circulo(f64), Rectangulo(f64, f64), Triangulo(f64, f64) }`",
+    "En match, destructura los datos: `Forma::Circulo(r) => ...`",
+    "Para PI usa: `std::f64::consts::PI`",
+    "Triangulo: `base * altura / 2.0`",
+]
+en = [
+    "Define: `enum Forma { Circulo(f64), Rectangulo(f64, f64), Triangulo(f64, f64) }`",
+    "In match, destructure the data: `Forma::Circulo(r) => ...`",
+    "For PI use: `std::f64::consts::PI`",
+    "Triangle: `base * altura / 2.0`",
+]
+
+[solution]
+code = '''enum Forma {
+    Circulo(f64),
+    Rectangulo(f64, f64),
+    Triangulo(f64, f64),
+}
+
+fn calcular_area(forma: &Forma) -> f64 {
+    match forma {
+        Forma::Circulo(r) => std::f64::consts::PI * r * r,
+        Forma::Rectangulo(ancho, alto) => ancho * alto,
+        Forma::Triangulo(base, altura) => base * altura / 2.0,
+    }
+}
+
+fn main() {
+    let formas = vec![
+        Forma::Circulo(5.0),
+        Forma::Rectangulo(10.0, 5.0),
+        Forma::Triangulo(8.0, 6.0),
+    ];
+
+    for forma in &formas {
+        println!("Area: {:.2}", calcular_area(forma));
+    }
+}'''
